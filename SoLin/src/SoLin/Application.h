@@ -13,7 +13,8 @@ namespace SoLin {
 		void Run();
 	};
 
-	// 将会在客户端定义 To be defined in client
+	// 这个将会在用户端被定义 
+	// To be defined in client
 	Application* CreateApplication();
 
 }
