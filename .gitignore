@@ -1,0 +1,157 @@
+## 忽略 Visual Studio 临时文件、生成结果以及用户配置文件
+
+# 编译输出目录
+[Bb]in/
+[Oo]bj/
+
+# 用户专属文件（如 Visual Studio 用户选项、用户配置文件）
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# 生成的文件（如 ResX 资源代码生成）
+*.csproj.user
+*.vbproj.user
+*.fsproj.user
+
+# 数据库相关
+*.mdf
+*.ldf
+*.ndf
+
+# 测试结果
+TestResults/
+*.trx
+*.testlog
+
+# NuGet 包目录
+packages/
+*.nupkg
+
+# 发布配置
+app.publish/
+publish/
+
+# 备份文件
+*_i.c
+*_p.c
+*.backup
+*.bak
+
+# 项目升级备份文件
+Backup*/
+UpgradeLog*.XML
+UpgradeLog*.htm
+
+# 实体框架迁移临时文件
+*.edmx.diagram
+
+# 在生成期间由 MVC 生成的 TypeScript 文件
+*.d.ts
+
+# 用户特定的 IDE 设置（.vs/ 目录，VS2015+）
+.vs/
+
+# 代码覆盖率工具生成的文件
+*.coverage
+*.coveragexml
+
+# 已编译的网页文件（发布时生成）
+*.Publish.xml
+*.pubxml
+*.pubxml.user
+
+# Windows 应用程序包（App Packages）
+AppPackages/
+BundleArtifacts/
+Package.StoreAssociation.xml
+_pkginfo.txt
+
+# RIA/Silverlight 项目
+Generated_Code/
+
+# 工具生成的临时文件
+*.cache
+*.dbmdl
+*.generated.cs
+*.libraries
+*.local
+*.objh
+*.pdb          # 如果确定不调试，可忽略符号文件
+*.sbr
+*.tlb
+*.tlh
+*.tmp
+*.tmp_proj
+*.timestamp
+*.vsix
+*.vspx
+*.vspf
+*.wrn
+
+# 用户指定的诊断数据
+*.diagsession
+
+# Resharper 插件缓存
+_ReSharper*/
+*.resharper
+*.ReSharper.user
+
+# NCrunch 生成文件
+_NCrunch_*
+.*crunch*.local.xml
+
+# MSTest 测试结果
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+
+# NUnit
+*.VisualState.xml
+TestResult.xml
+
+# Build Results of an ATL Project
+[Dd]ebugPS/
+[Rr]eleasePS/
+dlldata.c
+
+# Benchmark 结果
+BenchmarkDotNet.Artifacts/
+
+# .NET Core
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# ASP.NET Core 运行时日志
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# 环境配置文件（通常包含敏感信息，如连接字符串）
+appsettings.Development.json
+appsettings.Production.json
+secrets.json
+
+# 常见 IDE 文件夹
+.idea/
+.vscode/
+*.swp
+*.swo
+*.*~
+
+# Windows 缩略图缓存
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# 已编译的源码（如工具生成的代码）
+*.exe
+*.dll
+*.so
+*.dylib
+
+# 除非你知道自己在做什么，否则不要取消下一行的注释
+# !.gitkeep
