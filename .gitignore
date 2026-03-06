@@ -3,6 +3,7 @@
 # 编译输出目录
 [Bb]in/
 [Oo]bj/
+bin-intermediates/
 
 # 用户专属文件（如 Visual Studio 用户选项、用户配置文件）
 *.suo
