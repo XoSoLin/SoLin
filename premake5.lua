@@ -18,6 +18,9 @@ project "SoLin"				--项目
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")				--输出目录
 	objdir ("bin-intermediates/" .. outputdir .. "/%{prj.name}")	--中间目录
 
+	pchheader "slpch.h"												--预编译头文件
+	pchsource "SoLin/src/slpch.cpp"									--(实际上编译器不需要 但是VS需要这个.cpp文件)
+
 	files{
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.cpp"

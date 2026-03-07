@@ -2,8 +2,6 @@
 
 #include "Event.h"
 
-#include <sstream>
-
 namespace SoLin {
 
 	//@brief 鼠标移动事件

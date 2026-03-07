@@ -2,8 +2,6 @@
 
 #include"Event.h"
 
-#include<sstream>
-
 namespace SoLin {
 	class SOLIN_API WindowResizeEvent : public Event {
 	public:
