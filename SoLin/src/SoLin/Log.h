@@ -4,6 +4,7 @@
 
 #include"Core.h"
 #include"spdlog/spdlog.h"
+//#include"spdlog/fmt/ostr.h"					// 输出流操作符
 
 namespace SoLin {
 
@@ -37,4 +38,11 @@ namespace SoLin {
 #define SL_CLIENT_WARN(...)		::SoLin::Log::GetClientLogger()->warn(__VA_ARGS__)
 #define SL_CLIENT_ERROR(...)	::SoLin::Log::GetClientLogger()->error(__VA_ARGS__)
 #define SL_CLIENT_FATAL(...)	::SoLin::Log::GetClientLogger()->fatal(__VA_ARGS__)
+
+//	发现太长偷偷懒
+#define SL_TRACE(...)			::SoLin::Log::GetClientLogger()->trace(__VA_ARGS__)
+#define SL_INFO(...)			::SoLin::Log::GetClientLogger()->info(__VA_ARGS__)
+#define SL_WARN(...)			::SoLin::Log::GetClientLogger()->warn(__VA_ARGS__)
+#define SL_ERROR(...)			::SoLin::Log::GetClientLogger()->error(__VA_ARGS__)
+#define SL_FATAL(...)			::SoLin::Log::GetClientLogger()->fatal(__VA_ARGS__)
 

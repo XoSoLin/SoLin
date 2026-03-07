@@ -9,3 +9,5 @@
 #else
 	#error SoLin only support Windows!
 #endif
+
+#define Bit(x) (1 << x)

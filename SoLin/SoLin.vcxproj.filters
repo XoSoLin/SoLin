@@ -4,6 +4,9 @@
     <Filter Include="SoLin">
       <UniqueIdentifier>{4A211B0E-B635-43BF-7FB7-E61EEB8A3FF0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SoLin\Events">
+      <UniqueIdentifier>{EE35A954-DA98-38F9-831E-71AF6F60047C}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\SoLin.h" />
@@ -15,6 +18,18 @@
     </ClInclude>
     <ClInclude Include="src\SoLin\EntryPoint.h">
       <Filter>SoLin</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SoLin\Events\ApplicationEvent.h">
+      <Filter>SoLin\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SoLin\Events\Event.h">
+      <Filter>SoLin\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SoLin\Events\KeyEvent.h">
+      <Filter>SoLin\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SoLin\Events\MouseEvent.h">
+      <Filter>SoLin\Events</Filter>
     </ClInclude>
     <ClInclude Include="src\SoLin\Log.h">
       <Filter>SoLin</Filter>
