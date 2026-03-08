@@ -9,6 +9,7 @@ namespace SoLin {
 
 	Application::Application()
 	{
+		m_Window = std::unique_ptr<Window>(Window::Create());
 	}
 
 	Application::~Application()
@@ -26,6 +27,8 @@ namespace SoLin {
 		if (e.IsInCategory(EventCategoryMouseButton)) {
 			SL_CLIENT_TRACE(e.ToString());
 		}
-		while (true);
+		while (m_Running) {
+			m_Window->OnUpdate();
+		}
 	}
 }

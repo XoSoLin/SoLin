@@ -8,6 +8,15 @@ workspace "SoLin"			--工作区
 	}
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"		--输出目录和中间生成文件目录
+IncludeDir = {}														--创建一个表
+IncludeDir["GLFW"] = "SoLin/vendor/GLFW/include"					--将表的"GLFW"键索引到此路径
+
+--[[包含Nut/Nut/vendor/GLFW中的premake文件并合并到这里]]
+include "SoLin/vendor/GLFW"
+--[[
+--    XXXX
+--]]
+---------------------------------------------------------------------------------------
 
 --引擎
 project "SoLin"				--项目
@@ -28,8 +37,14 @@ project "SoLin"				--项目
 
 	includedirs{
 		"%{prj.name}/src",
-		"%{prj.name}/vendor/spdlog/include"
+		"%{prj.name}/vendor/spdlog/include",
+        "%{IncludeDir.GLFW}"                                                    --将IncludeDir表中GLFW键索引的值作为一个库文件
 	}
+
+	links{                           --为SoLin项目(.dll)链接文件
+        "GLFW",                                                                 --链接上方项目GLFW
+        "opengl32.lib"
+    }
 
 	filter "system:windows"
 		cppdialect "C++17"
