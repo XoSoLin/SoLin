@@ -28,6 +28,14 @@ namespace SoLin {
 	Application::~Application()
 	{
 	}
+	
+	void Application::PushLayer(Layer* layer) {
+		m_LayerStack.PushLayer(layer);
+	}
+
+	void Application::PushOverlay(Layer* overlay) {
+		m_LayerStack.PushOverLay(overlay);
+	}
 
 	void Application::OnEvent(Event& e) {
 		EventDispatcher dispatcher(e);
@@ -36,6 +44,14 @@ namespace SoLin {
 		// 这里会输出所有e的信息，但这些事件并不是都被响应处理了。
 		// 目前只有WindowCloseEvent被处理，也就是执行了OnWindowClose()
 		SL_CORE_TRACE("{0}", e.ToString());
+
+		for (auto iter = m_LayerStack.end(); iter != m_LayerStack.begin();) {
+			(*--iter)->OnEvent(e);
+			if (e.Handled) {
+				break;
+			}
+		}
+
 	}
 
 	void Application::Run() {
@@ -52,7 +68,11 @@ namespace SoLin {
 		while (m_Running) {
 			glClearColor(0.8, 0.1, 0.9, 1);
 			glClear(GL_COLOR_BUFFER_BIT);
-			m_Window->OnUpdate();
+
+			for (Layer* layer : m_LayerStack) {				//更新图层
+				layer->OnUpdate();
+			}
+			m_Window->OnUpdate();							//更新窗口
 		}
 	}
 

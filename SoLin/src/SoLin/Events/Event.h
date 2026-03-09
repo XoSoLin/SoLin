@@ -50,6 +50,8 @@ namespace SoLin {
 		// 声明事件分发器为友元
 		friend class EventDispatcher;
 	public:
+		// 是否已经处理
+		bool Handled = false;
 		// @brief 用于获取事件类型
 		virtual EventType GetEventType() const = 0;
 		// @brief 用于获取事件名称的字符串
@@ -65,8 +67,6 @@ namespace SoLin {
 			return GetCategoryFlags() & category;							//因为类别是由位决定，&操作后有着对应位的类型才会被判断成属于一种类型。也就是会存在1，否则全0
 		}
 	protected:
-		// 是否已经处理，为友元提供访问
-		bool m_Handled = false;
 	};
 
 	//@class EventDispatcher
@@ -85,7 +85,7 @@ namespace SoLin {
 		template<typename T>													//为Dispatch函数提供需要使用的模板T（本来可以只写一个template，但是EventFn是私有的，和公有的区分开）
 		bool Dispatch(EventFn<T> func) {										//接受一个“参数为T”且“返回值为bool”的可调度表达式func （函数指针、lambda）
 			if (m_Event.GetEventType() == T::GetStaticType()) {					//！！！静态函数在使用时需要使用类名或类型名来调用
-				m_Event.m_Handled = func(*(T*)&m_Event);						//*(T*) 表示：用 * 解引用（T*）所声明的T类型指针，实现强制类型转换
+				m_Event.Handled = func(*(T*)&m_Event);							//*(T*) 表示：用 * 解引用（T*）所声明的T类型指针，实现强制类型转换
 																				//？？？？？？意思就是此刻的&m_Event的类型	就应该是&T	也就是*(T*)
 																				// func();也就执行了对应的函数，并将bool返回给m_Handled
 				return true;

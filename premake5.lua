@@ -63,14 +63,17 @@ project "SoLin"				--项目
 
 	filter "configurations:Debug"
 		defines "SL_DEBUG"
+		buildoptions "/MDd"			--不开会使得引擎和应用的堆建立在不同内存
 		symbols "On"
 
 	filter "configurations:Release"
 		defines "SL_RELEASE"
+		buildoptions "/MD"
 		optimize "On"
 
 	filter "configurations:Dist"
 		defines "SL_DIST"
+		buildoptions "/MD"
 		optimize "On"
 
 --应用		--------------------------------------------------------------------------------------
@@ -109,12 +112,15 @@ project "Sandbox"
 
 	filter "configurations:Debug"
 		defines "SL_DEBUG"
+		buildoptions "/MDd"
 		symbols "On"
 
 	filter "configurations:Release"
 		defines "SL_RELEASE"
+		buildoptions "/MD"
 		optimize "On"
 
 	filter "configurations:Dist"
 		defines "SL_DIST"
+		buildoptions "/MD"
 		optimize "On"

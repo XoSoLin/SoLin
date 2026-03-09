@@ -3,8 +3,8 @@
 #include"Core.h"
 #include"Window.h"
 
+#include"LayerStack.h"
 #include "SoLin/Events/ApplicationEvent.h"
-#include "SoLin/Events/MouseEvent.h"
 
 namespace SoLin {
 	
@@ -16,11 +16,15 @@ namespace SoLin {
 
 		void OnEvent(Event& e);				//事件分发
 		void Run();
+
+		void PushLayer(Layer* layer);
+		void PushOverlay(Layer* overlay);
 	private:
 		bool OnWindowClose(WindowCloseEvent& event);
 
 		std::unique_ptr<Window> m_Window;
 		bool m_Running = true;
+		LayerStack m_LayerStack;
 	};
 
 	// 这个将会在用户端被定义 

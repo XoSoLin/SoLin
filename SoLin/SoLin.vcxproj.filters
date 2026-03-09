@@ -40,6 +40,12 @@
     <ClInclude Include="src\SoLin\Events\MouseEvent.h">
       <Filter>SoLin\Events</Filter>
     </ClInclude>
+    <ClInclude Include="src\SoLin\Layer.h">
+      <Filter>SoLin</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SoLin\LayerStack.h">
+      <Filter>SoLin</Filter>
+    </ClInclude>
     <ClInclude Include="src\SoLin\Log.h">
       <Filter>SoLin</Filter>
     </ClInclude>
@@ -53,6 +59,12 @@
       <Filter>Platform\Windows</Filter>
     </ClCompile>
     <ClCompile Include="src\SoLin\Application.cpp">
+      <Filter>SoLin</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SoLin\Layer.cpp">
+      <Filter>SoLin</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SoLin\LayerStack.cpp">
       <Filter>SoLin</Filter>
     </ClCompile>
     <ClCompile Include="src\SoLin\Log.cpp">
