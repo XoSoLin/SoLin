@@ -39,6 +39,7 @@ namespace SoLin {
 		std::string ToString() const override {
 			std::stringstream ss;
 			ss << "MouseScrolledEvent: " << GetXOffset() << "," << GetYOffset();
+			return ss.str();
 		}
 
 		inline float GetXOffset() const { return m_XOffset; }
@@ -76,5 +77,19 @@ namespace SoLin {
 		}
 	};
 
+	//@brief 鼠标按钮释放事件
+	class SOLIN_API MouseButtonReleasedEvent :public MouseButtonEvent {
+	public:
+		MouseButtonReleasedEvent(int button)
+			:MouseButtonEvent(button) {}
+
+		EVENT_CLASS_TYPE(MouseButtonReleased)
+
+		std::string ToString() const override {
+			std::stringstream ss;
+			ss << "MouseButtonReleaseEvent: " << m_Button;
+			return ss.str();
+		}
+	};
 
 }

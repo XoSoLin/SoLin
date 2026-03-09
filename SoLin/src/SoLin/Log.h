@@ -2,7 +2,7 @@
 
 #include"Core.h"
 #include"spdlog/spdlog.h"
-//#include"spdlog/fmt/ostr.h"					// 输出流操作符
+#include"spdlog/fmt/ostr.h"					// 输出流操作符
 
 namespace SoLin {
 

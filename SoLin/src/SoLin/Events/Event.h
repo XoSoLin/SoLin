@@ -83,9 +83,11 @@ namespace SoLin {
 
 		}
 		template<typename T>													//为Dispatch函数提供需要使用的模板T（本来可以只写一个template，但是EventFn是私有的，和公有的区分开）
-		bool Dispatch(EventFn<T> func) {										//接受一个“参数为T”且“返回值为bool”的函数func
+		bool Dispatch(EventFn<T> func) {										//接受一个“参数为T”且“返回值为bool”的可调度表达式func （函数指针、lambda）
 			if (m_Event.GetEventType() == T::GetStaticType()) {					//！！！静态函数在使用时需要使用类名或类型名来调用
 				m_Event.m_Handled = func(*(T*)&m_Event);						//*(T*) 表示：用 * 解引用（T*）所声明的T类型指针，实现强制类型转换
+																				//？？？？？？意思就是此刻的&m_Event的类型	就应该是&T	也就是*(T*)
+																				// func();也就执行了对应的函数，并将bool返回给m_Handled
 				return true;
 			}
 			return false;
