@@ -10,9 +10,11 @@ workspace "SoLin"			--工作区
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"		--输出目录和中间生成文件目录
 IncludeDir = {}														--创建一个表
 IncludeDir["GLFW"] = "SoLin/vendor/GLFW/include"					--将表的"GLFW"键索引到此路径
+IncludeDir["GLad"] = "SoLin/vendor/GLad/include"
 
 --[[包含Nut/Nut/vendor/GLFW中的premake文件并合并到这里]]
 include "SoLin/vendor/GLFW"
+include "SoLin/vendor/GLad"
 --[[
 --    XXXX
 --]]
@@ -38,11 +40,13 @@ project "SoLin"				--项目
 	includedirs{
 		"%{prj.name}/src",
 		"%{prj.name}/vendor/spdlog/include",
-        "%{IncludeDir.GLFW}"                                                    --将IncludeDir表中GLFW键索引的值作为一个库文件
+        "%{IncludeDir.GLFW}",	                                                --将IncludeDir表中GLFW键索引的值作为一个库文件
+		"%{IncludeDir.GLad}"    
 	}
 
 	links{                           --为SoLin项目(.dll)链接文件
         "GLFW",                                                                 --链接上方项目GLFW
+		"GLad",
         "opengl32.lib"
     }
 
@@ -54,7 +58,8 @@ project "SoLin"				--项目
 
 		defines{					--宏声明
 			"SL_PLATFORM_WINDOWS",
-			"SL_BUILD_DLL"
+			"SL_BUILD_DLL",
+			"SL_CORE_ASSERT"
 		}
 
 		postbuildcommands{			--复制时需要有那个exe所在的文件夹，不然dll会一直生成中
@@ -107,7 +112,8 @@ project "Sandbox"
 		buildoptions "/utf-8"
 
 		defines{
-			"SL_PLATFORM_WINDOWS"
+			"SL_PLATFORM_WINDOWS",
+			"SL_ASSERT"
 		}
 
 	filter "configurations:Debug"
