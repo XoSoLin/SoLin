@@ -11,10 +11,12 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"		--Êä³öÄ¿Â¼ºÍÖĞ¼
 IncludeDir = {}														--´´½¨Ò»¸ö±í
 IncludeDir["GLFW"] = "SoLin/vendor/GLFW/include"					--½«±íµÄ"GLFW"¼üË÷Òıµ½´ËÂ·¾¶
 IncludeDir["GLad"] = "SoLin/vendor/GLad/include"
+IncludeDir["ImGui"] = "SoLin/vendor/imgui"
 
 --[[°üº¬Nut/Nut/vendor/GLFWÖĞµÄpremakeÎÄ¼ş²¢ºÏ²¢µ½ÕâÀï]]
 include "SoLin/vendor/GLFW"
 include "SoLin/vendor/GLad"
+include "SoLin/vendor/imgui"
 --[[
 --    XXXX
 --]]
@@ -41,12 +43,14 @@ project "SoLin"				--ÏîÄ¿
 		"%{prj.name}/src",
 		"%{prj.name}/vendor/spdlog/include",
         "%{IncludeDir.GLFW}",	                                                --½«IncludeDir±íÖĞGLFW¼üË÷ÒıµÄÖµ×÷ÎªÒ»¸ö¿âÎÄ¼ş
-		"%{IncludeDir.GLad}"    
+		"%{IncludeDir.GLad}",
+		"%{IncludeDir.ImGui}"
 	}
 
 	links{                           --ÎªSoLinÏîÄ¿(.dll)Á´½ÓÎÄ¼ş
         "GLFW",                                                                 --Á´½ÓÉÏ·½ÏîÄ¿GLFW
 		"GLad",
+		"ImGui",
         "opengl32.lib"
     }
 
