@@ -5,6 +5,7 @@
 #include"SoLin/Application.h"
 #include"SoLin/Layer.h"
 #include"SoLin/Log.h"
+#include"SoLin/ImGui/ImGuiLayer.h"
 
 //-------³ÌÐòÈë¿Ú-------------
 #include"SoLin/EntryPoint.h"

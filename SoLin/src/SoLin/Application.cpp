@@ -16,8 +16,14 @@ namespace SoLin {
 																					// 以void(int& a,int& b)为例,其为f1   
 																					// 当f2 = bind(f1,this,占位符2,占位符1)之后，f1(1,2)就相当于f2(2,1)
 
+	Application* Application::s_Instance = nullptr;									//初始化唯一实例的静态成员s_Instance;
+
 	Application::Application()
 	{
+		// 如果Appliction再次被构造，将会触发ASSERT，因为第一次构造后将会使s_Instance不再为nullptr
+		SL_CORE_ASSERT(!s_Instance, "Application already exists!(The class Application is a Singleton,it just support one instance!)");
+		s_Instance = this;
+
 		m_Window = std::unique_ptr<Window>(Window::Create());
 
 		m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
@@ -31,10 +37,12 @@ namespace SoLin {
 	
 	void Application::PushLayer(Layer* layer) {
 		m_LayerStack.PushLayer(layer);
+		layer->OnAttach();
 	}
 
 	void Application::PushOverlay(Layer* overlay) {
 		m_LayerStack.PushOverLay(overlay);
+		overlay->OnAttach();
 	}
 
 	void Application::OnEvent(Event& e) {
@@ -43,7 +51,7 @@ namespace SoLin {
 
 		// 这里会输出所有e的信息，但这些事件并不是都被响应处理了。
 		// 目前只有WindowCloseEvent被处理，也就是执行了OnWindowClose()
-		SL_CORE_TRACE("{0}", e.ToString());
+		SL_CORE_TRACE("{0} | handled({1})", e.ToString(),e.Handled);
 
 		for (auto iter = m_LayerStack.end(); iter != m_LayerStack.begin();) {
 			(*--iter)->OnEvent(e);

@@ -19,12 +19,17 @@ namespace SoLin {
 
 		void PushLayer(Layer* layer);
 		void PushOverlay(Layer* overlay);
+
+		inline Window& GetWindow() { return *m_Window; }				//返回该应用窗口
+		inline static Application& Get() { return *s_Instance; }		//返回该App单例指针
 	private:
 		bool OnWindowClose(WindowCloseEvent& event);
 
 		std::unique_ptr<Window> m_Window;
 		bool m_Running = true;
 		LayerStack m_LayerStack;
+	private:
+		static Application* s_Instance;
 	};
 
 	// 这个将会在用户端被定义 

@@ -161,6 +161,9 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Platform\OpenGL\IMGuiGLFW.h" />
+    <ClInclude Include="src\Platform\OpenGL\ImGuiOpenGLLoader.h" />
+    <ClInclude Include="src\Platform\OpenGL\ImGuiOpenGLRenderer.h" />
     <ClInclude Include="src\Platform\Windows\WindowsWndow.h" />
     <ClInclude Include="src\SoLin.h" />
     <ClInclude Include="src\SoLin\Application.h" />
@@ -170,6 +173,7 @@
     <ClInclude Include="src\SoLin\Events\Event.h" />
     <ClInclude Include="src\SoLin\Events\KeyEvent.h" />
     <ClInclude Include="src\SoLin\Events\MouseEvent.h" />
+    <ClInclude Include="src\SoLin\ImGui\ImGuiLayer.h" />
     <ClInclude Include="src\SoLin\Layer.h" />
     <ClInclude Include="src\SoLin\LayerStack.h" />
     <ClInclude Include="src\SoLin\Log.h" />
@@ -177,8 +181,11 @@
     <ClInclude Include="src\slpch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Platform\OpenGL\ImGuiGLFW.cpp" />
+    <ClCompile Include="src\Platform\OpenGL\ImGuiOpenGLRenderer.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsWndow.cpp" />
     <ClCompile Include="src\SoLin\Application.cpp" />
+    <ClCompile Include="src\SoLin\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="src\SoLin\Layer.cpp" />
     <ClCompile Include="src\SoLin\LayerStack.cpp" />
     <ClCompile Include="src\SoLin\Log.cpp" />

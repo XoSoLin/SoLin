@@ -8,7 +8,7 @@ public:
 	{}
 
 	void OnUpdate() override {
-		SL_INFO("ExampleLayer::OnUpdate");
+		//SL_INFO("ExampleLayer::OnUpdate");
 	}
 
 	void OnEvent(SoLin::Event& event)override {
@@ -20,6 +20,7 @@ class SandBox :public SoLin::Application {
 public:
 	SandBox() {
 		PushLayer(new ExampleLayer());
+		PushOverlay(new SoLin::ImGuiLayer());
 	}
 	~SandBox() {
 
