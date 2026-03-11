@@ -28,3 +28,5 @@
 #endif
 
 #define Bit(x) (1 << x)
+
+#define SOLIN_BIND_EVENT_FN(fn) std::bind(&fn,this,std::placeholders::_1)

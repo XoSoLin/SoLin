@@ -164,6 +164,7 @@
     <ClInclude Include="src\Platform\OpenGL\IMGuiGLFW.h" />
     <ClInclude Include="src\Platform\OpenGL\ImGuiOpenGLLoader.h" />
     <ClInclude Include="src\Platform\OpenGL\ImGuiOpenGLRenderer.h" />
+    <ClInclude Include="src\Platform\OpenGL\UseImGui.h" />
     <ClInclude Include="src\Platform\Windows\WindowsWndow.h" />
     <ClInclude Include="src\SoLin.h" />
     <ClInclude Include="src\SoLin\Application.h" />

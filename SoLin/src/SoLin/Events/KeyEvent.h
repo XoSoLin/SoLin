@@ -9,7 +9,7 @@ namespace SoLin {
 	public:
 		EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput)			// 一个位代表一个类别，传入两个类别将会占用对应的两个位
 
-			inline int GetKeyCode() const { return m_KeyCode; }
+		inline int GetKeyCode() const { return m_KeyCode; }
 	protected:
 		int m_KeyCode;
 		KeyEvent(int keycode)
@@ -48,6 +48,21 @@ namespace SoLin {
 		std::string ToString() const override {
 			std::stringstream ss;
 			ss << "KeyReleasedEvent: " << m_KeyCode;
+			return ss.str();
+		}
+	};
+
+	class SOLIN_API KeyTypedEvent :public KeyEvent {
+	public:
+		KeyTypedEvent(int keycode)
+			:KeyEvent(keycode)
+		{}
+
+		EVENT_CLASS_TYPE(KeyTyped)
+
+		std::string ToString() const override {
+			std::stringstream ss;
+			ss << "KeyTypedEvent: " << m_KeyCode;
 			return ss.str();
 		}
 	};

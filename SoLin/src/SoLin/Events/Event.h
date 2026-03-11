@@ -12,7 +12,7 @@ namespace SoLin {
 		None = 0,
 		WindowClose,WindowResize,WindowFocus,WindowLostFocus,WindowMoved,
 		AppTick,AppUpdate,AppRender,
-		KeyPressed,KeyReleased,
+		KeyPressed,KeyReleased,KeyTyped,
 		MouseButtonPressed,MouseButtonReleased,MouseScrolled,MouseMoved
 	};
 	// enum class使用时有命名空间限制

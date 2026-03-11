@@ -71,6 +71,7 @@
       <Filter>SoLin</Filter>
     </ClInclude>
     <ClInclude Include="src\slpch.h" />
+    <ClInclude Include="src\Platform\OpenGL\UseImGui.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Platform\OpenGL\ImGuiGLFW.cpp">

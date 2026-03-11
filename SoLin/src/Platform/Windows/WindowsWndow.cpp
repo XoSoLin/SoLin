@@ -83,6 +83,7 @@ namespace SoLin {
 		// 回调函数中不一定会响应该事件，也就是利用该事件去做其他具体的响应操作。
 		// 其中会由事件分发器去过滤有效的事件，然后响应。
 
+		//设置窗口大小回调
 		glfwSetWindowSizeCallback(m_Window,
 			[](GLFWwindow* window, int width, int height) {
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);	//获取当前窗口的数据指针
@@ -94,6 +95,7 @@ namespace SoLin {
 			}
 		);																		//lambda表达式作为第二个参数
 
+		//设置窗口关闭回调
 		glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window)
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
@@ -102,6 +104,7 @@ namespace SoLin {
 			}
 		);
 
+		//设置键盘按键回调
 		glfwSetKeyCallback(m_Window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
@@ -114,6 +117,7 @@ namespace SoLin {
 			}
 		);
 
+		//设置鼠标按键回调
 		glfwSetMouseButtonCallback(m_Window,[](GLFWwindow* window,int button,int action,int mods)
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
@@ -125,6 +129,7 @@ namespace SoLin {
 			}
 		);
 
+		//设置鼠标滑轮回调
 		glfwSetScrollCallback(m_Window, [](GLFWwindow* window, double xOffset, double yOffset)
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
@@ -133,6 +138,7 @@ namespace SoLin {
 			}
 		);
 
+		//设置鼠标移动回调
 		glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window,double xpos,double ypos)
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
@@ -141,6 +147,17 @@ namespace SoLin {
 				data.EventCallback(event);
 			}
 		);
+
+		//设置键盘输入回调
+		glfwSetCharCallback(m_Window, [](GLFWwindow* window,unsigned int keycode)
+			{
+				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+
+				KeyTypedEvent event(keycode);
+				data.EventCallback(event);
+			}
+		);
+
 	}
 	void WindowsWindow::Shutdown()
 	{
