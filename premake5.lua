@@ -13,6 +13,7 @@ IncludeDir = {}														--创建一个表
 IncludeDir["GLFW"] = "SoLin/vendor/GLFW/include"					--将表的"GLFW"键索引到此路径
 IncludeDir["GLad"] = "SoLin/vendor/GLad/include"
 IncludeDir["ImGui"] = "SoLin/vendor/imgui"
+IncludeDir["glm"] = "SoLin/vendor/glm"
 
 --[[包含Nut/Nut/vendor/GLFW中的premake文件并合并到这里]]
 include "SoLin/vendor/GLFW"
@@ -38,7 +39,9 @@ project "SoLin"				--项目
 
 	files{
 		"%{prj.name}/src/**.h",
-		"%{prj.name}/src/**.cpp"
+		"%{prj.name}/src/**.cpp",
+		"%{prj.name}/vendor/glm/glm/**.hpp",
+		"%{prj.name}/vendor/glm/glm/**.inl"
 	}
 
 	includedirs{
@@ -46,7 +49,8 @@ project "SoLin"				--项目
 		"%{prj.name}/vendor/spdlog/include",
         "%{IncludeDir.GLFW}",	                                                --将IncludeDir表中GLFW键索引的值作为一个库文件
 		"%{IncludeDir.GLad}",
-		"%{IncludeDir.ImGui}"
+		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.glm}"
 	}
 
 	links{                           --为SoLin项目(.dll)链接文件
@@ -105,7 +109,8 @@ project "Sandbox"
 
 	includedirs{
 		"SoLin/vendor/spdlog/include",
-		"SoLin/src"
+		"SoLin/src",
+		"%{IncludeDir.glm}"
 	}
 
 	links{
