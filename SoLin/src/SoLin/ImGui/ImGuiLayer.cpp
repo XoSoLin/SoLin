@@ -78,7 +78,7 @@ namespace SoLin {
 		dispatcher.Dispatch<KeyPressedEvent>(SOLIN_BIND_EVENT_FN(ImGuiLayer::OnKeyPressedEvent));
 		dispatcher.Dispatch<KeyReleasedEvent>(SOLIN_BIND_EVENT_FN(ImGuiLayer::OnKeyReleasedEvent));
 
-		SL_CORE_INFO("{0},{1}", event.ToString(),event.Handled);
+		SL_CORE_INFO(" [ImGuiLayer::OnEvent] {0},{1}", event.ToString(),event.Handled);
 	}
 
 	bool ImGuiLayer::OnWindowResizeEvent(WindowResizeEvent& e)

@@ -52,7 +52,7 @@ namespace SoLin {
 
 		// 这里会输出所有e的信息，但这些事件并不是都被响应处理了。
 		// 目前只有WindowCloseEvent被处理，也就是执行了OnWindowClose()
-		SL_CORE_TRACE("{0} | handled({1})", e.ToString(),e.Handled);
+		//SL_CORE_TRACE("{0} | handled({1})", e.ToString(),e.Handled);
 
 		for (auto iter = m_LayerStack.end(); iter != m_LayerStack.begin();) {
 			(*--iter)->OnEvent(e);
@@ -82,8 +82,8 @@ namespace SoLin {
 				layer->OnUpdate();
 			}
 
-			auto [x, y] = Input::GetMousePos();
-			SL_CORE_TRACE("{0},{1}", x, y);
+			/*auto [x, y] = Input::GetMousePos();
+			SL_CORE_TRACE("{0},{1}", x, y);*/
 			m_Window->OnUpdate();							//更新窗口
 		}
 	}

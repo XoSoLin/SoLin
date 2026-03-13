@@ -5,6 +5,11 @@
 #include"SoLin/Application.h"
 #include"SoLin/Layer.h"
 #include"SoLin/Log.h"
+
+#include"SoLin/Input.h"
+#include"SoLin/KeyCodes.h"
+#include"SoLin/MouseButtonCodes.h"
+
 #include"SoLin/ImGui/ImGuiLayer.h"
 
 //-------³ÌÐòÈë¿Ú-------------

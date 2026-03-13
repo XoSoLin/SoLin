@@ -177,9 +177,11 @@
     <ClInclude Include="src\SoLin\Events\MouseEvent.h" />
     <ClInclude Include="src\SoLin\ImGui\ImGuiLayer.h" />
     <ClInclude Include="src\SoLin\Input.h" />
+    <ClInclude Include="src\SoLin\KeyCodes.h" />
     <ClInclude Include="src\SoLin\Layer.h" />
     <ClInclude Include="src\SoLin\LayerStack.h" />
     <ClInclude Include="src\SoLin\Log.h" />
+    <ClInclude Include="src\SoLin\MouseButtonCodes.h" />
     <ClInclude Include="src\SoLin\Window.h" />
     <ClInclude Include="src\slpch.h" />
   </ItemGroup>

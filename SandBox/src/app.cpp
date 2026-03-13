@@ -12,7 +12,13 @@ public:
 	}
 
 	void OnEvent(SoLin::Event& event)override {
-		SL_TRACE("{0}", event.ToString());
+		//SL_TRACE("{0}", event.ToString());
+		if (event.GetEventType() == SoLin::EventType::KeyPressed) {
+			SoLin::KeyPressedEvent& e = (SoLin::KeyPressedEvent&)event;
+			if (e.GetKeyCode() == SL_KEY_TAB)
+				SL_TRACE("{0} is pressed | Tab", "Tab");
+			SL_TRACE("{0} is pressed | (from char)", (char)e.GetKeyCode());
+		}
 	}
 };
 
