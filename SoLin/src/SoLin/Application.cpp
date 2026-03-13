@@ -3,6 +3,7 @@
 
 #include "Events/Event.h"
 #include "SoLin/Log.h"
+#include"Input.h"
 
 #include <GLFW/glfw3.h>
 
@@ -80,6 +81,9 @@ namespace SoLin {
 			for (Layer* layer : m_LayerStack) {				//更新图层
 				layer->OnUpdate();
 			}
+
+			auto [x, y] = Input::GetMousePos();
+			SL_CORE_TRACE("{0},{1}", x, y);
 			m_Window->OnUpdate();							//更新窗口
 		}
 	}

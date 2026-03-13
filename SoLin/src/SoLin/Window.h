@@ -35,6 +35,8 @@ namespace SoLin {
 		virtual void SetEventCallback(const EventCallbackFn& callback) = 0;
 		virtual void SetVSync(bool enabled) = 0;							//Vertical Sync(´¹Ö±Í¬²½)
 		virtual bool IsVSync() const = 0;
+
+		virtual void* GetNativeWindow() const = 0;
 	};
 
 }
