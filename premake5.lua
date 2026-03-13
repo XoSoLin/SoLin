@@ -1,5 +1,6 @@
 workspace "SoLin"			--工作区
 	architecture "x64"		--架构
+	startproject "Sandbox"	--启动项目
 
 	configurations{			--配置
 		"Debug",
@@ -27,6 +28,7 @@ project "SoLin"				--项目
 	location "SoLin"
 	kind "SharedLib"		--类型为动态库
 	language "C++"
+	staticruntime "off"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")				--输出目录
 	objdir ("bin-intermediates/" .. outputdir .. "/%{prj.name}")	--中间目录
@@ -56,22 +58,22 @@ project "SoLin"				--项目
 
 	filter "system:windows"
 		cppdialect "C++17"
-		staticruntime "On"			--是否静态链接运行时库（dll属性的文件需要打开）
+		--staticruntime "On"			--是否静态链接运行时库（dll属性的文件需要打开）
 		systemversion "latest"		--最高版本
 		buildoptions "/utf-8"		--附加命令行
 
 		defines{					--宏声明
 			"SL_PLATFORM_WINDOWS",
-			"SL_BUILD_DLL",
-			"SL_CORE_ASSERT"
+			"SL_BUILD_DLL"
 		}
 
 		postbuildcommands{			--复制时需要有那个exe所在的文件夹，不然dll会一直生成中
-			("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/Sandbox")
+			("{COPY} %{cfg.buildtarget.relpath} \"../bin/" .. outputdir .. "/Sandbox/\"")
 		}
 
 	filter "configurations:Debug"
 		defines "SL_DEBUG"
+		runtime "Release"
 		buildoptions "/MDd"			--不开会使得引擎和应用的堆建立在不同内存
 		symbols "On"
 
@@ -91,6 +93,7 @@ project "Sandbox"
 	location "Sandbox"
 	kind "ConsoleApp"
 	language "C++"
+	staticruntime "off"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-intermediates/" .. outputdir .. "/%{prj.name}")
@@ -110,27 +113,28 @@ project "Sandbox"
 	}
 
 	filter "system:windows"
-		cppdialect "C++17"
-		staticruntime "On"
+		cppdialect "C++17"	
 		systemversion "latest"
 		buildoptions "/utf-8"
 
 		defines{
-			"SL_PLATFORM_WINDOWS",
-			"SL_ASSERT"
+			"SL_PLATFORM_WINDOWS"
 		}
 
 	filter "configurations:Debug"
 		defines "SL_DEBUG"
 		buildoptions "/MDd"
+		runtime "Debug"
 		symbols "On"
 
 	filter "configurations:Release"
 		defines "SL_RELEASE"
-		buildoptions "/MD"
+		buildoptions "/MDd"
+		runtime "Release"
 		optimize "On"
 
 	filter "configurations:Dist"
 		defines "SL_DIST"
 		buildoptions "/MD"
+		runtime "Release"
 		optimize "On"

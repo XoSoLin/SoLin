@@ -10,10 +10,14 @@
 	#error SoLin only support Windows!
 #endif
 
+#ifdef SL_DEBUG
+	#define SOLIN_ENABLE_ASSERTS
+#endif
+
 #ifdef SOLIN_ENABLE_ASSERTS
 	//断言（如果x表示错误则语句运行，{0}占位的"__VA_ARGS__"代表"..."所输入的语句）
 	#define SL_CORE_ASSERT(x,...)\
-		{#if(!x){\
+		{if(!x){\
 			SL_CORE_ERROR("Assertion Failed: {0}, __VA_ARGS__");\
 			__debugbreak();}\
 		}
