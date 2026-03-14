@@ -5,7 +5,8 @@
 #include "SoLin/Log.h"
 #include"Input.h"
 
-#include <GLFW/glfw3.h>
+#include<glad/glad.h>
+#include<GLFW/glfw3.h>
 
 namespace SoLin {
 
@@ -30,6 +31,9 @@ namespace SoLin {
 		m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
 		/*auto f2 = std::bind(&Application::OnEvent,this,std::placeholders::_1);
 		m_Window->SetEventCallback(f2);*/
+
+		m_ImGuiLayer = new ImGuiLayer();												//初始化 m_ImGuiLayer 为原始指针，并推入层栈
+		PushOverlay(m_ImGuiLayer);
 	}
 
 	Application::~Application()
@@ -66,14 +70,6 @@ namespace SoLin {
 	void Application::Run() {
 		WindowResizeEvent e(1280, 720);
 		
-		//SL_CLIENT_INFO(e);								//[error]	重载了<< 也在log.h加了#include"spdlog/fmt/ostr.h" 但是这个调用还是不行
-															//6、7年前的教程是可行的，不知道为什么这里不行
-		if (e.IsInCategory(EventCategoryApplication)) {
-			SL_CLIENT_TRACE(e.ToString());
-		}
-		if (e.IsInCategory(EventCategoryMouseButton)) {
-			SL_CLIENT_TRACE(e.ToString());
-		}
 		while (m_Running) {
 			glClearColor(0.8, 0.1, 0.9, 1);
 			glClear(GL_COLOR_BUFFER_BIT);
@@ -84,6 +80,12 @@ namespace SoLin {
 
 			/*auto [x, y] = Input::GetMousePos();
 			SL_CORE_TRACE("{0},{1}", x, y);*/
+
+			m_ImGuiLayer->Begin();
+			for (Layer* layer : m_LayerStack)
+				layer->OnImGuiRender();
+			m_ImGuiLayer->End();
+
 			m_Window->OnUpdate();							//更新窗口
 		}
 	}

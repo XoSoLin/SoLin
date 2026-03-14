@@ -161,10 +161,6 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\Platform\OpenGL\IMGuiGLFW.h" />
-    <ClInclude Include="src\Platform\OpenGL\ImGuiOpenGLLoader.h" />
-    <ClInclude Include="src\Platform\OpenGL\ImGuiOpenGLRenderer.h" />
-    <ClInclude Include="src\Platform\OpenGL\UseImGui.h" />
     <ClInclude Include="src\Platform\Windows\WindowsInput.h" />
     <ClInclude Include="src\Platform\Windows\WindowsWndow.h" />
     <ClInclude Include="src\SoLin.h" />
@@ -605,11 +601,10 @@
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Platform\OpenGL\ImGuiGLFW.cpp" />
-    <ClCompile Include="src\Platform\OpenGL\ImGuiOpenGLRenderer.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsInput.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsWndow.cpp" />
     <ClCompile Include="src\SoLin\Application.cpp" />
+    <ClCompile Include="src\SoLin\ImGui\ImGuiBuild.cpp" />
     <ClCompile Include="src\SoLin\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="src\SoLin\Layer.cpp" />
     <ClCompile Include="src\SoLin\LayerStack.cpp" />

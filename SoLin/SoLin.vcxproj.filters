@@ -1403,5 +1403,6 @@
     <ClCompile Include="src\slpch.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\SoLin\ImGui\ImGuiBuild.cpp" />
   </ItemGroup>
 </Project>

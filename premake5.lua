@@ -68,7 +68,8 @@ project "SoLin"				--项目
 
 		defines{					--宏声明
 			"SL_PLATFORM_WINDOWS",
-			"SL_BUILD_DLL"
+			"SL_BUILD_DLL" ,
+			"GLFW_INCLUDE_NONE"
 		}
 
 		postbuildcommands{			--复制时需要有那个exe所在的文件夹，不然dll会一直生成中

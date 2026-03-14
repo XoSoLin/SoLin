@@ -4,6 +4,7 @@
 #include"Window.h"
 
 #include"LayerStack.h"
+#include"SoLin/ImGui/ImGuiLayer.h"
 #include "SoLin/Events/ApplicationEvent.h"
 
 namespace SoLin {
@@ -25,6 +26,7 @@ namespace SoLin {
 	private:
 		bool OnWindowClose(WindowCloseEvent& event);
 
+		ImGuiLayer* m_ImGuiLayer;
 		std::unique_ptr<Window> m_Window;
 		bool m_Running = true;
 		LayerStack m_LayerStack;
