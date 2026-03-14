@@ -32,16 +32,16 @@ namespace SoLin {
 		(void)io;
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;	//启用键盘导航
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-		//io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // Enable Docking
-		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;       // Enable Multi-Viewport / Platform Windows
+		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // Enable Docking
+		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;       // Enable Multi-Viewport / Platform Windows
 
 		// When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
 		ImGuiStyle& style = ImGui::GetStyle();
-		/*if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 		{
 			style.WindowRounding = 0.0f;
 			style.Colors[ImGuiCol_WindowBg].w = 1.0f;
-		}*/
+		}
 
 		//初始化GLFW后端（关键：让ImGui原生识别GLFW keycode）
 		//核心：用glfwGetCurrentContext()获取当前窗口句柄（无需m_Window）
@@ -80,12 +80,12 @@ namespace SoLin {
 		ImGui::Render();													//结束当前帧的 UI 绘制过程，并准备将绘制的数据保存到暂存区
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());		//将缓冲区中的绘制数据提交给渲染器进行操作
 
-		/*if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
+		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
 			GLFWwindow* backup_current_context = glfwGetCurrentContext();
 			ImGui::UpdatePlatformWindows();
 			ImGui::RenderPlatformWindowsDefault();
 			glfwMakeContextCurrent(backup_current_context);
-		}*/
+		}
 	}
 
 }
