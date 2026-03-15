@@ -5,11 +5,17 @@
 #include "SoLin\Events\KeyEvent.h"
 #include "SoLin\Events\MouseEvent.h"
 
+#include "Platform/OpenGL/OpenGLContext.h"
+
 namespace SoLin {
 	static bool s_GLFWInitialized = false;
 
 	static void GLFWErrorCallback(int error_code, const char* description) {
 		SL_CORE_ASSERT("GLFW Error ({0}):{1}", error_code, description);
+	}
+
+	Window* Window::Create(const WindowProps& props) {
+		return new WindowsWindow(props);
 	}
 
 	WindowsWindow::WindowsWindow(const WindowProps& props)
@@ -22,14 +28,10 @@ namespace SoLin {
 		Shutdown();
 	}
 
-	Window* Window::Create(const WindowProps& props) {
-		return new WindowsWindow(props);
-	}
-
 	void WindowsWindow::OnUpdate()
 	{
 		glfwPollEvents();
-		glfwSwapBuffers(m_Window);
+		m_Context->SwapBuffers();
 	}
 
 	void WindowsWindow::SetVSync(bool enabled)
@@ -67,11 +69,9 @@ namespace SoLin {
 		}
 		// 初始化Windows对象并创建窗口上下文
 		m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
-		glfwMakeContextCurrent(m_Window);
 
-		//通过glad加载自己显卡中OpenGL提供的各种图形渲染函数
-		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-		SL_CORE_ASSERT(status, "Failed to initialize Glad!");
+		m_Context = new OpenGLContext(m_Window);
+		m_Context->Init();
 
 		glfwSetWindowUserPointer(m_Window, &m_Data);
 		SetVSync(true);

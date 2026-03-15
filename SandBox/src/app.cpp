@@ -14,8 +14,9 @@ public:
 	} 
 	void OnImGuiRender()
 	{
-		ImGui::Begin("Test");
-		ImGui::Text("Hello world");
+		ImGui::Begin("Test"); 
+        const char* text = R"(vva)";
+        ImGui::Text(text);
 		ImGui::End();
 	}
 

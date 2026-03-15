@@ -2,7 +2,7 @@
 
 #include "SoLin/Window.h"
 
-#include<glad/glad.h>
+#include"SoLin/Renderer/GraphicsContext.h"
 #include<GLFW/glfw3.h>
 
 namespace SoLin {
@@ -29,6 +29,7 @@ namespace SoLin {
 		virtual void Shutdown();
 	private:
 		GLFWwindow* m_Window;
+		GraphicsContext* m_Context;
 
 		struct WindowData {
 			std::string Title;
