@@ -30,6 +30,7 @@ namespace SoLin {
 		std::unique_ptr<Window> m_Window;
 		bool m_Running = true;
 		LayerStack m_LayerStack;
+		unsigned int m_VertexBuffer, m_VertexArray, m_IndexBuffer;
 	private:
 		static Application* s_Instance;
 	};
