@@ -1,10 +1,14 @@
 #pragma once
 
 #ifdef SL_PLATFORM_WINDOWS
-	#ifdef SL_BUILD_DLL
-		#define SOLIN_API __declspec(dllexport)
+	#ifdef SL_DYNAMIC_LINK
+		#ifdef SL_BUILD_DLL
+			#define SOLIN_API __declspec(dllexport)
+		#else
+			#define SOLIN_API __declspec(dllimport)
+		#endif
 	#else
-		#define SOLIN_API __declspec(dllimport)
+		#define SOLIN_API
 	#endif
 #else
 	#error SoLin only support Windows!

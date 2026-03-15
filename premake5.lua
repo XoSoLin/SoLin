@@ -27,9 +27,10 @@ include "SoLin/vendor/imgui"
 --引擎
 project "SoLin"				--项目
 	location "SoLin"
-	kind "SharedLib"		--类型为动态库
+	kind "StaticLib"		--类型为静态库
 	language "C++"
-	staticruntime "off"
+	staticruntime "on"
+	cppdialect "C++17"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")				--输出目录
 	objdir ("bin-intermediates/" .. outputdir .. "/%{prj.name}")	--中间目录
@@ -42,6 +43,10 @@ project "SoLin"				--项目
 		"%{prj.name}/src/**.cpp",
 		"%{prj.name}/vendor/glm/glm/**.hpp",
 		"%{prj.name}/vendor/glm/glm/**.inl"
+	}
+
+	defines{
+		"_CRT_SECURE_NO_WARNINGS"
 	}
 
 	includedirs{
@@ -61,8 +66,6 @@ project "SoLin"				--项目
     }
 
 	filter "system:windows"
-		cppdialect "C++17"
-		--staticruntime "On"			--是否静态链接运行时库（dll属性的文件需要打开）
 		systemversion "latest"		--最高版本
 		buildoptions "/utf-8"		--附加命令行
 
@@ -72,25 +75,30 @@ project "SoLin"				--项目
 			"GLFW_INCLUDE_NONE"
 		}
 
-		postbuildcommands{			--复制时需要有那个exe所在的文件夹，不然dll会一直生成中
+		--  //////////////////////////////////////////////////////////////////////
+        --  ////  NOW WE USE NUT AS A STATIC LIB, SO DON'T NEED THIS COMMAND  ////
+        --  //////////////////////////////////////////////////////////////////////
+		--[[postbuildcommands{			--复制时需要有那个exe所在的文件夹，不然dll会一直生成中
 			("{COPY} %{cfg.buildtarget.relpath} \"../bin/" .. outputdir .. "/Sandbox/\"")
-		}
+		}]]
 
 	filter "configurations:Debug"
 		defines "SL_DEBUG"
-		runtime "Release"
-		buildoptions "/MDd"			--不开会使得引擎和应用的堆建立在不同内存
-		symbols "On"
+		runtime "Debug"
+		--buildoptions "/MDd"			--不开会使得引擎和应用的堆建立在不同内存
+		symbols "on"
 
 	filter "configurations:Release"
 		defines "SL_RELEASE"
-		buildoptions "/MD"
-		optimize "On"
+		runtime "Release"
+		--buildoptions "/MD"
+		optimize "on"
 
 	filter "configurations:Dist"
 		defines "SL_DIST"
-		buildoptions "/MD"
-		optimize "On"
+		runtime "Release"
+		--buildoptions "/MD"
+		optimize "on"
 
 --应用		--------------------------------------------------------------------------------------
 
@@ -98,7 +106,8 @@ project "Sandbox"
 	location "Sandbox"
 	kind "ConsoleApp"
 	language "C++"
-	staticruntime "off"
+	cppdialect "C++17"
+	staticruntime "on"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-intermediates/" .. outputdir .. "/%{prj.name}")
@@ -119,8 +128,7 @@ project "Sandbox"
 		"SoLin"
 	}
 
-	filter "system:windows"
-		cppdialect "C++17"	
+	filter "system:windows"	
 		systemversion "latest"
 		buildoptions "/utf-8"
 
@@ -130,18 +138,18 @@ project "Sandbox"
 
 	filter "configurations:Debug"
 		defines "SL_DEBUG"
-		buildoptions "/MDd"
+		--buildoptions "/MDd"
 		runtime "Debug"
-		symbols "On"
+		symbols "on"
 
 	filter "configurations:Release"
 		defines "SL_RELEASE"
-		buildoptions "/MDd"
+		--buildoptions "/MDd"
 		runtime "Release"
-		optimize "On"
+		optimize "on"
 
 	filter "configurations:Dist"
 		defines "SL_DIST"
-		buildoptions "/MD"
+		--buildoptions "/MD"
 		runtime "Release"
-		optimize "On"
+		optimize "on"
