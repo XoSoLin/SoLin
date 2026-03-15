@@ -111,6 +111,7 @@ project "Sandbox"
 	includedirs{
 		"SoLin/vendor/spdlog/include",
 		"SoLin/src",
+		"SoLin/vendor",
 		"%{IncludeDir.glm}"
 	}
 

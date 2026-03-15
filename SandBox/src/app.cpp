@@ -1,5 +1,6 @@
 #include<SoLin.h>
 
+#include "imgui/imgui.h"
 
 class ExampleLayer :public SoLin::Layer {
 public:
@@ -11,6 +12,12 @@ public:
 	void OnUpdate() override {
 		//SL_INFO("ExampleLayer::OnUpdate");
 	} 
+	void OnImGuiRender()
+	{
+		ImGui::Begin("Test");
+		ImGui::Text("Hello world");
+		ImGui::End();
+	}
 
 	void OnEvent(SoLin::Event& event)override {
 		//SL_TRACE("{0}", event.ToString());
