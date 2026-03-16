@@ -152,6 +152,7 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLContext.h" />
     <ClInclude Include="src\Platform\Windows\WindowsInput.h" />
     <ClInclude Include="src\Platform\Windows\WindowsWndow.h" />
@@ -170,6 +171,7 @@
     <ClInclude Include="src\SoLin\LayerStack.h" />
     <ClInclude Include="src\SoLin\Log.h" />
     <ClInclude Include="src\SoLin\MouseButtonCodes.h" />
+    <ClInclude Include="src\SoLin\Renderer\Buffer.h" />
     <ClInclude Include="src\SoLin\Renderer\GraphicsContext.h" />
     <ClInclude Include="src\SoLin\Renderer\Shader.h" />
     <ClInclude Include="src\SoLin\Window.h" />
@@ -596,6 +598,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Platform\OpenGL\OpenGLContext.cpp" />
+    <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsInput.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsWndow.cpp" />
     <ClCompile Include="src\SoLin\Application.cpp" />
@@ -607,6 +610,7 @@
     <ClCompile Include="src\slpch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\SoLin\Renderer\Buffer.cpp" />
     <ClCompile Include="src\SoLin\Renderer\Shader.cpp" />
   </ItemGroup>
   <ItemGroup>
