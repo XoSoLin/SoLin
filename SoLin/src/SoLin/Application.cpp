@@ -58,6 +58,34 @@ namespace SoLin {
 		glGenBuffers(1, &m_IndexBuffer);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IndexBuffer);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+		std::string vertexSrc = R"(
+			#version 330 core
+			
+			layout(location = 0) in vec3 a_Position;
+			out vec3 v_Position;
+
+			void main()
+			{
+				gl_Position = vec4(a_Position, 1.0);
+				v_Position = a_Position;
+			}
+		)";
+		std::string fragmentSrc = R"(
+			#version 330 core
+
+			layout(location = 0) out vec4 a_Color;
+			in vec3 v_Position;
+			
+			void main()
+			{
+				a_Color = vec4(v_Position * 0.5 + 0.5, 1.0);
+			}
+		)";
+		// 以上对a_Color的操作：使其颜色与位置关联(x轴与r关联，y轴与g关联)
+		//						位置是-1到1之间，*0.5使其区间与RGBA的区间大小一致，再+0.5使其区间从-0.5至0.5提升到0至1
+
+		m_Shader.reset(new Shader(vertexSrc, fragmentSrc));
 	}
 
 	Application::~Application()
@@ -98,6 +126,7 @@ namespace SoLin {
 			glClearColor(0.1f, 0.1f, 0.1f, 1);
 			glClear(GL_COLOR_BUFFER_BIT);
 
+			m_Shader->Bind();
 			glBindVertexArray(m_VertexArray);
 			glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr);
 

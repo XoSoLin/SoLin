@@ -171,6 +171,7 @@
     <ClInclude Include="src\SoLin\Log.h" />
     <ClInclude Include="src\SoLin\MouseButtonCodes.h" />
     <ClInclude Include="src\SoLin\Renderer\GraphicsContext.h" />
+    <ClInclude Include="src\SoLin\Renderer\Shader.h" />
     <ClInclude Include="src\SoLin\Window.h" />
     <ClInclude Include="src\slpch.h" />
     <ClInclude Include="vendor\glm\glm\common.hpp" />
@@ -606,6 +607,7 @@
     <ClCompile Include="src\slpch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\SoLin\Renderer\Shader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="vendor\GLFW\GLFW.vcxproj">

@@ -6,6 +6,7 @@
 #include"LayerStack.h"
 #include"SoLin/ImGui/ImGuiLayer.h"
 #include "SoLin/Events/ApplicationEvent.h"
+#include"SoLin/Renderer/Shader.h"
 
 namespace SoLin {
 	
@@ -28,6 +29,7 @@ namespace SoLin {
 
 		ImGuiLayer* m_ImGuiLayer;
 		std::unique_ptr<Window> m_Window;
+		std::unique_ptr<Shader> m_Shader;
 		bool m_Running = true;
 		LayerStack m_LayerStack;
 		unsigned int m_VertexBuffer, m_VertexArray, m_IndexBuffer;
