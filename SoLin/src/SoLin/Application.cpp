@@ -20,6 +20,25 @@ namespace SoLin {
 
 	Application* Application::s_Instance = nullptr;									//初始化唯一实例的静态成员s_Instance;
 
+	// @brief 将着色器数据类型转换为其对应的GL类型
+	uint32_t GetTypeToGLType(ShaderDataType type) {
+		switch (type) {
+		case ShaderDataType::Float:		return GL_FLOAT;
+		case ShaderDataType::Float2:	return GL_FLOAT;
+		case ShaderDataType::Float3:	return GL_FLOAT;
+		case ShaderDataType::Float4:	return GL_FLOAT;
+		case ShaderDataType::Int:		return GL_INT;
+		case ShaderDataType::Int2:		return GL_INT;
+		case ShaderDataType::Int3:		return GL_INT;
+		case ShaderDataType::Int4:		return GL_INT;
+		case ShaderDataType::Mat3:		return GL_FLOAT;
+		case ShaderDataType::Mat4:		return GL_FLOAT;
+		case ShaderDataType::Bool:		return GL_BOOL;
+		}
+		SL_CORE_ASSERT(false, "Unknown ShaderDataType !");
+		return 0;
+	}
+	
 	Application::Application()
 	{
 		// 如果Appliction再次被构造，将会触发ASSERT，因为第一次构造后将会使s_Instance不再为nullptr
@@ -46,8 +65,17 @@ namespace SoLin {
 		glGenVertexArrays(1, &m_VertexArray);
 		glBindVertexArray(m_VertexArray);
 
-		glEnableVertexAttribArray(0);														//启用索引为0的那组数据并将其作为顶点属性
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);		//对索引为0的数据进行顶点属性设置
+		//glEnableVertexAttribArray(0);														//启用索引为0的那组数据并将其作为顶点属性
+		//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);		//对索引为0的数据进行顶点属性设置
+		BufferLayout layout = {
+			{ShaderDataType::Float3,"a_Position"}
+		};
+		for (const auto& element : layout) {
+			uint32_t index = 0;
+			glEnableVertexAttribArray(index);
+			glVertexAttribPointer(index, element.Count, element.GLType,
+				element.Normalized ? GL_TRUE : GL_FALSE, layout.GetStride(), (const void*)element.Offset);
+		}
 
 		unsigned int indices[3]{
 			0,1,2
