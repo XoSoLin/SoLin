@@ -54,27 +54,31 @@ namespace SoLin {
 		m_ImGuiLayer = new ImGuiLayer();												//初始化 m_ImGuiLayer 为原始指针，并推入层栈
 		PushOverlay(m_ImGuiLayer);
 
-		float vertices[3 * 3] = {
-			-0.5f, -0.5f, 0.0f,
-			 0.5f, -0.5f, 0.0f,
-			 0.0f,  0.5f, 0.0f
+		float vertices[3 * 7] = {
+			-0.5f, -0.5f, 0.0f, 1.0f, 0.2f, 0.8f, 1.0f,
+			 0.5f, -0.5f, 0.0f, 1.0f, 0.3f, 0.8f, 1.0f,
+			 0.0f,  0.5f, 0.0f, 1.0f, 0.8f, 0.2f, 1.0f
 		};
 
 		m_VertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
 
 		glGenVertexArrays(1, &m_VertexArray);
 		glBindVertexArray(m_VertexArray);
-
-		//glEnableVertexAttribArray(0);														//启用索引为0的那组数据并将其作为顶点属性
-		//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);		//对索引为0的数据进行顶点属性设置
+		
+		
 		BufferLayout layout = {
-			{ShaderDataType::Float3,"a_Position"}
+			{ShaderDataType::Float3,"a_Position"},
+			{ ShaderDataType::Float4, "a_Color" }
 		};
-		for (const auto& element : layout) {
-			uint32_t index = 0;
+		m_VertexBuffer->SetLayout(layout);
+
+		const auto& layout2 = m_VertexBuffer->GetLayout();
+		uint32_t index = 0;
+		for (const auto& element : layout2) {
 			glEnableVertexAttribArray(index);
 			glVertexAttribPointer(index, element.Count, element.GLType,
-				element.Normalized ? GL_TRUE : GL_FALSE, layout.GetStride(), (const void*)element.Offset);
+				element.Normalized ? GL_TRUE : GL_FALSE, layout2.GetStride(), (const void*)element.Offset);
+			index++;
 		}
 
 		unsigned int indices[3]{
@@ -87,23 +91,28 @@ namespace SoLin {
 			#version 330 core
 			
 			layout(location = 0) in vec3 a_Position;
+			layout(location = 1) in vec4 a_Color;
 			out vec3 v_Position;
+			out vec4 v_Color;
 
 			void main()
 			{
-				gl_Position = vec4(a_Position, 1.0);
 				v_Position = a_Position;
+				v_Color = a_Color;
+				gl_Position = vec4(a_Position, 1.0);
 			}
 		)";
 		std::string fragmentSrc = R"(
 			#version 330 core
 
-			layout(location = 0) out vec4 a_Color;
 			in vec3 v_Position;
+			in vec4 v_Color;
+			layout(location = 0) out vec4 a_Color;
 			
 			void main()
 			{
 				a_Color = vec4(v_Position * 0.5 + 0.5, 1.0);
+				a_Color = v_Color;
 			}
 		)";
 		// 以上对a_Color的操作：使其颜色与位置关联(x轴与r关联，y轴与g关联)
