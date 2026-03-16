@@ -1,14 +1,24 @@
 #include "slpch.h"
 #include"Buffer.h"
 
+#include"Renderer.h"
 #include"Platform/OpenGL/OpenGLBuffer.h"
 
 namespace SoLin {
 
-	//这两个静态函数定义或许放在OpenGLBuffer之中更好，因为与其相关
-
 	VertexBuffer* VertexBuffer::Create(float* vertices, uint32_t size) {
-		return new OpenGLVertexBuffer(vertices, size);
+		switch (Renderer::GetAPI()) {
+		case RendererAPI::None:
+			SL_CORE_ASSERT(false, "RendererAPI::None is currently not supported!");
+			return nullptr;
+		case RendererAPI::OpenGL:
+			return new OpenGLVertexBuffer(vertices, size);
+		case RendererAPI::DirectX:
+			SL_CORE_ASSERT(false, "RendererAPI::DirectX is currently not supported!");
+			return nullptr;
+		}
+		SL_CORE_ASSERT(false, "Unknown Renderer API!");
+		return nullptr;
 	}
 
 	IndexBuffer* IndexBuffer::Create(uint32_t* indices, uint32_t count) {
