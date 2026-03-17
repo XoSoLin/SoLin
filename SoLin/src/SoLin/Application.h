@@ -7,6 +7,7 @@
 #include"SoLin/ImGui/ImGuiLayer.h"
 #include "SoLin/Events/ApplicationEvent.h"
 
+#include"SoLin/Renderer/VertexArray.h"
 #include"SoLin/Renderer/Shader.h"
 #include"SoLin/Renderer/Buffer.h"
 
@@ -31,12 +32,12 @@ namespace SoLin {
 
 		ImGuiLayer* m_ImGuiLayer;
 		std::unique_ptr<Window> m_Window;
-		std::unique_ptr<Shader> m_Shader;
-		std::unique_ptr<VertexBuffer> m_VertexBuffer;
-		std::unique_ptr<IndexBuffer> m_IndexBuffer;
+		std::shared_ptr<Shader> m_Shader;
+		std::shared_ptr<VertexArray> m_VertexArray;
+		std::shared_ptr<VertexBuffer> m_VertexBuffer;
+		std::shared_ptr<IndexBuffer> m_IndexBuffer;
 		bool m_Running = true;
 		LayerStack m_LayerStack;
-		unsigned int m_VertexArray;
 	private:
 		static Application* s_Instance;
 	};
