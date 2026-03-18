@@ -13,7 +13,7 @@ namespace SoLin {
 		//.Get()返回Application这个单例中的*s_Instance实例 .GetWindow()返回Application类中的成员m_Window（Windows类的） .GetNativeWindow()返回Window类中的成员GLFWwindow
 
 		auto state = glfwGetKey(window, keycode);
-		return state == GLFW_PRESS || GLFW_REPEAT;		//（按下和重复都算做是按下了）
+		return state == (GLFW_PRESS || GLFW_REPEAT);		//（按下和重复都算做是按下了）
 	}
 	bool WindowsInput::IsMouseButtonPressedImpl(int button)
 	{

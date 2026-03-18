@@ -7,11 +7,6 @@
 #include"SoLin/ImGui/ImGuiLayer.h"
 #include "SoLin/Events/ApplicationEvent.h"
 
-#include"SoLin/Renderer/VertexArray.h"
-#include"SoLin/Renderer/Shader.h"
-#include"SoLin/Renderer/Buffer.h"
-#include"SoLin/Renderer/OrthoGraphicCamera.h"
-
 namespace SoLin {
 	
 	class SOLIN_API Application

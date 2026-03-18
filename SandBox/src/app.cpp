@@ -3,17 +3,9 @@
 #include "imgui/imgui.h"
 
 class ExampleLayer :public SoLin::Layer {
-private:
-	std::shared_ptr<SoLin::Shader> m_Shader;
-	std::shared_ptr<SoLin::VertexArray> m_VertexArray;
-
-	std::shared_ptr<SoLin::Shader> m_SquareShader;
-	std::shared_ptr<SoLin::VertexArray> m_SquareVA;
-
-	SoLin::OrthoGraphicCamera m_Camera;
 public:
 	ExampleLayer()
-		:Layer("Example layer"), m_Camera(-1.6f, 1.6f, -0.9f, 0.9f)
+		:Layer("Example layer"), m_Camera(-1.6f, 1.6f, -0.9f, 0.9f), m_CameraPosition(0.0f), m_CameraRotation(0.0f)
 	{
 		float vertices[3 * 7] = {
 			-0.5f, -0.5f, 0.0f, 1.0f, 0.2f, 0.8f, 1.0f,
@@ -122,14 +114,31 @@ public:
 		m_SquareShader.reset(new SoLin::Shader(squareVertexSrc, squareFragSrc));
 	}
 
-	void OnUpdate() override {
+	virtual void OnUpdate() override {
+		
+		//控制相机在自己坐标系中移动旋转
+
+		if (SoLin::Input::IsKeyPressed(SL_KEY_RIGHT))
+			m_CameraPosition.x += m_CameraMoveSpeed;
+		else if (SoLin::Input::IsKeyPressed(SL_KEY_LEFT))
+			m_CameraPosition.x -= m_CameraMoveSpeed;
+
+		if (SoLin::Input::IsKeyPressed(SL_KEY_UP))
+			m_CameraPosition.y += m_CameraMoveSpeed;
+		else if (SoLin::Input::IsKeyPressed(SL_KEY_DOWN))
+			m_CameraPosition.y -= m_CameraMoveSpeed;
+
+		if (SoLin::Input::IsKeyPressed(SL_KEY_Q))
+			m_CameraRotation += m_CameraRotateSpeed;
+		else if (SoLin::Input::IsKeyPressed(SL_KEY_E))
+			m_CameraRotation -= m_CameraRotateSpeed;
+
+		m_Camera.SetPosition(m_CameraPosition);
+		m_Camera.SetRotation(m_CameraRotation);
+
 		SoLin::RendererCommand::Clear();
 		SoLin::RendererCommand::SetClearColor({ 0.1f,0.1f,0.1f,1 });
 		SoLin::Renderer::BeginScene(m_Camera);
-
-		// 注意物体与实际的相机变化相反
-		m_Camera.SetRotation(45.0f);  //相机绕z轴旋转45f(应该是弧度制)，z轴朝屏幕内，屏幕上感觉也就是逆时针
-		m_Camera.SetPosition({ 0.5f, 0.5f, 0.0f });//相机朝右上移动
 
 		SoLin::Renderer::Submit(m_SquareShader, m_SquareVA);
 
@@ -138,7 +147,7 @@ public:
 		SoLin::Renderer::EndScene();
 		//SL_INFO("ExampleLayer::OnUpdate");
 	} 
-	void OnImGuiRender()
+	virtual void OnImGuiRender() override
 	{
 		ImGui::Begin("Test"); 
         const char* text = R"(vva)";
@@ -146,7 +155,7 @@ public:
 		ImGui::End();
 	}
 
-	void OnEvent(SoLin::Event& event)override {
+	virtual void OnEvent(SoLin::Event& event)override {
 		//SL_TRACE("{0}", event.ToString());
 		if (event.GetEventType() == SoLin::EventType::KeyPressed) {
 			SoLin::KeyPressedEvent& e = (SoLin::KeyPressedEvent&)event;
@@ -155,6 +164,20 @@ public:
 			SL_TRACE("{0} is pressed | (from char)", (char)e.GetKeyCode());
 		}
 	}
+
+	private:
+		std::shared_ptr<SoLin::Shader> m_Shader;
+		std::shared_ptr<SoLin::VertexArray> m_VertexArray;
+
+		std::shared_ptr<SoLin::Shader> m_SquareShader;
+		std::shared_ptr<SoLin::VertexArray> m_SquareVA;
+
+		SoLin::OrthoGraphicCamera m_Camera;
+
+		glm::vec3 m_CameraPosition;
+		float m_CameraMoveSpeed = 0.02f;
+		float m_CameraRotation;
+		float m_CameraRotateSpeed = 4.0f;
 };
 
 class SandBox :public SoLin::Application {
