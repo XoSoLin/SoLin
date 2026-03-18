@@ -1364,6 +1364,9 @@
     <ClInclude Include="src\SoLin\Renderer\RendererAPI.h" />
     <ClInclude Include="src\SoLin\Renderer\VertexArray.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLVertexArray.h" />
+    <ClInclude Include="src\SoLin\Renderer\Renderer.h" />
+    <ClInclude Include="src\SoLin\Renderer\RendererCommand.h" />
+    <ClInclude Include="src\Platform\OpenGL\OpenGLRendererAPI.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Platform\Windows\WindowsInput.cpp">
@@ -1400,5 +1403,8 @@
     <ClCompile Include="src\SoLin\Renderer\RendererAPI.cpp" />
     <ClCompile Include="src\SoLin\Renderer\VertexArray.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLVertexArray.cpp" />
+    <ClCompile Include="src\SoLin\Renderer\Renderer.cpp" />
+    <ClCompile Include="src\SoLin\Renderer\RendererCommand.cpp" />
+    <ClCompile Include="src\Platform\OpenGL\OpenGLRendererAPI.cpp" />
   </ItemGroup>
 </Project>

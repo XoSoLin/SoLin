@@ -31,7 +31,6 @@ namespace SoLin {
 		return 0;
 	}
 
-	extern uint32_t GetTypeToGLType(ShaderDataType type);			//声明这个函数是来自application.cpp中的函数，并设为全局函数(这样就不用在这个文件中包含glad/glad.h， 不然会导致Sandbox出现问题)
 
 	// @brief 布局元素数据结构
 	struct LayoutElement {
@@ -50,7 +49,7 @@ namespace SoLin {
 		// @param name 该布局元素名
 		// @param normalized 是否标准化，默认为f
 		LayoutElement(ShaderDataType type,const std::string& name,bool normalized = false)
-			:Type(type),Name(name),Size(ShaderDataTypeSize(type)),Offset(0),Count(GetComponentCount()),Normalized(normalized),GLType(SoLin::GetTypeToGLType(type))
+			:Type(type),Name(name),Size(ShaderDataTypeSize(type)),Offset(0),Count(GetComponentCount()),Normalized(normalized),GLType(GetTypeToGLType(type))
 		{}
 
 		// @brief 通过存储的ShaderDataType计算组成该类型的基本元素个数
@@ -70,6 +69,25 @@ namespace SoLin {
 			case ShaderDataType::Bool:		return 1;
 			}
 			SL_CORE_ASSERT(false, "Unknown ShaderDataType!");
+			return 0;
+		}
+
+		// @brief 将着色器数据类型转换为其对应的GL类型
+		uint32_t GetTypeToGLType(ShaderDataType type) {
+			switch (type) {
+			case ShaderDataType::Float:		return 0x1406;			//GL_FLOAT == 0x1406
+			case ShaderDataType::Float2:	return 0x1406;
+			case ShaderDataType::Float3:	return 0x1406;
+			case ShaderDataType::Float4:	return 0x1406;
+			case ShaderDataType::Int:		return 0x1404;			//GL_INT == 0x1404
+			case ShaderDataType::Int2:		return 0x1404;
+			case ShaderDataType::Int3:		return 0x1404;
+			case ShaderDataType::Int4:		return 0x1404;
+			case ShaderDataType::Mat3:		return 0x1406;			//GL_FLOAT == 0x1406
+			case ShaderDataType::Mat4:		return 0x1406;
+			case ShaderDataType::Bool:		return 0x8B56;			//GL_BOOL == 0x8B56
+			}
+			SL_CORE_ASSERT(false, "Unknown ShaderDataType !");
 			return 0;
 		}
 

@@ -154,6 +154,7 @@
   <ItemGroup>
     <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLContext.h" />
+    <ClInclude Include="src\Platform\OpenGL\OpenGLRendererAPI.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLVertexArray.h" />
     <ClInclude Include="src\Platform\Windows\WindowsInput.h" />
     <ClInclude Include="src\Platform\Windows\WindowsWndow.h" />
@@ -174,7 +175,9 @@
     <ClInclude Include="src\SoLin\MouseButtonCodes.h" />
     <ClInclude Include="src\SoLin\Renderer\Buffer.h" />
     <ClInclude Include="src\SoLin\Renderer\GraphicsContext.h" />
+    <ClInclude Include="src\SoLin\Renderer\Renderer.h" />
     <ClInclude Include="src\SoLin\Renderer\RendererAPI.h" />
+    <ClInclude Include="src\SoLin\Renderer\RendererCommand.h" />
     <ClInclude Include="src\SoLin\Renderer\Shader.h" />
     <ClInclude Include="src\SoLin\Renderer\VertexArray.h" />
     <ClInclude Include="src\SoLin\Window.h" />
@@ -602,6 +605,7 @@
   <ItemGroup>
     <ClCompile Include="src\Platform\OpenGL\OpenGLContext.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp" />
+    <ClCompile Include="src\Platform\OpenGL\OpenGLRendererAPI.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLVertexArray.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsInput.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsWndow.cpp" />
@@ -615,7 +619,9 @@
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\SoLin\Renderer\Buffer.cpp" />
+    <ClCompile Include="src\SoLin\Renderer\Renderer.cpp" />
     <ClCompile Include="src\SoLin\Renderer\RendererAPI.cpp" />
+    <ClCompile Include="src\SoLin\Renderer\RendererCommand.cpp" />
     <ClCompile Include="src\SoLin\Renderer\Shader.cpp" />
     <ClCompile Include="src\SoLin\Renderer\VertexArray.cpp" />
   </ItemGroup>

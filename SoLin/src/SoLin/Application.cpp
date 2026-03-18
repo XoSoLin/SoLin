@@ -5,8 +5,7 @@
 #include "SoLin/Log.h"
 #include"Input.h"
 
-#include<glad/glad.h>
-#include<GLFW/glfw3.h>
+#include"SoLin/Renderer/Renderer.h"
 
 namespace SoLin {
 
@@ -96,10 +95,10 @@ namespace SoLin {
 
 		// square rendering
 		float squareVertices[3 * 4] = {
-			-0.75f, -0.75f, 0.0f,
-			 0.75f, -0.75f, 0.0f,
-			 0.75f,  0.75f, 0.0f,
-			-0.75f,  0.75f, 0.0f
+			-0.75f, -0.75f, -0.1f,
+			 0.75f, -0.75f, -0.1f,
+			 0.75f,  0.75f, -0.1f,
+			-0.75f,  0.75f, -0.1f
 		};
 		uint32_t squareIndices[6] = { 0,1,2,2,3,0 };
 		m_SquareVA.reset(VertexArray::Create());
@@ -172,16 +171,17 @@ namespace SoLin {
 		WindowResizeEvent e(1280, 720);
 		
 		while (m_Running) {
-			glClearColor(0.1f, 0.1f, 0.1f, 1);
-			glClear(GL_COLOR_BUFFER_BIT);
+			RendererCommand::Clear();
+			RendererCommand::SetClearColor({ 0.1f,0.1f,0.1f,1 });
+			Renderer::BeginScene();
 
 			m_SquareShader->Bind();
-			m_SquareVA->Bind();
-			glDrawElements(GL_TRIANGLES, m_SquareVA->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+			Renderer::Submit(m_SquareVA);
 
 			m_Shader->Bind();
-			m_VertexArray->Bind();
-			glDrawElements(GL_TRIANGLES, m_VertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+			Renderer::Submit(m_VertexArray);
+
+			Renderer::EndScene();
 
 			for (Layer* layer : m_LayerStack) {				//¸üÐÂÍ¼²ã
 				layer->OnUpdate();
