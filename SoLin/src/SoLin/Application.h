@@ -37,13 +37,7 @@ namespace SoLin {
 		ImGuiLayer* m_ImGuiLayer;
 		std::unique_ptr<Window> m_Window;
 
-		std::shared_ptr<Shader> m_Shader;
-		std::shared_ptr<VertexArray> m_VertexArray;
-
-		std::shared_ptr<Shader> m_SquareShader;
-		std::shared_ptr<VertexArray> m_SquareVA;
 		LayerStack m_LayerStack;
-		OrthoGraphicCamera m_Camera;
 	private:
 		static Application* s_Instance;
 	};

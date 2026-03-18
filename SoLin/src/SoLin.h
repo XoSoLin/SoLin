@@ -12,6 +12,18 @@
 
 #include"SoLin/ImGui/ImGuiLayer.h"
 
-//-------程序入口-------------
+//-----------------渲染器-----------------
+#include "SoLin/Renderer/Renderer.h"
+#include "SoLin/Renderer/RendererCommand.h"
+
+#include "SoLin/Renderer/Buffer.h"
+#include "SoLin/Renderer/Shader.h"
+#include "SoLin/Renderer/VertexArray.h"
+
+#include "SoLin/Renderer/OrthoGraphicCamera.h"
+//----------------Renderer----------------
+
+//----------------程序入口----------------
+#define SL SoLin
 #include"SoLin/EntryPoint.h"
-//----------------------------
+//----------------EntryPoint--------------
