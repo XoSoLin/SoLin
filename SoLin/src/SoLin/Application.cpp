@@ -41,36 +41,25 @@ namespace SoLin {
 			 0.5f, -0.5f, 0.0f, 1.0f, 0.3f, 0.8f, 1.0f,
 			 0.0f,  0.5f, 0.0f, 1.0f, 0.8f, 0.2f, 1.0f
 		};
-
-		m_VertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
-
-		/*glGenVertexArrays(1, &m_VertexArray);
-		glBindVertexArray(m_VertexArray);*/
-		m_VertexArray.reset(VertexArray::Create());
 		
 		BufferLayout layout = {
 			{ShaderDataType::Float3,"a_Position"},
 			{ ShaderDataType::Float4, "a_Color" }
 		};
-		m_VertexBuffer->SetLayout(layout);
-
-		/*const auto& layout2 = m_VertexBuffer->GetLayout();
-		uint32_t index = 0;
-		for (const auto& element : layout2) {
-			glEnableVertexAttribArray(index);
-			glVertexAttribPointer(index, element.Count, element.GLType,
-				element.Normalized ? GL_TRUE : GL_FALSE, layout2.GetStride(), (const void*)element.Offset);
-			index++;
-		}*/
 
 		unsigned int indices[3]{
 			0,1,2
 		};
 
-		m_IndexBuffer.reset(IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
+		std::shared_ptr<VertexBuffer> vertexBuffer;
+		std::shared_ptr<IndexBuffer> indexBuffer;
+		m_VertexArray.reset(VertexArray::Create());
+		vertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
+		indexBuffer.reset(IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
+		vertexBuffer->SetLayout(layout);
 
-		m_VertexArray->AddVertexBuffer(m_VertexBuffer);
-		m_VertexArray->SetIndexBuffer(m_IndexBuffer);
+		m_VertexArray->AddVertexBuffer(vertexBuffer);
+		m_VertexArray->SetIndexBuffer(indexBuffer);
 
 		std::string vertexSrc = R"(
 			#version 330 core
@@ -104,6 +93,50 @@ namespace SoLin {
 		//						位置是-1到1之间，*0.5使其区间与RGBA的区间大小一致，再+0.5使其区间从-0.5至0.5提升到0至1
 
 		m_Shader.reset(new Shader(vertexSrc, fragmentSrc));
+
+		// square rendering
+		float squareVertices[3 * 4] = {
+			-0.75f, -0.75f, 0.0f,
+			 0.75f, -0.75f, 0.0f,
+			 0.75f,  0.75f, 0.0f,
+			-0.75f,  0.75f, 0.0f
+		};
+		uint32_t squareIndices[6] = { 0,1,2,2,3,0 };
+		m_SquareVA.reset(VertexArray::Create());
+		std::shared_ptr<VertexBuffer> squareVB;
+		std::shared_ptr<IndexBuffer> squareIB;
+		squareVB.reset(VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
+		squareIB.reset(IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t)));
+		
+		BufferLayout squareLayout = {
+			{ShaderDataType::Float3,"a_Position"}
+		};
+		squareVB->SetLayout(squareLayout);
+		m_SquareVA->AddVertexBuffer(squareVB);
+		m_SquareVA->SetIndexBuffer(squareIB);
+
+		std::string squareVertexSrc = R"(
+			#version 330 core
+			
+			layout(location = 0) in vec3 a_Position;
+
+			void main()
+			{
+				gl_Position = vec4(a_Position, 1.0);
+			}
+		)";
+		std::string squareFragSrc = R"(
+			#version 330 core
+
+			layout(location = 0) out vec4 a_Color;
+
+			void main()
+			{
+				a_Color = vec4(0.2, 0.3, 0.8, 1.0);
+			}
+		)";
+
+		m_SquareShader.reset(new Shader(squareVertexSrc, squareFragSrc));
 	}
 
 	Application::~Application()
@@ -142,10 +175,13 @@ namespace SoLin {
 			glClearColor(0.1f, 0.1f, 0.1f, 1);
 			glClear(GL_COLOR_BUFFER_BIT);
 
+			m_SquareShader->Bind();
+			m_SquareVA->Bind();
+			glDrawElements(GL_TRIANGLES, m_SquareVA->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+
 			m_Shader->Bind();
-			//glBindVertexArray(m_VertexArray);
 			m_VertexArray->Bind();
-			glDrawElements(GL_TRIANGLES, m_IndexBuffer->GetCount(), GL_UNSIGNED_INT, nullptr);
+			glDrawElements(GL_TRIANGLES, m_VertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
 
 			for (Layer* layer : m_LayerStack) {				//更新图层
 				layer->OnUpdate();
