@@ -1367,6 +1367,7 @@
     <ClInclude Include="src\SoLin\Renderer\Renderer.h" />
     <ClInclude Include="src\SoLin\Renderer\RendererCommand.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLRendererAPI.h" />
+    <ClInclude Include="src\SoLin\Renderer\OrthoGraphicCamera.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Platform\Windows\WindowsInput.cpp">
@@ -1406,5 +1407,6 @@
     <ClCompile Include="src\SoLin\Renderer\Renderer.cpp" />
     <ClCompile Include="src\SoLin\Renderer\RendererCommand.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLRendererAPI.cpp" />
+    <ClCompile Include="src\SoLin\Renderer\OrthoGraphicCamera.cpp" />
   </ItemGroup>
 </Project>

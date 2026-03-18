@@ -10,6 +10,7 @@
 #include"SoLin/Renderer/VertexArray.h"
 #include"SoLin/Renderer/Shader.h"
 #include"SoLin/Renderer/Buffer.h"
+#include"SoLin/Renderer/OrthoGraphicCamera.h"
 
 namespace SoLin {
 	
@@ -25,11 +26,14 @@ namespace SoLin {
 		void PushLayer(Layer* layer);
 		void PushOverlay(Layer* overlay);
 
-		inline Window& GetWindow() { return *m_Window; }				//返回该应用窗口
-		inline static Application& Get() { return *s_Instance; }		//返回该App单例指针
+		//@brief 返回该应用窗口
+		inline Window& GetWindow() { return *m_Window; }
+		//@brief 返回该App单例指针
+		inline static Application& Get() { return *s_Instance; }
 	private:
 		bool OnWindowClose(WindowCloseEvent& event);
 
+		bool m_Running = true;
 		ImGuiLayer* m_ImGuiLayer;
 		std::unique_ptr<Window> m_Window;
 
@@ -38,8 +42,8 @@ namespace SoLin {
 
 		std::shared_ptr<Shader> m_SquareShader;
 		std::shared_ptr<VertexArray> m_SquareVA;
-		bool m_Running = true;
 		LayerStack m_LayerStack;
+		OrthoGraphicCamera m_Camera;
 	private:
 		static Application* s_Instance;
 	};

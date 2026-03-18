@@ -21,6 +21,7 @@ namespace SoLin {
 
 	
 	Application::Application()
+		:m_Camera(-1.6f,1.6f,-0.9f,0.9f)
 	{
 		// 如果Appliction再次被构造，将会触发ASSERT，因为第一次构造后将会使s_Instance不再为nullptr
 		SL_CORE_ASSERT(!s_Instance, "Application already exists!(The class Application is a Singleton,it just support one instance!)");
@@ -68,11 +69,13 @@ namespace SoLin {
 			out vec3 v_Position;
 			out vec4 v_Color;
 
+			uniform mat4 u_ViewProjection;
+
 			void main()
 			{
 				v_Position = a_Position;
 				v_Color = a_Color;
-				gl_Position = vec4(a_Position, 1.0);
+				gl_Position = u_ViewProjection * vec4(a_Position, 1.0);
 			}
 		)";
 		std::string fragmentSrc = R"(
@@ -119,9 +122,11 @@ namespace SoLin {
 			
 			layout(location = 0) in vec3 a_Position;
 
+			uniform mat4 u_ViewProjection;			
+
 			void main()
 			{
-				gl_Position = vec4(a_Position, 1.0);
+				gl_Position = u_ViewProjection * vec4(a_Position, 1.0);
 			}
 		)";
 		std::string squareFragSrc = R"(
@@ -173,13 +178,11 @@ namespace SoLin {
 		while (m_Running) {
 			RendererCommand::Clear();
 			RendererCommand::SetClearColor({ 0.1f,0.1f,0.1f,1 });
-			Renderer::BeginScene();
+			Renderer::BeginScene(m_Camera);
 
-			m_SquareShader->Bind();
-			Renderer::Submit(m_SquareVA);
+			Renderer::Submit(m_SquareShader,m_SquareVA);
 
-			m_Shader->Bind();
-			Renderer::Submit(m_VertexArray);
+			Renderer::Submit(m_Shader,m_VertexArray);
 
 			Renderer::EndScene();
 
