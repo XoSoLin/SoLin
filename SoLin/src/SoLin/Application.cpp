@@ -180,6 +180,10 @@ namespace SoLin {
 			RendererCommand::SetClearColor({ 0.1f,0.1f,0.1f,1 });
 			Renderer::BeginScene(m_Camera);
 
+			// 注意物体与实际的相机变化相反
+			m_Camera.SetRotation(45.0f);  //相机绕z轴旋转45f(应该是弧度制)，z轴朝屏幕内，屏幕上感觉也就是逆时针
+			m_Camera.SetPosition({ 0.5f, 0.5f, 0.0f });//相机朝右上移动
+
 			Renderer::Submit(m_SquareShader,m_SquareVA);
 
 			Renderer::Submit(m_Shader,m_VertexArray);
