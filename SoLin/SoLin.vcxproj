@@ -174,7 +174,7 @@
     <ClInclude Include="src\SoLin\MouseButtonCodes.h" />
     <ClInclude Include="src\SoLin\Renderer\Buffer.h" />
     <ClInclude Include="src\SoLin\Renderer\GraphicsContext.h" />
-    <ClInclude Include="src\SoLin\Renderer\Renderer.h" />
+    <ClInclude Include="src\SoLin\Renderer\RendererAPI.h" />
     <ClInclude Include="src\SoLin\Renderer\Shader.h" />
     <ClInclude Include="src\SoLin\Renderer\VertexArray.h" />
     <ClInclude Include="src\SoLin\Window.h" />
@@ -615,7 +615,7 @@
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\SoLin\Renderer\Buffer.cpp" />
-    <ClCompile Include="src\SoLin\Renderer\Renderer.cpp" />
+    <ClCompile Include="src\SoLin\Renderer\RendererAPI.cpp" />
     <ClCompile Include="src\SoLin\Renderer\Shader.cpp" />
     <ClCompile Include="src\SoLin\Renderer\VertexArray.cpp" />
   </ItemGroup>
