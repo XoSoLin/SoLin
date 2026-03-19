@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core.h"
+#include"SoLin/Core/Timestep.h"
 #include"Events/Event.h"
 
 namespace SoLin {
@@ -13,7 +14,7 @@ namespace SoLin {
 
 		virtual void OnAttach(){}
 		virtual void OnDetach(){}
-		virtual void OnUpdate(){}
+		virtual void OnUpdate(Timestep& ts){}
 		virtual void OnEvent(Event& event){}
 		virtual void OnImGuiRender(){}
 

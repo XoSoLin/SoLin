@@ -7,6 +7,8 @@
 #include"SoLin/ImGui/ImGuiLayer.h"
 #include "SoLin/Events/ApplicationEvent.h"
 
+#include"SoLin/Core/Timestep.h"
+
 namespace SoLin {
 	
 	class SOLIN_API Application
@@ -28,7 +30,9 @@ namespace SoLin {
 	private:
 		bool OnWindowClose(WindowCloseEvent& event);
 
+	private:
 		bool m_Running = true;
+		float m_LastFrameTime = 0.0f;
 		ImGuiLayer* m_ImGuiLayer;
 		std::unique_ptr<Window> m_Window;
 

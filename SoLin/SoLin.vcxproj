@@ -161,6 +161,7 @@
     <ClInclude Include="src\SoLin.h" />
     <ClInclude Include="src\SoLin\Application.h" />
     <ClInclude Include="src\SoLin\Core.h" />
+    <ClInclude Include="src\SoLin\Core\Timestep.h" />
     <ClInclude Include="src\SoLin\EntryPoint.h" />
     <ClInclude Include="src\SoLin\Events\ApplicationEvent.h" />
     <ClInclude Include="src\SoLin\Events\Event.h" />

@@ -114,24 +114,24 @@ public:
 		m_SquareShader.reset(new SoLin::Shader(squareVertexSrc, squareFragSrc));
 	}
 
-	virtual void OnUpdate() override {
+	virtual void OnUpdate(SoLin::Timestep& ts) override {
 		
 		//控制相机在自己坐标系中移动旋转
 
 		if (SoLin::Input::IsKeyPressed(SL_KEY_RIGHT))
-			m_CameraPosition.x += m_CameraMoveSpeed;
+			m_CameraPosition.x += m_CameraMoveSpeed * ts;
 		else if (SoLin::Input::IsKeyPressed(SL_KEY_LEFT))
-			m_CameraPosition.x -= m_CameraMoveSpeed;
+			m_CameraPosition.x -= m_CameraMoveSpeed * ts;
 
 		if (SoLin::Input::IsKeyPressed(SL_KEY_UP))
-			m_CameraPosition.y += m_CameraMoveSpeed;
+			m_CameraPosition.y += m_CameraMoveSpeed * ts;
 		else if (SoLin::Input::IsKeyPressed(SL_KEY_DOWN))
-			m_CameraPosition.y -= m_CameraMoveSpeed;
+			m_CameraPosition.y -= m_CameraMoveSpeed * ts;
 
 		if (SoLin::Input::IsKeyPressed(SL_KEY_Q))
-			m_CameraRotation += m_CameraRotateSpeed;
+			m_CameraRotation += m_CameraRotateSpeed * ts;
 		else if (SoLin::Input::IsKeyPressed(SL_KEY_E))
-			m_CameraRotation -= m_CameraRotateSpeed;
+			m_CameraRotation -= m_CameraRotateSpeed * ts;
 
 		m_Camera.SetPosition(m_CameraPosition);
 		m_Camera.SetRotation(m_CameraRotation);
@@ -175,9 +175,9 @@ public:
 		SoLin::OrthoGraphicCamera m_Camera;
 
 		glm::vec3 m_CameraPosition;
-		float m_CameraMoveSpeed = 0.02f;
+		float m_CameraMoveSpeed = 4.0f;
 		float m_CameraRotation;
-		float m_CameraRotateSpeed = 4.0f;
+		float m_CameraRotateSpeed = 180.0f;
 };
 
 class SandBox :public SoLin::Application {

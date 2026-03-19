@@ -1,4 +1,5 @@
 #include "slpch.h"
+#include<GLFW/glfw3.h>
 #include "Application.h"
 
 #include "Events/Event.h"
@@ -29,6 +30,7 @@ namespace SoLin {
 		m_Window = std::unique_ptr<Window>(Window::Create());
 
 		m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
+		m_Window->SetVSync(true);
 		/*auto f2 = std::bind(&Application::OnEvent,this,std::placeholders::_1);
 		m_Window->SetEventCallback(f2);*/
 
@@ -71,8 +73,12 @@ namespace SoLin {
 		
 		while (m_Running) {
 
+			float time = (float)glfwGetTime();				//获取当前时间
+			Timestep timestep = time - m_LastFrameTime;		//计算变化时间
+			m_LastFrameTime = time;							//存储当前时间供下次使用
+
 			for (Layer* layer : m_LayerStack) {				//更新图层
-				layer->OnUpdate();
+				layer->OnUpdate(timestep);
 			}
 
 			/*auto [x, y] = Input::GetMousePos();
