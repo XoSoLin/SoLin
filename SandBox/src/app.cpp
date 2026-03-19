@@ -1,5 +1,6 @@
 #include<SoLin.h>
 
+#include <glm/gtc/matrix_transform.hpp>
 #include "imgui/imgui.h"
 
 class ExampleLayer :public SoLin::Layer {
@@ -41,12 +42,13 @@ public:
 			out vec4 v_Color;
 
 			uniform mat4 u_ViewProjection;
+			uniform mat4 u_Transform;
 
 			void main()
 			{
 				v_Position = a_Position;
 				v_Color = a_Color;
-				gl_Position = u_ViewProjection * vec4(a_Position, 1.0);
+				gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);
 			}
 		)";
 		std::string fragmentSrc = R"(
@@ -69,10 +71,10 @@ public:
 
 		// square rendering
 		float squareVertices[3 * 4] = {
-			-0.75f, -0.75f, -0.1f,
-			 0.75f, -0.75f, -0.1f,
-			 0.75f,  0.75f, -0.1f,
-			-0.75f,  0.75f, -0.1f
+			-0.5f, -0.5f, -0.1f,
+			 0.5f, -0.5f, -0.1f,
+			 0.5f,  0.5f, -0.1f,
+			-0.5f,  0.5f, -0.1f
 		};
 		uint32_t squareIndices[6] = { 0,1,2,2,3,0 };
 		m_SquareVA.reset(SoLin::VertexArray::Create());
@@ -93,11 +95,12 @@ public:
 			
 			layout(location = 0) in vec3 a_Position;
 
-			uniform mat4 u_ViewProjection;			
+			uniform mat4 u_ViewProjection;	
+			uniform mat4 u_Transform;		
 
 			void main()
 			{
-				gl_Position = u_ViewProjection * vec4(a_Position, 1.0);
+				gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);
 			}
 		)";
 		std::string squareFragSrc = R"(
@@ -140,9 +143,22 @@ public:
 		SoLin::RendererCommand::SetClearColor({ 0.1f,0.1f,0.1f,1 });
 		SoLin::Renderer::BeginScene(m_Camera);
 
-		SoLin::Renderer::Submit(m_SquareShader, m_SquareVA);
+		// 缩放变换
+		glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
+		// 双层循环渲染400个正方形
+		for (int y = 0; y < 20; y++) {
+			for (int x = 0; x < 20; x++) {
+				// 计算每一个的位置   使其之间有些间隔
+				glm::vec3 pos(x * 0.11f, y * 0.11f, 0.0f);
+				// 进行 TS 变换(先缩放S，再平移T)
+				glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale;
+				
+				SoLin::Renderer::Submit(m_SquareShader, m_SquareVA,transform);
+			}
+		}
 
-		SoLin::Renderer::Submit(m_Shader, m_VertexArray);
+
+		SoLin::Renderer::Submit(m_Shader, m_VertexArray,glm::mat4(1.0f));
 
 		SoLin::Renderer::EndScene();
 		//SL_INFO("ExampleLayer::OnUpdate");

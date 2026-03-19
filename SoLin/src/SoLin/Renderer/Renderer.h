@@ -17,7 +17,12 @@ namespace SoLin {
 		//@brief 用于渲染对应的着色器
 		//@param shader 传入的具体着色器程序
 		//@param vertexArray 传入顶点数组供着色器使用
-		static void Submit(const std::shared_ptr<Shader>& shader,const std::shared_ptr<VertexArray>& vertexArray);
+		//@param transform 变化矩阵
+		static void Submit(
+			const std::shared_ptr<Shader>& shader,
+			const std::shared_ptr<VertexArray>& vertexArray,
+			const glm::mat4& transform
+		);
 
 		inline static RendererAPI::API GetAPI() { return RendererAPI::GetAPI(); }
 	private:
