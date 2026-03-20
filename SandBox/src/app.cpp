@@ -1,6 +1,10 @@
 #include<SoLin.h>
 
+#include"Platform/OpenGL/OpenGLShader.h"
+
 #include <glm/gtc/matrix_transform.hpp>
+#include<glm/gtc/type_ptr.hpp>
+
 #include "imgui/imgui.h"
 
 class ExampleLayer :public SoLin::Layer {
@@ -67,7 +71,7 @@ public:
 		// 以上对a_Color的操作：使其颜色与位置关联(x轴与r关联，y轴与g关联)
 		//						位置是-1到1之间，*0.5使其区间与RGBA的区间大小一致，再+0.5使其区间从-0.5至0.5提升到0至1
 
-		m_Shader.reset(new SoLin::Shader(vertexSrc, fragmentSrc));
+		m_Shader.reset(SoLin::Shader::Create(vertexSrc, fragmentSrc));
 
 		// square rendering
 		float squareVertices[3 * 4] = {
@@ -107,14 +111,16 @@ public:
 			#version 330 core
 
 			layout(location = 0) out vec4 a_Color;
-
+			
+			uniform vec3 u_Color;
+			
 			void main()
 			{
-				a_Color = vec4(0.2, 0.3, 0.8, 1.0);
+				a_Color = vec4(u_Color, 1.0);
 			}
 		)";
 
-		m_SquareShader.reset(new SoLin::Shader(squareVertexSrc, squareFragSrc));
+		m_SquareShader.reset(SoLin::Shader::Create(squareVertexSrc, squareFragSrc));
 	}
 
 	virtual void OnUpdate(SoLin::Timestep& ts) override {
@@ -145,6 +151,8 @@ public:
 
 		// 缩放变换
 		glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
+		m_SquareShader->Bind();
+		std::dynamic_pointer_cast<SoLin::OpenGLShader>(m_SquareShader)->UpdateUniformFloat3("u_Color", m_SquareColor);
 		// 双层循环渲染400个正方形
 		for (int y = 0; y < 20; y++) {
 			for (int x = 0; x < 20; x++) {
@@ -166,6 +174,7 @@ public:
 	virtual void OnImGuiRender() override
 	{
 		ImGui::Begin("Test"); 
+		ImGui::ColorEdit3("Square Color Edit", glm::value_ptr(m_SquareColor));
         const char* text = R"(vva)";
         ImGui::Text(text);
 		ImGui::End();
@@ -187,6 +196,8 @@ public:
 
 		std::shared_ptr<SoLin::Shader> m_SquareShader;
 		std::shared_ptr<SoLin::VertexArray> m_SquareVA;
+
+		glm::vec3 m_SquareColor = { 0.5412f, 0.1686f, 0.8863f };
 
 		SoLin::OrthoGraphicCamera m_Camera;
 

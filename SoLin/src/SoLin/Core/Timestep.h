@@ -6,7 +6,7 @@ namespace SoLin {
 		Timestep(float time)
 			:m_Time(time)
 		{}
-		operator float() { return m_Time; }			//使其方便参与计算
+		operator float() const { return m_Time; }			//使其方便参与计算
 
 		//@brief 获取秒
 		float GetSeconds()const { return m_Time; }
