@@ -23,6 +23,19 @@ namespace SoLin {
 
 		m_Width = width;
 		m_Height = height;
+
+		GLenum internalFormat = 0;			//数据内部存储格式 
+		GLenum dataFormat = 0;				//数据的上传格式
+		if (channels == 3) {
+			internalFormat = GL_RGB8;
+			dataFormat = GL_RGB;
+		}
+		else if (channels == 4) {
+			internalFormat = GL_RGBA8;
+			dataFormat = GL_RGBA;
+		}
+		SL_CORE_ASSERT(internalFormat & dataFormat, "Format not supported!");
+
 		// GL_TEXTURE_2D：纹理类型为 2D 纹理
 		// 1：创建 1 个纹理对象
 		// &m_RendererID：返回的纹理对象 ID 存储在此变量中
@@ -32,7 +45,7 @@ namespace SoLin {
 		// m_RendererID：纹理对象 ID
 		// 1：只分配基础 mipmap 级别（不生成多级纹理）
 		// GL_RGBA8：内部格式，每个像素 8 位 RGBA（共 32 位）
-		glTextureStorage2D(m_RendererID, 1,GL_RGBA8,m_Width,m_Height);
+		glTextureStorage2D(m_RendererID, 1, internalFormat,m_Width,m_Height);
 
 		// 设置纹理缩小过滤器：当纹理被缩小时，使用线性插值采样（平滑过渡）
 		glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -47,7 +60,7 @@ namespace SoLin {
 		// GL_RGBA：源数据的像素格式（RGBA 四通道）
 		// GL_UNSIGNED_BYTE：源数据的每个通道类型（无符号字节）
 		// data：图像数据的指针
-		glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, dataFormat, GL_UNSIGNED_BYTE, data);
 		
 		stbi_image_free(data);
 	}

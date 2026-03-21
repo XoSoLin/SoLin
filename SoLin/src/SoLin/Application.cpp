@@ -31,6 +31,8 @@ namespace SoLin {
 
 		m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
 		m_Window->SetVSync(true);
+		Renderer::Init();
+
 		/*auto f2 = std::bind(&Application::OnEvent,this,std::placeholders::_1);
 		m_Window->SetEventCallback(f2);*/
 

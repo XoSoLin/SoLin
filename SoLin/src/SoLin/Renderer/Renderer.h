@@ -9,6 +9,8 @@ namespace SoLin {
 	
 	class Renderer {
 	public:
+		static void Init();
+
 		//@brief 渲染器开始渲染场景
 		//@param camera 传入相机使用其中必要的数据
 		static void BeginScene(OrthoGraphicCamera& camera);
