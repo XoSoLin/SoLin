@@ -74,11 +74,11 @@ public:
 		m_Shader.reset(SoLin::Shader::Create(vertexSrc, fragmentSrc));
 
 		// square rendering
-		float squareVertices[3 * 4] = {
-			-0.5f, -0.5f, -0.1f,
-			 0.5f, -0.5f, -0.1f,
-			 0.5f,  0.5f, -0.1f,
-			-0.5f,  0.5f, -0.1f
+		float squareVertices[5 * 4] = {
+			-0.5f, -0.5f, -0.1f, 0.0f, 0.0f,
+			 0.5f, -0.5f, -0.1f, 1.0f, 0.0f,
+			 0.5f,  0.5f, -0.1f, 1.0f, 1.0f,
+			-0.5f,  0.5f, -0.1f, 0.0f, 1.0f
 		};
 		uint32_t squareIndices[6] = { 0,1,2,2,3,0 };
 		m_SquareVA.reset(SoLin::VertexArray::Create());
@@ -88,7 +88,8 @@ public:
 		squareIB.reset(SoLin::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t)));
 
 		SoLin::BufferLayout squareLayout = {
-			{SoLin::ShaderDataType::Float3,"a_Position"}
+			{SoLin::ShaderDataType::Float3,"a_Position"},
+			{SoLin::ShaderDataType::Float2,"a_TexCoord"}
 		};
 		squareVB->SetLayout(squareLayout);
 		m_SquareVA->AddVertexBuffer(squareVB);
@@ -121,6 +122,43 @@ public:
 		)";
 
 		m_SquareShader.reset(SoLin::Shader::Create(squareVertexSrc, squareFragSrc));
+
+		std::string textureVertexSrc = R"(
+			#version 330 core
+			
+			layout(location = 0) in vec3 a_Position;
+			layout(location = 1) in vec2 a_TexCoord;
+
+			uniform mat4 u_ViewProjection;
+			uniform mat4 u_Transform;
+
+			out vec2 v_TexCoord;
+
+			void main(){
+				v_TexCoord = a_TexCoord;
+				gl_Position = u_ViewProjection * u_Transform * vec4(a_Position,1.0);
+			}
+
+		)";
+		std::string textureFragSrc = R"(
+			#version 330 core
+
+			layout(location = 0) out vec4 Color;
+			
+			in vec2 v_TexCoord;
+
+			uniform sampler2D u_Texture;
+
+			void main()
+			{
+				Color = vec4(v_TexCoord, 0.0, 1.0);
+			}
+		)";
+		// 以上将顶点着色器中的v_TexCoord 当作Color的红绿色道，将会得到可视化的一张图
+		// 0，1对应绿色，1，1，对应黄色
+		// 0，0对应黑色，1，0对应红色，
+		m_TextureShader.reset(SoLin::Shader::Create(textureVertexSrc, textureFragSrc));
+
 	}
 
 	virtual void OnUpdate(SoLin::Timestep& ts) override {
@@ -165,8 +203,9 @@ public:
 			}
 		}
 
+		SoLin::Renderer::Submit(m_TextureShader, m_SquareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
 
-		SoLin::Renderer::Submit(m_Shader, m_VertexArray,glm::mat4(1.0f));
+		//SoLin::Renderer::Submit(m_Shader, m_VertexArray,glm::mat4(1.0f));
 
 		SoLin::Renderer::EndScene();
 		//SL_INFO("ExampleLayer::OnUpdate");
@@ -194,7 +233,7 @@ public:
 		SoLin::Ref<SoLin::Shader> m_Shader;
 		SoLin::Ref<SoLin::VertexArray> m_VertexArray;
 
-		SoLin::Ref<SoLin::Shader> m_SquareShader;
+		SoLin::Ref<SoLin::Shader> m_SquareShader,m_TextureShader;
 		SoLin::Ref<SoLin::VertexArray> m_SquareVA;
 
 		glm::vec3 m_SquareColor = { 0.5412f, 0.1686f, 0.8863f };
