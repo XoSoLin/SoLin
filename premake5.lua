@@ -14,6 +14,7 @@ IncludeDir["GLFW"] = "SoLin/vendor/GLFW/include"					--½«±íµÄ"GLFW"¼üË÷Òýµ½´ËÂ·¾
 IncludeDir["GLad"] = "SoLin/vendor/GLad/include"
 IncludeDir["ImGui"] = "SoLin/vendor/imgui"
 IncludeDir["glm"] = "SoLin/vendor/glm"
+IncludeDir["stb_image"] = "SoLin/vendor/stb_image"
 
 --[[°üº¬Nut/Nut/vendor/GLFWÖÐµÄpremakeÎÄ¼þ²¢ºÏ²¢µ½ÕâÀï]]
 include "SoLin/vendor/GLFW"
@@ -41,6 +42,8 @@ project "SoLin"				--ÏîÄ¿
 	files{
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.cpp",
+		"%{prj.name}/vendor/stb_image/**.h",
+		"%{prj.name}/vendor/stb_image/**.cpp",
 		"%{prj.name}/vendor/glm/glm/**.hpp",
 		"%{prj.name}/vendor/glm/glm/**.inl"
 	}
@@ -55,6 +58,7 @@ project "SoLin"				--ÏîÄ¿
         "%{IncludeDir.GLFW}",	                                                --½«IncludeDir±íÖÐGLFW¼üË÷ÒýµÄÖµ×÷ÎªÒ»¸ö¿âÎÄ¼þ
 		"%{IncludeDir.GLad}",
 		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.stb_image}",
 		"%{IncludeDir.glm}"
 	}
 

@@ -20,6 +20,7 @@
 
 #include "SoLin/Renderer/Buffer.h"
 #include "SoLin/Renderer/Shader.h"
+#include "SoLin/Renderer/Texture.h"
 #include "SoLin/Renderer/VertexArray.h"
 
 #include "SoLin/Renderer/OrthoGraphicCamera.h"

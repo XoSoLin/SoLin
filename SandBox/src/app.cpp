@@ -151,14 +151,13 @@ public:
 
 			void main()
 			{
-				Color = vec4(v_TexCoord, 0.0, 1.0);
+				Color = texture(u_Texture, v_TexCoord);
 			}
 		)";
-		// 以上将顶点着色器中的v_TexCoord 当作Color的红绿色道，将会得到可视化的一张图
-		// 0，1对应绿色，1，1，对应黄色
-		// 0，0对应黑色，1，0对应红色，
 		m_TextureShader.reset(SoLin::Shader::Create(textureVertexSrc, textureFragSrc));
-
+		m_Texture = SoLin::Texture2D::Create("assets/textures/千夏02.png");
+		std::dynamic_pointer_cast<SoLin::OpenGLShader>(m_TextureShader)->Bind();
+		std::dynamic_pointer_cast<SoLin::OpenGLShader>(m_TextureShader)->UpdateUniformInt("u_Texture", 0);
 	}
 
 	virtual void OnUpdate(SoLin::Timestep& ts) override {
@@ -203,6 +202,7 @@ public:
 			}
 		}
 
+		m_Texture->Bind();
 		SoLin::Renderer::Submit(m_TextureShader, m_SquareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
 
 		//SoLin::Renderer::Submit(m_Shader, m_VertexArray,glm::mat4(1.0f));
@@ -235,6 +235,7 @@ public:
 
 		SoLin::Ref<SoLin::Shader> m_SquareShader,m_TextureShader;
 		SoLin::Ref<SoLin::VertexArray> m_SquareVA;
+		SoLin::Ref<SoLin::Texture2D> m_Texture;
 
 		glm::vec3 m_SquareColor = { 0.5412f, 0.1686f, 0.8863f };
 
