@@ -19,8 +19,8 @@ namespace SoLin {
 		//@param vertexArray 传入顶点数组供着色器使用
 		//@param transform 变化矩阵
 		static void Submit(
-			const std::shared_ptr<Shader>& shader,
-			const std::shared_ptr<VertexArray>& vertexArray,
+			const Ref<Shader>& shader,
+			const Ref<VertexArray>& vertexArray,
 			const glm::mat4& transform
 		);
 

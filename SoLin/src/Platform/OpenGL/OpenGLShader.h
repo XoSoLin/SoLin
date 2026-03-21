@@ -14,7 +14,7 @@ namespace SoLin {
 		virtual void Bind() const override;
 		virtual void UnBind() const override;
 
-		void UpdateUniformInt4(const std::string& name, const int& value);
+		void UpdateUniformInt(const std::string& name, const int& value);
 
 		void UpdateUniformFloat(const std::string& name, const float& value);
 		void UpdateUniformFloat2(const std::string& name, const glm::vec2& value);

@@ -27,8 +27,8 @@ public:
 			0,1,2
 		};
 
-		std::shared_ptr<SoLin::VertexBuffer> vertexBuffer;
-		std::shared_ptr<SoLin::IndexBuffer> indexBuffer;
+		SoLin::Ref<SoLin::VertexBuffer> vertexBuffer;
+		SoLin::Ref<SoLin::IndexBuffer> indexBuffer;
 		m_VertexArray.reset(SoLin::VertexArray::Create());
 		vertexBuffer.reset(SoLin::VertexBuffer::Create(vertices, sizeof(vertices)));
 		indexBuffer.reset(SoLin::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
@@ -82,8 +82,8 @@ public:
 		};
 		uint32_t squareIndices[6] = { 0,1,2,2,3,0 };
 		m_SquareVA.reset(SoLin::VertexArray::Create());
-		std::shared_ptr<SoLin::VertexBuffer> squareVB;
-		std::shared_ptr<SoLin::IndexBuffer> squareIB;
+		SoLin::Ref<SoLin::VertexBuffer> squareVB;
+		SoLin::Ref<SoLin::IndexBuffer> squareIB;
 		squareVB.reset(SoLin::VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
 		squareIB.reset(SoLin::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t)));
 
@@ -191,11 +191,11 @@ public:
 	}
 
 	private:
-		std::shared_ptr<SoLin::Shader> m_Shader;
-		std::shared_ptr<SoLin::VertexArray> m_VertexArray;
+		SoLin::Ref<SoLin::Shader> m_Shader;
+		SoLin::Ref<SoLin::VertexArray> m_VertexArray;
 
-		std::shared_ptr<SoLin::Shader> m_SquareShader;
-		std::shared_ptr<SoLin::VertexArray> m_SquareVA;
+		SoLin::Ref<SoLin::Shader> m_SquareShader;
+		SoLin::Ref<SoLin::VertexArray> m_SquareVA;
 
 		glm::vec3 m_SquareColor = { 0.5412f, 0.1686f, 0.8863f };
 
