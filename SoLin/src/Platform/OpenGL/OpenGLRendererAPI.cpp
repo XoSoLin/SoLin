@@ -5,7 +5,13 @@
 
 namespace SoLin {
 	void OpenGLRendererAPI::Init() {
+		//启用混合
 		glEnable(GL_BLEND);
+		// 设置混合函数：定义源因子和目标因子
+		// GL_SRC_ALPHA：源因子为源颜色的 Alpha 值（新绘制的像素透明度）
+		// GL_ONE_MINUS_SRC_ALPHA：目标因子为 1 减去源颜色的 Alpha 值（背景像素的不透明度）
+		// 最终颜色 = 源颜色 * 源Alpha + 目标颜色 * (1 - 源Alpha)
+		// 这是实现标准透明混合（Alpha Blending）的常用组合
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 	void OpenGLRendererAPI::Clear()

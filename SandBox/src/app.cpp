@@ -158,6 +158,12 @@ public:
 		m_Texture = SoLin::Texture2D::Create("assets/textures/г╖од02.png");
 		std::dynamic_pointer_cast<SoLin::OpenGLShader>(m_TextureShader)->Bind();
 		std::dynamic_pointer_cast<SoLin::OpenGLShader>(m_TextureShader)->UpdateUniformInt("u_Texture", 0);
+		
+		m_TextureShader2.reset(SoLin::Shader::Create("assets/shaders/TextureShader.glsl"));
+		m_Texture2 = SoLin::Texture2D::Create("assets/textures/Checkerboard.png");
+		std::dynamic_pointer_cast<SoLin::OpenGLShader>(m_TextureShader2)->Bind();
+		std::dynamic_pointer_cast<SoLin::OpenGLShader>(m_TextureShader2)->UpdateUniformInt("u_Texture", 0);
+
 	}
 
 	virtual void OnUpdate(SoLin::Timestep& ts) override {
@@ -201,6 +207,8 @@ public:
 				SoLin::Renderer::Submit(m_SquareShader, m_SquareVA,transform);
 			}
 		}
+		m_Texture2->Bind();
+		SoLin::Renderer::Submit(m_TextureShader2, m_SquareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
 
 		m_Texture->Bind();
 		SoLin::Renderer::Submit(m_TextureShader, m_SquareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
@@ -208,7 +216,6 @@ public:
 		//SoLin::Renderer::Submit(m_Shader, m_VertexArray,glm::mat4(1.0f));
 
 		SoLin::Renderer::EndScene();
-		//SL_INFO("ExampleLayer::OnUpdate");
 	} 
 	virtual void OnImGuiRender() override
 	{
@@ -233,9 +240,9 @@ public:
 		SoLin::Ref<SoLin::Shader> m_Shader;
 		SoLin::Ref<SoLin::VertexArray> m_VertexArray;
 
-		SoLin::Ref<SoLin::Shader> m_SquareShader,m_TextureShader;
+		SoLin::Ref<SoLin::Shader> m_SquareShader,m_TextureShader, m_TextureShader2;
 		SoLin::Ref<SoLin::VertexArray> m_SquareVA;
-		SoLin::Ref<SoLin::Texture2D> m_Texture;
+		SoLin::Ref<SoLin::Texture2D> m_Texture, m_Texture2;
 
 		glm::vec3 m_SquareColor = { 0.5412f, 0.1686f, 0.8863f };
 

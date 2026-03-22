@@ -8,6 +8,10 @@ workspace "SoLin"			--工作区
 		"Dist"
 	}
 
+	flags{								--设置编译器选项
+		"MultiProcessorCompile"			--多处理器并行编译
+	}
+
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"		--输出目录和中间生成文件目录
 IncludeDir = {}														--创建一个表
 IncludeDir["GLFW"] = "SoLin/vendor/GLFW/include"					--将表的"GLFW"键索引到此路径
