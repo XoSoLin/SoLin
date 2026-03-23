@@ -71,7 +71,7 @@ public:
 		// 以上对a_Color的操作：使其颜色与位置关联(x轴与r关联，y轴与g关联)
 		//						位置是-1到1之间，*0.5使其区间与RGBA的区间大小一致，再+0.5使其区间从-0.5至0.5提升到0至1
 
-		m_Shader.reset(SoLin::Shader::Create(vertexSrc, fragmentSrc));
+		m_Shader = SoLin::Shader::Create("sjx",vertexSrc, fragmentSrc);
 
 		// square rendering
 		float squareVertices[5 * 4] = {
@@ -95,74 +95,16 @@ public:
 		m_SquareVA->AddVertexBuffer(squareVB);
 		m_SquareVA->SetIndexBuffer(squareIB);
 
-		std::string squareVertexSrc = R"(
-			#version 330 core
-			
-			layout(location = 0) in vec3 a_Position;
 
-			uniform mat4 u_ViewProjection;	
-			uniform mat4 u_Transform;		
+		m_SquareShader = m_ShaderLibrary.Load("assets/shaders/SquarePosShader.glsl");
 
-			void main()
-			{
-				gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);
-			}
-		)";
-		std::string squareFragSrc = R"(
-			#version 330 core
 
-			layout(location = 0) out vec4 a_Color;
-			
-			uniform vec3 u_Color;
-			
-			void main()
-			{
-				a_Color = vec4(u_Color, 1.0);
-			}
-		)";
-
-		m_SquareShader.reset(SoLin::Shader::Create(squareVertexSrc, squareFragSrc));
-
-		std::string textureVertexSrc = R"(
-			#version 330 core
-			
-			layout(location = 0) in vec3 a_Position;
-			layout(location = 1) in vec2 a_TexCoord;
-
-			uniform mat4 u_ViewProjection;
-			uniform mat4 u_Transform;
-
-			out vec2 v_TexCoord;
-
-			void main(){
-				v_TexCoord = a_TexCoord;
-				gl_Position = u_ViewProjection * u_Transform * vec4(a_Position,1.0);
-			}
-
-		)";
-		std::string textureFragSrc = R"(
-			#version 330 core
-
-			layout(location = 0) out vec4 Color;
-			
-			in vec2 v_TexCoord;
-
-			uniform sampler2D u_Texture;
-
-			void main()
-			{
-				Color = texture(u_Texture, v_TexCoord);
-			}
-		)";
-		m_TextureShader.reset(SoLin::Shader::Create(textureVertexSrc, textureFragSrc));
-		m_Texture = SoLin::Texture2D::Create("assets/textures/千夏02.png");
+		m_TextureShader = m_ShaderLibrary.Load("assets/shaders/TextureShader.glsl");
 		std::dynamic_pointer_cast<SoLin::OpenGLShader>(m_TextureShader)->Bind();
 		std::dynamic_pointer_cast<SoLin::OpenGLShader>(m_TextureShader)->UpdateUniformInt("u_Texture", 0);
 		
-		m_TextureShader2.reset(SoLin::Shader::Create("assets/shaders/TextureShader.glsl"));
+		m_Texture = SoLin::Texture2D::Create("assets/textures/千夏02.png");
 		m_Texture2 = SoLin::Texture2D::Create("assets/textures/Checkerboard.png");
-		std::dynamic_pointer_cast<SoLin::OpenGLShader>(m_TextureShader2)->Bind();
-		std::dynamic_pointer_cast<SoLin::OpenGLShader>(m_TextureShader2)->UpdateUniformInt("u_Texture", 0);
 
 	}
 
@@ -208,7 +150,7 @@ public:
 			}
 		}
 		m_Texture2->Bind();
-		SoLin::Renderer::Submit(m_TextureShader2, m_SquareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+		SoLin::Renderer::Submit(m_TextureShader, m_SquareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
 
 		m_Texture->Bind();
 		SoLin::Renderer::Submit(m_TextureShader, m_SquareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
@@ -238,9 +180,10 @@ public:
 
 	private:
 		SoLin::Ref<SoLin::Shader> m_Shader;
+		SoLin::ShaderLibrary m_ShaderLibrary;
 		SoLin::Ref<SoLin::VertexArray> m_VertexArray;
 
-		SoLin::Ref<SoLin::Shader> m_SquareShader,m_TextureShader, m_TextureShader2;
+		SoLin::Ref<SoLin::Shader> m_SquareShader,m_TextureShader;
 		SoLin::Ref<SoLin::VertexArray> m_SquareVA;
 		SoLin::Ref<SoLin::Texture2D> m_Texture, m_Texture2;
 
