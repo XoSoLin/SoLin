@@ -95,7 +95,9 @@ namespace SoLin {
 		m_RendererID = glCreateProgram();								//创建着色器程序
 		
 		//存储产生的着色器
-		std::vector<GLuint> glShaders(shaderSources.size());
+		SL_CORE_ASSERT((shaderSources.size() <= 2), "We only support 2 shaders for now ! ");
+		int glShaderIndex = 0;
+		std::array<GLuint, 2> glShaders;
 		for (auto& key_value : shaderSources) {
 
 			GLenum type = key_value.first;								//获取着色器类型
@@ -122,7 +124,7 @@ namespace SoLin {
 			}
 
 			glAttachShader(m_RendererID, shader);						//为着色器程序添加这个着色器
-			glShaders.push_back(shader);							//存储这个着色器
+			glShaders[glShaderIndex++] = shader;							//存储这个着色器
 		}
 
 		glLinkProgram(m_RendererID);									//为程序进行连接
