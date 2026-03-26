@@ -10,7 +10,7 @@
 class ExampleLayer :public SoLin::Layer {
 public:
 	ExampleLayer()
-		:Layer("Example layer"), m_Camera(-1.6f, 1.6f, -0.9f, 0.9f), m_CameraPosition(0.0f), m_CameraRotation(0.0f)
+		:Layer("Example layer"), m_CameraController(1280.0f / 720.0f, true)
 	{
 		float vertices[3 * 7] = {
 			-0.5f, -0.5f, 0.0f, 1.0f, 0.2f, 0.8f, 1.0f,
@@ -109,30 +109,11 @@ public:
 	}
 
 	virtual void OnUpdate(SoLin::Timestep& ts) override {
-		
-		//控制相机在自己坐标系中移动旋转
-
-		if (SoLin::Input::IsKeyPressed(SL_KEY_RIGHT))
-			m_CameraPosition.x += m_CameraMoveSpeed * ts;
-		else if (SoLin::Input::IsKeyPressed(SL_KEY_LEFT))
-			m_CameraPosition.x -= m_CameraMoveSpeed * ts;
-
-		if (SoLin::Input::IsKeyPressed(SL_KEY_UP))
-			m_CameraPosition.y += m_CameraMoveSpeed * ts;
-		else if (SoLin::Input::IsKeyPressed(SL_KEY_DOWN))
-			m_CameraPosition.y -= m_CameraMoveSpeed * ts;
-
-		if (SoLin::Input::IsKeyPressed(SL_KEY_Q))
-			m_CameraRotation += m_CameraRotateSpeed * ts;
-		else if (SoLin::Input::IsKeyPressed(SL_KEY_E))
-			m_CameraRotation -= m_CameraRotateSpeed * ts;
-
-		m_Camera.SetPosition(m_CameraPosition);
-		m_Camera.SetRotation(m_CameraRotation);
+		m_CameraController.OnUpdate(ts);
 
 		SoLin::RendererCommand::Clear();
 		SoLin::RendererCommand::SetClearColor({ 0.1f,0.1f,0.1f,1 });
-		SoLin::Renderer::BeginScene(m_Camera);
+		SoLin::Renderer::BeginScene(m_CameraController.GetCamera());
 
 		// 缩放变换
 		glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
@@ -176,6 +157,8 @@ public:
 				SL_TRACE("{0} is pressed | Tab", "Tab");
 			SL_TRACE("{0} is pressed | (from char)", (char)e.GetKeyCode());
 		}
+
+		m_CameraController.OnEvent(event);
 	}
 
 	private:
@@ -189,12 +172,8 @@ public:
 
 		glm::vec3 m_SquareColor = { 0.5412f, 0.1686f, 0.8863f };
 
-		SoLin::OrthoGraphicCamera m_Camera;
+		SoLin::OrthoGraphicCameraController m_CameraController;
 
-		glm::vec3 m_CameraPosition;
-		float m_CameraMoveSpeed = 4.0f;
-		float m_CameraRotation;
-		float m_CameraRotateSpeed = 180.0f;
 };
 
 class SandBox :public SoLin::Application {

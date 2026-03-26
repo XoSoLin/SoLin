@@ -180,6 +180,7 @@
     <ClInclude Include="src\SoLin\LayerStack.h" />
     <ClInclude Include="src\SoLin\Log.h" />
     <ClInclude Include="src\SoLin\MouseButtonCodes.h" />
+    <ClInclude Include="src\SoLin\OrthoGraphicCameraController.h" />
     <ClInclude Include="src\SoLin\Renderer\Buffer.h" />
     <ClInclude Include="src\SoLin\Renderer\GraphicsContext.h" />
     <ClInclude Include="src\SoLin\Renderer\OrthoGraphicCamera.h" />
@@ -627,6 +628,7 @@
     <ClCompile Include="src\SoLin\Layer.cpp" />
     <ClCompile Include="src\SoLin\LayerStack.cpp" />
     <ClCompile Include="src\SoLin\Log.cpp" />
+    <ClCompile Include="src\SoLin\OrthoGraphicCameraController.cpp" />
     <ClCompile Include="src\SoLin\Renderer\Buffer.cpp" />
     <ClCompile Include="src\SoLin\Renderer\OrthoGraphicCamera.cpp" />
     <ClCompile Include="src\SoLin\Renderer\Renderer.cpp" />

@@ -12,6 +12,8 @@
 #include"SoLin/KeyCodes.h"
 #include"SoLin/MouseButtonCodes.h"
 
+#include"SoLin/OrthoGraphicCameraController.h"
+
 #include"SoLin/ImGui/ImGuiLayer.h"
 
 //-----------------äÖÈ¾Æ÷-----------------
@@ -23,7 +25,6 @@
 #include "SoLin/Renderer/Texture.h"
 #include "SoLin/Renderer/VertexArray.h"
 
-#include "SoLin/Renderer/OrthoGraphicCamera.h"
 //----------------Renderer----------------
 
 //----------------³ÌÐòÈë¿Ú----------------
