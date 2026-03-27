@@ -29,5 +29,4 @@
 
 //----------------³ÌÐòÈë¿Ú----------------
 #define SL SoLin
-#include"SoLin/Core/EntryPoint.h"
 //----------------EntryPoint--------------

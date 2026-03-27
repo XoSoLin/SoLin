@@ -1,4 +1,6 @@
 #include<SoLin.h>
+#include<SoLin/Core/EntryPoint.h>
+#include"Sandbox2D.h"
 
 #include"Platform/OpenGL/OpenGLShader.h"
 
@@ -179,8 +181,9 @@ public:
 class SandBox :public SoLin::Application {
 public:
 	SandBox() {
-		PushLayer(new ExampleLayer());
+		//PushLayer(new ExampleLayer());
 		//取消 PushOverlay(new SoLin::ImGuiLayer()); ，将其作为 SoLin 运行时 固定自动添加的图层
+		PushLayer(new Sandbox2D());
 	}
 	~SandBox() {
 
