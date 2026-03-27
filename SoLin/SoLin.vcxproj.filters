@@ -81,17 +81,38 @@
     <ClInclude Include="src\SoLin.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\SoLin\Application.h">
-      <Filter>src\SoLin</Filter>
+    <ClInclude Include="src\SoLin\Core\Application.h">
+      <Filter>src\SoLin\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\SoLin\Core.h">
-      <Filter>src\SoLin</Filter>
+    <ClInclude Include="src\SoLin\Core\Core.h">
+      <Filter>src\SoLin\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SoLin\Core\EntryPoint.h">
+      <Filter>src\SoLin\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SoLin\Core\Input.h">
+      <Filter>src\SoLin\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SoLin\Core\KeyCodes.h">
+      <Filter>src\SoLin\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SoLin\Core\Layer.h">
+      <Filter>src\SoLin\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SoLin\Core\LayerStack.h">
+      <Filter>src\SoLin\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SoLin\Core\Log.h">
+      <Filter>src\SoLin\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SoLin\Core\MouseButtonCodes.h">
+      <Filter>src\SoLin\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\SoLin\Core\Timestep.h">
       <Filter>src\SoLin\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\SoLin\EntryPoint.h">
-      <Filter>src\SoLin</Filter>
+    <ClInclude Include="src\SoLin\Core\Window.h">
+      <Filter>src\SoLin\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\SoLin\Events\ApplicationEvent.h">
       <Filter>src\SoLin\Events</Filter>
@@ -108,24 +129,6 @@
     <ClInclude Include="src\SoLin\ImGui\ImGuiLayer.h">
       <Filter>src\SoLin\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="src\SoLin\Input.h">
-      <Filter>src\SoLin</Filter>
-    </ClInclude>
-    <ClInclude Include="src\SoLin\KeyCodes.h">
-      <Filter>src\SoLin</Filter>
-    </ClInclude>
-    <ClInclude Include="src\SoLin\Layer.h">
-      <Filter>src\SoLin</Filter>
-    </ClInclude>
-    <ClInclude Include="src\SoLin\LayerStack.h">
-      <Filter>src\SoLin</Filter>
-    </ClInclude>
-    <ClInclude Include="src\SoLin\Log.h">
-      <Filter>src\SoLin</Filter>
-    </ClInclude>
-    <ClInclude Include="src\SoLin\MouseButtonCodes.h">
-      <Filter>src\SoLin</Filter>
-    </ClInclude>
     <ClInclude Include="src\SoLin\Renderer\Buffer.h">
       <Filter>src\SoLin\Renderer</Filter>
     </ClInclude>
@@ -133,6 +136,9 @@
       <Filter>src\SoLin\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\SoLin\Renderer\OrthoGraphicCamera.h">
+      <Filter>src\SoLin\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SoLin\Renderer\OrthoGraphicCameraController.h">
       <Filter>src\SoLin\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\SoLin\Renderer\Renderer.h">
@@ -152,9 +158,6 @@
     </ClInclude>
     <ClInclude Include="src\SoLin\Renderer\VertexArray.h">
       <Filter>src\SoLin\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="src\SoLin\Window.h">
-      <Filter>src\SoLin</Filter>
     </ClInclude>
     <ClInclude Include="src\slpch.h">
       <Filter>src</Filter>
@@ -1419,7 +1422,6 @@
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
-    <ClInclude Include="src\SoLin\OrthoGraphicCameraController.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp">
@@ -1446,8 +1448,17 @@
     <ClCompile Include="src\Platform\Windows\WindowsWndow.cpp">
       <Filter>src\Platform\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="src\SoLin\Application.cpp">
-      <Filter>src\SoLin</Filter>
+    <ClCompile Include="src\SoLin\Core\Application.cpp">
+      <Filter>src\SoLin\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SoLin\Core\Layer.cpp">
+      <Filter>src\SoLin\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SoLin\Core\LayerStack.cpp">
+      <Filter>src\SoLin\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SoLin\Core\Log.cpp">
+      <Filter>src\SoLin\Core</Filter>
     </ClCompile>
     <ClCompile Include="src\SoLin\ImGui\ImGuiBuild.cpp">
       <Filter>src\SoLin\ImGui</Filter>
@@ -1455,19 +1466,13 @@
     <ClCompile Include="src\SoLin\ImGui\ImGuiLayer.cpp">
       <Filter>src\SoLin\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="src\SoLin\Layer.cpp">
-      <Filter>src\SoLin</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SoLin\LayerStack.cpp">
-      <Filter>src\SoLin</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SoLin\Log.cpp">
-      <Filter>src\SoLin</Filter>
-    </ClCompile>
     <ClCompile Include="src\SoLin\Renderer\Buffer.cpp">
       <Filter>src\SoLin\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\SoLin\Renderer\OrthoGraphicCamera.cpp">
+      <Filter>src\SoLin\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SoLin\Renderer\OrthoGraphicCameraController.cpp">
       <Filter>src\SoLin\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\SoLin\Renderer\Renderer.cpp">
@@ -1494,6 +1499,5 @@
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
-    <ClCompile Include="src\SoLin\OrthoGraphicCameraController.cpp" />
   </ItemGroup>
 </Project>

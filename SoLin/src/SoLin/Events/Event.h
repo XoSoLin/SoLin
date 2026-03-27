@@ -1,7 +1,7 @@
 #pragma once
 
 #include "slpch.h"
-#include "SoLin\Core.h"
+#include "SoLin\Core\Core.h"
 
 namespace SoLin {
 

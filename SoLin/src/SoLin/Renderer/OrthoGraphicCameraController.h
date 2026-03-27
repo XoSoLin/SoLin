@@ -15,7 +15,7 @@ namespace SoLin {
 		//@param rotation 旋转标记(默认F)
 		OrthoGraphicCameraController(float aspectRatio, bool rotation = false);
 
-		void OnUpdate(Timestep& ts);
+		void OnUpdate(Timestep ts);
 		void OnEvent(Event& e);
 
 		OrthoGraphicCamera& GetCamera() { return m_Camera; }

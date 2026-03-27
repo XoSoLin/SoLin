@@ -2,17 +2,17 @@
 
 // 提供给应用端去使用
 
-#include"SoLin/Application.h"
-#include"SoLin/Layer.h"
-#include"SoLin/Log.h"
+#include"SoLin/Core/Application.h"
+#include"SoLin/Core/Layer.h"
+#include"SoLin/Core/Log.h"
 
 #include"SoLin/Core/Timestep.h"
 
-#include"SoLin/Input.h"
-#include"SoLin/KeyCodes.h"
-#include"SoLin/MouseButtonCodes.h"
+#include"SoLin/Core/Input.h"
+#include"SoLin/Core/KeyCodes.h"
+#include"SoLin/Core/MouseButtonCodes.h"
 
-#include"SoLin/OrthoGraphicCameraController.h"
+#include"SoLin/Renderer/OrthoGraphicCameraController.h"
 
 #include"SoLin/ImGui/ImGuiLayer.h"
 
@@ -29,5 +29,5 @@
 
 //----------------程序入口----------------
 #define SL SoLin
-#include"SoLin/EntryPoint.h"
+#include"SoLin/Core/EntryPoint.h"
 //----------------EntryPoint--------------

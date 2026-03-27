@@ -1,9 +1,9 @@
 #include "slpch.h"
 #include<GLFW/glfw3.h>
-#include "Application.h"
+#include "SoLin/Core/Application.h"
 
-#include "Events/Event.h"
-#include "SoLin/Log.h"
+#include "SoLin/Events/Event.h"
+#include "SoLin/Core/Log.h"
 #include"Input.h"
 
 #include"SoLin/Renderer/Renderer.h"

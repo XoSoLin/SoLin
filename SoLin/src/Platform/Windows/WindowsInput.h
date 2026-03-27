@@ -1,6 +1,6 @@
 #pragma once
 
-#include "SoLin/Input.h"
+#include "SoLin/Core/Input.h"
 
 namespace SoLin {
 

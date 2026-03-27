@@ -1,6 +1,6 @@
 #pragma once
 
-#include"SoLin/Core.h"
+#include"SoLin\Core\Core.h"
 
 namespace SoLin {
 	class SOLIN_API Input {

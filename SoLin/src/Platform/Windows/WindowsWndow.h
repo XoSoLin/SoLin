@@ -1,6 +1,6 @@
 #pragma once
 
-#include "SoLin/Window.h"
+#include "SoLin/Core/Window.h"
 
 #include"SoLin/Renderer/GraphicsContext.h"
 #include<GLFW/glfw3.h>

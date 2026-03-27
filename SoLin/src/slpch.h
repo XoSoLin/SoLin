@@ -12,7 +12,7 @@
 #include<unordered_map>
 #include<unordered_set>
 
-#include "SoLin/Log.h"
+#include "SoLin/Core/Log.h"
 
 #ifdef SL_PLATFORM_WINDOWS
 	#include<Windows.h>

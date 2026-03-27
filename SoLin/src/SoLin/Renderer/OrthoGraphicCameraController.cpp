@@ -1,8 +1,8 @@
 #include"slpch.h"
 #include"OrthoGraphicCameraController.h"
 
-#include"SoLin/Input.h"
-#include"SoLin/KeyCodes.h"
+#include"SoLin/Core/Input.h"
+#include"SoLin/Core/KeyCodes.h"
 
 namespace SoLin {
 	OrthoGraphicCameraController::OrthoGraphicCameraController(float aspectRatio, bool rotation)
@@ -10,7 +10,7 @@ namespace SoLin {
 		m_Camera(-m_AspectRatio*m_ZoomLevel,m_AspectRatio*m_ZoomLevel,-m_ZoomLevel,m_ZoomLevel)
 	{}
 
-	void OrthoGraphicCameraController::OnUpdate(Timestep& ts)
+	void OrthoGraphicCameraController::OnUpdate(Timestep ts)
 	{
 		if (m_Rotation) {
 			// 相机朝向是z的负方向，OpenGL中是右手坐标系，旋转是绕z轴转，加角度是四指弯曲方向

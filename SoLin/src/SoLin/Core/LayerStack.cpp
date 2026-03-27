@@ -7,6 +7,7 @@ namespace SoLin {
 
 	LayerStack::~LayerStack() {				//Ïú»Ù²ãÕ»
 		for each (Layer * layer in m_Layers) {
+			layer->OnDetach();
 			delete layer;
 		}
 	}

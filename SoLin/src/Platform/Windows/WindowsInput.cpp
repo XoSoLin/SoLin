@@ -1,7 +1,7 @@
 #include "slpch.h"
 #include"WindowsInput.h"
 
-#include"SoLin/Application.h"
+#include"SoLin/Core/Application.h"
 
 #include<GLFW/glfw3.h>
 

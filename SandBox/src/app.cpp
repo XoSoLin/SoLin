@@ -29,7 +29,7 @@ public:
 
 		SoLin::Ref<SoLin::VertexBuffer> vertexBuffer;
 		SoLin::Ref<SoLin::IndexBuffer> indexBuffer;
-		m_VertexArray.reset(SoLin::VertexArray::Create());
+		m_VertexArray = SoLin::VertexArray::Create();
 		vertexBuffer.reset(SoLin::VertexBuffer::Create(vertices, sizeof(vertices)));
 		indexBuffer.reset(SoLin::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
 		vertexBuffer->SetLayout(layout);
@@ -81,7 +81,7 @@ public:
 			-0.5f,  0.5f, -0.1f, 0.0f, 1.0f
 		};
 		uint32_t squareIndices[6] = { 0,1,2,2,3,0 };
-		m_SquareVA.reset(SoLin::VertexArray::Create());
+		m_SquareVA = SoLin::VertexArray::Create();
 		SoLin::Ref<SoLin::VertexBuffer> squareVB;
 		SoLin::Ref<SoLin::IndexBuffer> squareIB;
 		squareVB.reset(SoLin::VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
@@ -108,7 +108,7 @@ public:
 
 	}
 
-	virtual void OnUpdate(SoLin::Timestep& ts) override {
+	virtual void OnUpdate(SoLin::Timestep ts) override {
 		m_CameraController.OnUpdate(ts);
 
 		SoLin::RendererCommand::Clear();
