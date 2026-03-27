@@ -10,6 +10,10 @@ namespace SoLin {
 	class Renderer {
 	public:
 		static void Init();
+		//@brief 窗口调整大小
+		//@param width 宽度像素
+		//@param height 高度像素
+		static void OnWindowResize(uint32_t width, uint32_t height);
 
 		//@brief 渲染器开始渲染场景
 		//@param camera 传入相机使用其中必要的数据

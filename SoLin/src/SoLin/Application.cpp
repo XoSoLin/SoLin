@@ -56,6 +56,7 @@ namespace SoLin {
 	void Application::OnEvent(Event& e) {
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
+		dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FN(OnWindowResize));
 
 		// 这里会输出所有e的信息，但这些事件并不是都被响应处理了。
 		// 目前只有WindowCloseEvent被处理，也就是执行了OnWindowClose()
@@ -78,13 +79,13 @@ namespace SoLin {
 			float time = (float)glfwGetTime();				//获取当前时间
 			Timestep timestep = time - m_LastFrameTime;		//计算变化时间
 			m_LastFrameTime = time;							//存储当前时间供下次使用
-
-			for (Layer* layer : m_LayerStack) {				//更新图层
-				layer->OnUpdate(timestep);
+			
+			if (!m_Minimized) {
+				for (Layer* layer : m_LayerStack) {				//更新图层
+					layer->OnUpdate(timestep);
+				}
 			}
 
-			/*auto [x, y] = Input::GetMousePos();
-			SL_CORE_TRACE("{0},{1}", x, y);*/
 
 			m_ImGuiLayer->Begin();
 			for (Layer* layer : m_LayerStack)
@@ -98,5 +99,17 @@ namespace SoLin {
 	bool Application::OnWindowClose(WindowCloseEvent& event) {
 		m_Running = false;
 		return true;
+	}
+	bool Application::OnWindowResize(WindowResizeEvent& event)
+	{
+		m_Minimized = false;
+		Renderer::OnWindowResize(event.GetWidth(), event.GetHeight());
+		
+		if (event.GetWidth() == 0 && event.GetHeight() == 0) {
+			m_Minimized = true;
+			return false;
+		}
+
+		return false;
 	}
 }

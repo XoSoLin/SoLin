@@ -20,8 +20,14 @@ namespace SoLin {
 
 		OrthoGraphicCamera& GetCamera() { return m_Camera; }
 		const OrthoGraphicCamera& GetCamera()const { return m_Camera; }
+
+		void SetZoomLevel(float level) { m_ZoomLevel = level; }
+		float GetZoomLevel()const { return m_ZoomLevel; }
 	private:
+		// @brief 鼠标滑轮回调
 		bool OnMouseScrolled(MouseScrolledEvent e);
+		// @brief 窗口大小调整回调
+		// @brief 主要用于调整所持相机的P矩阵
 		bool OnWindowResized(WindowResizeEvent e);
 	private:
 		float m_AspectRatio;						//宽高比

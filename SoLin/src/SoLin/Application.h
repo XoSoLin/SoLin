@@ -28,15 +28,19 @@ namespace SoLin {
 		//@brief 返回该App单例指针
 		inline static Application& Get() { return *s_Instance; }
 	private:
+		//@brief 窗口关闭回调
 		bool OnWindowClose(WindowCloseEvent& event);
+		//@brief 窗口尺寸回调
+		bool OnWindowResize(WindowResizeEvent& event);
 
 	private:
-		bool m_Running = true;
-		float m_LastFrameTime = 0.0f;
-		ImGuiLayer* m_ImGuiLayer;
-		std::unique_ptr<Window> m_Window;
+		bool m_Running = true;							//程序运行标志
+		bool m_Minimized = false;
+		float m_LastFrameTime = 0.0f;					//上一帧时间
+		ImGuiLayer* m_ImGuiLayer;						//imgui层
+		std::unique_ptr<Window> m_Window;				//程序的主窗口
 
-		LayerStack m_LayerStack;
+		LayerStack m_LayerStack;						//程序的层栈
 	private:
 		static Application* s_Instance;
 	};

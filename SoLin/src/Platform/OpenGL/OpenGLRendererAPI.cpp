@@ -14,6 +14,12 @@ namespace SoLin {
 		// 这是实现标准透明混合（Alpha Blending）的常用组合
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
+	void OpenGLRendererAPI::SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height)
+	{
+		// 视口原点位置x,y
+		// 视口的宽高 w,h
+		glViewport(x, y, width, height);
+	}
 	void OpenGLRendererAPI::Clear()
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
