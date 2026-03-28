@@ -13,7 +13,8 @@ namespace SoLin {
 			DirectX
 		};
 	public:
-		static RendererAPI* Create();
+		// 于各渲染API去定义
+		static Scope<RendererAPI> Create();
 
 		virtual void Clear() = 0;
 		virtual void SetClearColor(const glm::vec4& color) = 0;

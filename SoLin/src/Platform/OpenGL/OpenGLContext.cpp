@@ -21,6 +21,14 @@ namespace SoLin {
 		SL_CORE_INFO("	Vendor: {0}", (const char*)glGetString(GL_VENDOR));				//使用的GPU厂商
 		SL_CORE_INFO("	Renderer: {0}", (const char*)glGetString(GL_RENDERER));			//使用的GPU渲染器
 		SL_CORE_INFO("	Version: {0}", (const char*)glGetString(GL_VERSION));			//渲染版本号
+
+		#ifdef SOLIN_ENABLE_ASSERTS
+			int versionMajor;
+			int versionMinor;
+			glGetIntegerv(GL_MAJOR_VERSION, &versionMajor);
+			glGetIntegerv(GL_MINOR_VERSION, &versionMinor);
+			SL_CORE_ASSERT((versionMajor > 4 || (versionMajor == 4 && versionMinor >= 5)), "SoLin requires at least OpenGL Version 4.5!");
+		#endif
 	}
 	void OpenGLContext::SwapBuffers()
 	{

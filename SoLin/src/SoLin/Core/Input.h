@@ -17,7 +17,7 @@ namespace SoLin {
 		virtual float GetMouseYImpl() = 0;
 
 	private:
-		static Input* s_Instance;					//在XXXXInput.cpp中初始化，比如WindowsInput.cpp
+		static Scope<Input> s_Instance;					//在XXXXInput.cpp中初始化，比如WindowsInput.cpp
 													//(静态成员变量必须被定义或初始化)(XXX指平台)
 	};
 }

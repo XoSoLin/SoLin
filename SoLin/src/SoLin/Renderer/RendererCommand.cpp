@@ -4,13 +4,13 @@
 #include"Platform/OpenGL/OpenGLRendererAPI.h"
 
 namespace SoLin {
-	RendererAPI* RendererAPI::Create() {
+	Scope<RendererAPI> RendererAPI::Create() {
 		switch (RendererAPI::GetAPI())
 		{
 		case RendererAPI::API::None: SL_CORE_ASSERT(false, "RendererAPI::None is currently not supported! ");
 			return nullptr;
 		case RendererAPI::API::OpenGL:
-			return new OpenGLRendererAPI();
+			return CreateScope<OpenGLRendererAPI>();
 		case RendererAPI::API::DirectX: SL_CORE_ASSERT(false, "RendererAPI::DirectX is currently not supported! ");
 			return nullptr;
 		}
@@ -18,5 +18,5 @@ namespace SoLin {
 		return nullptr;
 	}
 
-	RendererAPI* RendererCommand::s_RendererAPI = RendererAPI::Create();
+	Scope<RendererAPI> RendererCommand::s_RendererAPI = RendererAPI::Create();
 }

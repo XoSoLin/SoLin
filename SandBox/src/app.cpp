@@ -178,12 +178,12 @@ public:
 
 };
 
-class SandBox :public SoLin::Application {
+class SandBox :public SoLin::Application { 
 public:
 	SandBox() {
-		//PushLayer(new ExampleLayer());
 		//取消 PushOverlay(new SoLin::ImGuiLayer()); ，将其作为 SoLin 运行时 固定自动添加的图层
-		PushLayer(new Sandbox2D());
+		//PushLayer(new Sandbox2D());
+		PushLayer(new ExampleLayer());
 	}
 	~SandBox() {
 

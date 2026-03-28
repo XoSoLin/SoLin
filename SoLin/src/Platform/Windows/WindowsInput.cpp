@@ -6,7 +6,7 @@
 #include<GLFW/glfw3.h>
 
 namespace SoLin {
-	Input* Input::s_Instance = new WindowsInput();		//s_Instance 是一个没有包含任何数据的实例对象
+	Scope<Input> Input::s_Instance = CreateScope<WindowsInput>();		//s_Instance 是一个没有包含任何数据的实例对象
 
 	bool WindowsInput::IsKeyPressedImpl(int keycode) {
 		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());

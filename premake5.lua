@@ -78,7 +78,6 @@ project "SoLin"				--项目
 		buildoptions "/utf-8"		--附加命令行
 
 		defines{					--宏声明
-			"SL_PLATFORM_WINDOWS",
 			"SL_BUILD_DLL" ,
 			"GLFW_INCLUDE_NONE"
 		}
