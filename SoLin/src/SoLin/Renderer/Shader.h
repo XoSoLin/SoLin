@@ -14,6 +14,20 @@ namespace SoLin {
 
 		static Ref<Shader> Create(const std::string& filepath);
 		static Ref<Shader> Create(const std::string& name,const std::string& vertexSrc, const std::string& fragmentSrc);
+
+
+		//设置统一变量
+
+		//@brief 用于设置着色器的单个int数据
+		virtual void SetInt		(const std::string& name, const int& value) = 0;
+		//@brief 用于设置着色器的vec3数据
+		virtual void SetFloat3	(const std::string& name, const glm::vec3& value) = 0;
+		//@brief 用于设置着色器的vec4数据
+		virtual void SetFloat4	(const std::string& name, const glm::vec4& vlaue) = 0;
+		//@brief 用于设置着色器的三维矩阵数据
+		virtual void SetMat3	(const std::string& name, const glm::mat3& vlaue) = 0;
+		//@brief 用于设置着色器的四维矩阵数据
+		virtual void SetMat4	(const std::string& name, const glm::mat4& vlaue) = 0;
 	};
 
 	//@brief 着色器库

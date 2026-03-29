@@ -7,6 +7,7 @@
 
 namespace SoLin {
 	
+	//@brief äÖÈ¾Æ÷
 	class Renderer {
 	public:
 		static void Init();

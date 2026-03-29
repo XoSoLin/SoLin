@@ -2,6 +2,9 @@
 #include"RendererAPI.h"
 
 namespace SoLin {
+	
+	//@brief 渲染命令
+	//@brief 根据渲染API的不同，会调用不同的渲染指令
 	class RendererCommand {
 	public:
 		inline static void Init() {

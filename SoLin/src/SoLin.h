@@ -18,6 +18,7 @@
 
 //-----------------äÖÈ¾Æ÷-----------------
 #include "SoLin/Renderer/Renderer.h"
+#include "SoLin/Renderer/Renderer2D.h"
 #include "SoLin/Renderer/RendererCommand.h"
 
 #include "SoLin/Renderer/Buffer.h"
