@@ -34,7 +34,7 @@ namespace SoLin {
 			internalFormat = GL_RGBA8;
 			dataFormat = GL_RGBA;
 		}
-		SL_CORE_ASSERT(internalFormat & dataFormat, "Format not supported!");
+		SL_CORE_ASSERT((internalFormat & dataFormat), "Format not supported!");
 
 		// GL_TEXTURE_2D：纹理类型为 2D 纹理
 		// 1：创建 1 个纹理对象
@@ -51,6 +51,11 @@ namespace SoLin {
 		glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		// 设置纹理放大过滤器：当纹理被放大时，使用最近邻采样（保持像素边缘清晰）
 		glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+		//设置纹理环绕方式，S为水平，T为垂直
+		//GL_REPEAT 表示重复纹理
+		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
 		// 将图像数据上传到纹理的存储空间中
 		// m_RendererID：纹理对象 ID

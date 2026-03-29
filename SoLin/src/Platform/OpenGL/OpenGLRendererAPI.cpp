@@ -13,6 +13,9 @@ namespace SoLin {
 		// 最终颜色 = 源颜色 * 源Alpha + 目标颜色 * (1 - 源Alpha)
 		// 这是实现标准透明混合（Alpha Blending）的常用组合
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+		//启用深度测试
+		glEnable(GL_DEPTH_TEST);
 	}
 	void OpenGLRendererAPI::SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height)
 	{

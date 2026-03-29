@@ -5,6 +5,7 @@
 
 #include"Shader.h"
 #include"VertexArray.h"
+#include"Texture.h"
 #include"RendererCommand.h"
 #include"Platform/OpenGL/OpenGLShader.h"
 
@@ -14,6 +15,7 @@ namespace SoLin {
 	struct Renderer2DStorage {
 		Ref<VertexArray> QuadVA;		//方形顶点数组指针
 		Ref<Shader> FlatColorShader;	//纯色着色器指针
+		Ref<Shader> TextureShader;		//纹理着色器指针
 	};
 	static Renderer2DStorage* s_Data;	//2D渲染器数据
 
@@ -23,11 +25,11 @@ namespace SoLin {
 		s_Data = new Renderer2DStorage();
 
 		//顶点数据
-		float squareVertices[3 * 4] = {
-			-0.5f,-0.5f,-0.1f,
-			0.5f ,-0.5f,-0.1f,
-			0.5f ,0.5f ,-0.1f,
-			-0.5f,0.5f ,-0.1f
+		float squareVertices[5 * 4] = {
+			-0.5f,-0.5f,-0.1f, 0.0f, 0.0f,
+			0.5f ,-0.5f,-0.1f, 1.0f, 0.0f,
+			0.5f ,0.5f ,-0.1f, 1.0f, 1.0f,
+			-0.5f,0.5f ,-0.1f, 0.0f, 1.0f
 		};
 		//索引数据
 		uint32_t squareIndices[6] = { 0,1,2,2,3,0 };
@@ -40,14 +42,20 @@ namespace SoLin {
 
 		//设置布局
 		BufferLayout squareLayout = {
-			{ShaderDataType::Float3,"a_Position"}
+			{ShaderDataType::Float3,"a_Position"},
+			{ShaderDataType::Float2,"a_TexCoord"}
 		};
 		squareVB->SetLayout(squareLayout);
 
 		s_Data->QuadVA = VertexArray::Create();
 		s_Data->QuadVA->AddVertexBuffer(squareVB);
 		s_Data->QuadVA->SetIndexBuffer(squareIB);
+
 		s_Data->FlatColorShader = Shader::Create("assets/shaders/FlatColorShader.glsl");
+
+		s_Data->TextureShader = Shader::Create("assets/shaders/TextureShader.glsl");
+		s_Data->TextureShader->Bind();
+		s_Data->TextureShader->SetInt("u_Texture", 0);
 	}
 
 	void Renderer2D::Shutdown()
@@ -59,6 +67,9 @@ namespace SoLin {
 	{
 		s_Data->FlatColorShader->Bind();
 		s_Data->FlatColorShader->SetMat4("u_ViewProjection",camera.GetViewProjectionMatrix());
+		
+		s_Data->TextureShader->Bind();
+		s_Data->TextureShader->SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
 	}
 
 	void Renderer2D::EndScene()
@@ -77,6 +88,24 @@ namespace SoLin {
 
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), { size.x,size.y,1.0f });
 		s_Data->FlatColorShader->SetMat4("u_Transform", transform);
+
+		s_Data->QuadVA->Bind();
+		RendererCommand::DrawIndexed(s_Data->QuadVA);
+	}
+
+	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture2D>& texture)
+	{
+		DrawQuad({ position.x,position.y,0.0f }, size, texture);
+	}
+
+	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture)
+	{
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), { size.x,size.y,1.0f });
+
+		s_Data->TextureShader->Bind();
+		s_Data->TextureShader->SetMat4("u_Transform", transform);
+
+		texture->Bind();
 
 		s_Data->QuadVA->Bind();
 		RendererCommand::DrawIndexed(s_Data->QuadVA);
