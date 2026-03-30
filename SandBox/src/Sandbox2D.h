@@ -2,10 +2,7 @@
 
 #include "SoLin.h"
 
-
 #include "imgui/imgui.h"
-#include<glm/gtc/matrix_transform.hpp>
-#include<glm/gtc/type_ptr.hpp>
 #include"SoLin/Renderer/Texture.h"
 
 class Sandbox2D :public SoLin::Layer {

@@ -69,7 +69,7 @@ namespace SoLin {
 
 	void ImGuiLayer::OnImGuiRender() {
 		static bool show = true;
-		ImGui::ShowDemoWindow(&show);									//展示Demo窗口，内置的一个ImGui窗口
+		//ImGui::ShowDemoWindow(&show);									//展示Demo窗口，内置的一个ImGui窗口
 	}
 
 	void ImGuiLayer::End() {
