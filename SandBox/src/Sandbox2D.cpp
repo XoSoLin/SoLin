@@ -54,7 +54,7 @@ Sandbox2D::Sandbox2D()
 void Sandbox2D::OnAttach()
 {
 	//文件编码转utf-8后在vs中运行时utf-8会被当作gb2312去处理，有中文时会导致程序运行时有乱码
-	m_Texture = SoLin::Texture2D::Create("assets/textures/Checkerboard.png");
+	m_Texture = SoLin::Texture2D::Create(SLPATH("assets/textures/千夏02.png"));
 }
 
 void Sandbox2D::OnDetach()

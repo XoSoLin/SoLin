@@ -174,6 +174,7 @@
     <ClInclude Include="src\SoLin\Core\LayerStack.h" />
     <ClInclude Include="src\SoLin\Core\Log.h" />
     <ClInclude Include="src\SoLin\Core\MouseButtonCodes.h" />
+    <ClInclude Include="src\SoLin\Core\SLfile.h" />
     <ClInclude Include="src\SoLin\Core\Timestep.h" />
     <ClInclude Include="src\SoLin\Core\Window.h" />
     <ClInclude Include="src\SoLin\Events\ApplicationEvent.h" />

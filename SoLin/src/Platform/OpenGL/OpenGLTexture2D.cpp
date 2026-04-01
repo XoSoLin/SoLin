@@ -21,7 +21,7 @@ namespace SoLin {
 		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	}
 
-	OpenGLTexture2D::OpenGLTexture2D(const std::string& path)
+	OpenGLTexture2D::OpenGLTexture2D(const std::filesystem::path& path)
 		:m_Path(path)
 	{
 		// 启用stb_image 垂直翻转，使图像原点与 OpenGL 纹理坐标一致
@@ -32,7 +32,9 @@ namespace SoLin {
 		// 使用 stb_image 加载图像文件
 		// &width, &height, &channels：用于接收图像的宽度、高度和通道数（例如 3=RGB, 4=RGBA）
 		// 最后一个参数 0 表示保持图像的原始通道数
-		stbi_uc* data = stbi_load(path.c_str(), &width, &height, &channels, 0);
+        FILE* file = SLOPEN(path);
+		//stbi_uc* data = stbi_load(path.c_str(), &width, &height, &channels, 0);
+        stbi_uc* data = stbi_load_from_file(file, &width, &height, &channels, 0);
 		SL_CORE_ASSERT(data, "Failed to load image!");
 
 		m_Width = width;

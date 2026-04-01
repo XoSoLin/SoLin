@@ -6,15 +6,12 @@ extern SoLin::Application* SoLin::CreateApplication();
 
 void main(int argc,char** argv) {
 
-	SoLin::Log::Init();
-	SL_CORE_TRACE("初始化日志");
-	int l = 164;
-	SL_CLIENT_INFO("伊蕊 {0}cm",l);
+    //控制台输入输出均改为utf-8
+    SetConsoleOutputCP(CP_UTF8);
+    SetConsoleCP(CP_UTF8);
 
-	const char* filename = "测试纹理.png";
-	for (int i = 0; filename[i]; i++) {
-		printf("%02X ", (unsigned char)filename[i]);
-	}
+	SoLin::Log::Init();
+	SL_CORE_TRACE(u8"初始化日志");
 
 	auto app = SoLin::CreateApplication();
 	app->Run();

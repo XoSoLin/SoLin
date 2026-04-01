@@ -50,6 +50,17 @@
 	#error SoLin only support Windows!
 #endif
 
+//win情况下用宽字符来处理资源路径，其他均为utf-8保证跨平台性
+//与std::filesystem::path一起使用
+//TODO 后续或许可以封装一个自己的path类
+#ifdef SL_PLATFORM_WINDOWS
+    #define SLPATH(x) L##x
+    #define SLOPEN(x) _wfopen(x.c_str(), L"rb")
+#else
+    #define SLPATH(x) x
+    #define SLOPEN(x) fopen(x.c_str(),"rb")
+#endif
+
 #ifdef SL_DEBUG
 	#define SOLIN_ENABLE_ASSERTS
 #endif

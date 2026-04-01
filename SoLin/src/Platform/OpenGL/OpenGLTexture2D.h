@@ -12,7 +12,7 @@ namespace SoLin {
 		OpenGLTexture2D(uint32_t width, uint32_t height);
 		//@brief 使用图片构造2D纹理
 		//@param path 原图片资源路径
-		OpenGLTexture2D(const std::string& path);
+		OpenGLTexture2D(const std::filesystem::path& path);
 		~OpenGLTexture2D();
 
 		virtual uint32_t GetWidth() const override { return m_Width; }
@@ -23,7 +23,7 @@ namespace SoLin {
 		virtual void Bind(uint32_t slot = 0)const override;
 
 	private:
-		std::string m_Path;
+		std::filesystem::path m_Path;
 
 		uint32_t m_Width;
 		uint32_t m_Height;

@@ -19,7 +19,7 @@ namespace SoLin {
 		return nullptr;
 	}
 
-	Ref<Texture2D> Texture2D::Create(const std::string& path) {
+	Ref<Texture2D> Texture2D::Create(const std::filesystem::path& path) {
 
 		switch (Renderer::GetAPI()) {
 		case RendererAPI::API::None:
