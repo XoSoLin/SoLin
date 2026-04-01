@@ -26,7 +26,7 @@ namespace SoLin {
 	}
 	void OpenGLVertexArray::AddVertexBuffer(const Ref<VertexBuffer>& vertexbuffer)
 	{
-		SL_CORE_ASSERT(vertexbuffer->GetLayout().GetElements().size(), "¶¥µã»º³å²¼¾ÖÏÖÔÚÊÇ¿ÕµÄ!");
+		SL_CORE_ASSERT(vertexbuffer->GetLayout().GetElements().size(), "é¡¶ç‚¹ç¼“å†²å¸ƒå±€çŽ°åœ¨æ˜¯ç©ºçš„!");
 
 		glBindVertexArray(m_RendererID);
 		vertexbuffer->Bind();

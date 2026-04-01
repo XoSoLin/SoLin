@@ -1,0 +1,19 @@
+# 项目根目录标记
+root = true
+
+# 所有文件通用设置
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 4
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+# C++ 文件特殊设置
+[*.{cpp,h,c,hpp,inl}]
+charset = utf-8
+
+# 脚本文件(无 BOM 避免 shebang 问题)
+[*.{py,sh,js,ts}]
+charset = utf-8

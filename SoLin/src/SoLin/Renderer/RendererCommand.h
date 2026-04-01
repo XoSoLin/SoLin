@@ -3,8 +3,8 @@
 
 namespace SoLin {
 	
-	//@brief 渲染命令
-	//@brief 根据渲染API的不同，会调用不同的渲染指令
+	//@brief 娓叉煋鍛戒护
+	//@brief 鏍规嵁娓叉煋API鐨勪笉鍚岋紝浼氳皟鐢ㄤ笉鍚岀殑娓叉煋鎸囦护
 	class RendererCommand {
 	public:
 		inline static void Init() {

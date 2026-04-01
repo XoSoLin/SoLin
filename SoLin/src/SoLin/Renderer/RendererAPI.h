@@ -6,14 +6,14 @@ namespace SoLin {
 
 	class RendererAPI {
 	public:
-		//@brief äÖÈ¾APIÃ¶¾Ù
+		//@brief æ¸²æŸ“APIæšä¸¾
 		enum class API {
 			None,
 			OpenGL,
 			DirectX
 		};
 	public:
-		// ÓÚ¸÷äÖÈ¾APIÈ¥¶¨Òå
+		// äºå„æ¸²æŸ“APIå»å®šä¹‰
 		static Scope<RendererAPI> Create();
 
 		virtual void Clear() = 0;

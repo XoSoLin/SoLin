@@ -4,7 +4,7 @@
 
 namespace SoLin {
 
-	//@brief 鼠标移动事件
+	//@brief 榧犳爣绉诲姩浜嬩欢
 	class SOLIN_API MouseMovedEvent :public Event {
 	public:
 		MouseMovedEvent(float x,float y)
@@ -27,7 +27,7 @@ namespace SoLin {
 	};
 
 
-	//@brief 鼠标滑轮事件
+	//@brief 榧犳爣婊戣疆浜嬩欢
 	class SOLIN_API MouseScrolledEvent :public Event {
 	public:
 		MouseScrolledEvent(float xOffset,float yOffset)
@@ -49,7 +49,7 @@ namespace SoLin {
 		float m_XOffset, m_YOffset;
 	};
 	
-	//@brief 鼠标按钮事件
+	//@brief 榧犳爣鎸夐挳浜嬩欢
 	class SOLIN_API MouseButtonEvent :public Event {
 	public:
 
@@ -62,7 +62,7 @@ namespace SoLin {
 			:m_Button(button){}
 	};
 
-	//@brief 鼠标按钮按下事件
+	//@brief 榧犳爣鎸夐挳鎸変笅浜嬩欢
 	class SOLIN_API MouseButtonPressedEvent :public MouseButtonEvent {
 	public:
 		MouseButtonPressedEvent(int button)
@@ -77,7 +77,7 @@ namespace SoLin {
 		}
 	};
 
-	//@brief 鼠标按钮释放事件
+	//@brief 榧犳爣鎸夐挳閲婃斁浜嬩欢
 	class SOLIN_API MouseButtonReleasedEvent :public MouseButtonEvent {
 	public:
 		MouseButtonReleasedEvent(int button)

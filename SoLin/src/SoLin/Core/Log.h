@@ -2,7 +2,7 @@
 
 #include"Core.h"
 #include"spdlog/spdlog.h"
-#include"spdlog/fmt/ostr.h"					// Êä³öÁ÷²Ù×÷·û
+#include"spdlog/fmt/ostr.h"					// è¾“å‡ºæµæ“ä½œç¬¦
 
 namespace SoLin {
 
@@ -22,7 +22,7 @@ namespace SoLin {
 }
 
 // Core log macros
-// ºËÐÄÈÕÖ¾ºê
+// æ ¸å¿ƒæ—¥å¿—å®
 #define SL_CORE_TRACE(...)		::SoLin::Log::GetCoreLogger()->trace(__VA_ARGS__)
 #define SL_CORE_INFO(...)		::SoLin::Log::GetCoreLogger()->info(__VA_ARGS__)
 #define SL_CORE_WARN(...)		::SoLin::Log::GetCoreLogger()->warn(__VA_ARGS__)
@@ -30,14 +30,14 @@ namespace SoLin {
 #define SL_CORE_CRITICAL(...)		::SoLin::Log::GetCoreLogger()->critical(__VA_ARGS__)
 
 // Client log macros
-// ¿Í»§¶ËÈÕÖ¾ºê
+// å®¢æˆ·ç«¯æ—¥å¿—å®
 #define SL_CLIENT_TRACE(...)	::SoLin::Log::GetClientLogger()->trace(__VA_ARGS__)
 #define SL_CLIENT_INFO(...)		::SoLin::Log::GetClientLogger()->info(__VA_ARGS__)
 #define SL_CLIENT_WARN(...)		::SoLin::Log::GetClientLogger()->warn(__VA_ARGS__)
 #define SL_CLIENT_ERROR(...)	::SoLin::Log::GetClientLogger()->error(__VA_ARGS__)
 #define SL_CLIENT_CRITICAL(...)	::SoLin::Log::GetClientLogger()->critical(__VA_ARGS__)
 
-//	·¢ÏÖÌ«³¤ÍµÍµÀÁ
+//	å‘çŽ°å¤ªé•¿å·å·æ‡’
 #define SL_TRACE(...)			::SoLin::Log::GetClientLogger()->trace(__VA_ARGS__)
 #define SL_INFO(...)			::SoLin::Log::GetClientLogger()->info(__VA_ARGS__)
 #define SL_WARN(...)			::SoLin::Log::GetClientLogger()->warn(__VA_ARGS__)

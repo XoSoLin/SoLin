@@ -7,9 +7,14 @@ extern SoLin::Application* SoLin::CreateApplication();
 void main(int argc,char** argv) {
 
 	SoLin::Log::Init();
-	SL_CORE_TRACE("³õÊ¼»¯ÈÕÖ¾");
+	SL_CORE_TRACE("åˆå§‹åŒ–æ—¥å¿—");
 	int l = 164;
-	SL_CLIENT_INFO("ÒÁÈï {0}cm",l);
+	SL_CLIENT_INFO("ä¼Šè•Š {0}cm",l);
+
+	const char* filename = "æµ‹è¯•çº¹ç†.png";
+	for (int i = 0; filename[i]; i++) {
+		printf("%02X ", (unsigned char)filename[i]);
+	}
 
 	auto app = SoLin::CreateApplication();
 	app->Run();
