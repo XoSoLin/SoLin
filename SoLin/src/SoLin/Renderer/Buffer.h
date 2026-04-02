@@ -37,13 +37,13 @@ namespace SoLin {
 		std::string Name;		/// 布局元素名
 		ShaderDataType Type;	/// 着色器数据布局类型
 		uint32_t Size;			/// 布局元素大小(byte)
-		uint32_t Offset;		/// 偏移量
+		size_t Offset;		    /// 偏移量
 		uint32_t Count;			/// 布局元素中的变量个数
 		bool Normalized;		/// 是否标准化
 		uint32_t GLType;		/// 基础变量的GL类型
 
 		// @brief 
-		LayoutElement(){}
+        LayoutElement() = default;
 
 		// @param type 着色器数据布局类型
 		// @param name 该布局元素名
@@ -116,7 +116,7 @@ namespace SoLin {
 		//@brief 计算每个元素的偏移和整体布局的步长，在初始化时使用
 		void CalcOffsetAndStride() {
 			m_Stride = 0;
-			uint32_t offset = 0;
+			size_t offset = 0;
 			for (auto& element : m_Elements) {
 				element.Offset = offset;		//为元素设置偏移，第一个的为 0，后续累加
 				offset += element.Size;

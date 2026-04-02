@@ -76,11 +76,17 @@ namespace SoLin {
 		std::ifstream readIn(filepath, std::ios::in | std::ios::binary);		//in|binary 表示以输入模式和二进制模式 打开
 		if (readIn) {
 			readIn.seekg(0, std::ios::end);							//seekg()移动指针到文件末尾，偏移为0
-			result.resize(readIn.tellg());								//tellg()返回当前读取指针的位置，也就是将文件的总字节数
+			size_t size = readIn.tellg();								//tellg()返回当前读取指针的位置，也就是将文件的总字节数
 
-			readIn.seekg(0, std::ios::beg);							//移动指针到文件开头
-			readIn.read(&result[0], result.size());					//读取文件内容
-			readIn.close();														//关闭文件
+            if (size != -1) {
+                result.resize(size);
+			    readIn.seekg(0, std::ios::beg);							//移动指针到文件开头
+			    readIn.read(&result[0], result.size());					//读取文件内容
+			    readIn.close();														//关闭文件
+            }
+            else {
+                SL_CORE_ASSERT("Failed to read file from :'{0}'", filepath);
+            }
 		}
 		else {
 			SL_CORE_ERROR("Could not open file form:'{0}'", filepath);

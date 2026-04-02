@@ -8,7 +8,7 @@
 #include "Platform/OpenGL/OpenGLContext.h"
 
 namespace SoLin {
-	static bool s_GLFWInitialized = false;
+	static uint8_t s_GLFWWindowCount = 0;
 
 	static void GLFWErrorCallback(int error_code, const char* description) {
 		SL_CORE_ASSERT("GLFW Error ({0}):{1}", error_code, description);
@@ -65,11 +65,12 @@ namespace SoLin {
 
 		SL_CORE_INFO("Creating window:{0}({1},{2})", props.Title, props.Width, props.Height);
 
-		if (!s_GLFWInitialized) {
+		if (s_GLFWWindowCount==0) {
             SL_PROFILE_SCOPE("glfwInitWindow");
 
 			//TODO: glfwTerminate on system shutdown
 
+            SL_CORE_INFO("Initializing GLFW window..");
 			int success = glfwInit();
 			SL_CORE_ASSERT(success, "Could not intialize GLFW!");
 			
@@ -77,13 +78,13 @@ namespace SoLin {
 			// 如果初始化启动成功，但是运行时出现错误
 			glfwSetErrorCallback(GLFWErrorCallback);
 
-			s_GLFWInitialized = true;
 		}
 
         {
             SL_PROFILE_SCOPE("glfwCreateWindow");
             // 初始化Windows对象并创建窗口上下文
             m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
+            s_GLFWWindowCount++;
         }
 		m_Context = CreateScope<OpenGLContext>(m_Window);
 		m_Context->Init();
@@ -179,5 +180,12 @@ namespace SoLin {
         SL_PROFILE_FUNCTION();
 
 		glfwDestroyWindow(m_Window);
+        s_GLFWWindowCount--;
+
+        if (s_GLFWWindowCount == 0) {
+            SL_CORE_INFO("Terminating GLFW..");
+            //销毁所有GLFW资源并清理库的初始状态
+            glfwTerminate();
+        }
 	}
 }
