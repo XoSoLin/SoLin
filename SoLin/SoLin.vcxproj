@@ -174,9 +174,9 @@
     <ClInclude Include="src\SoLin\Core\LayerStack.h" />
     <ClInclude Include="src\SoLin\Core\Log.h" />
     <ClInclude Include="src\SoLin\Core\MouseButtonCodes.h" />
-    <ClInclude Include="src\SoLin\Core\SLfile.h" />
     <ClInclude Include="src\SoLin\Core\Timestep.h" />
     <ClInclude Include="src\SoLin\Core\Window.h" />
+    <ClInclude Include="src\SoLin\Debug\Instrumentor.h" />
     <ClInclude Include="src\SoLin\Events\ApplicationEvent.h" />
     <ClInclude Include="src\SoLin\Events\Event.h" />
     <ClInclude Include="src\SoLin\Events\KeyEvent.h" />
@@ -195,6 +195,7 @@
     <ClInclude Include="src\SoLin\Renderer\VertexArray.h" />
     <ClInclude Include="src\slpch.h" />
     <ClInclude Include="vendor\glm\glm\common.hpp" />
+    <ClInclude Include="vendor\glm\glm\detail\_features.hpp" />
     <ClInclude Include="vendor\glm\glm\detail\_fixes.hpp" />
     <ClInclude Include="vendor\glm\glm\detail\_noise.hpp" />
     <ClInclude Include="vendor\glm\glm\detail\_swizzle.hpp" />
@@ -254,6 +255,7 @@
     <ClInclude Include="vendor\glm\glm\detail\type_vec3.inl" />
     <ClInclude Include="vendor\glm\glm\detail\type_vec4.hpp" />
     <ClInclude Include="vendor\glm\glm\detail\type_vec4.inl" />
+    <ClInclude Include="vendor\glm\glm\detail\type_vec4_simd.inl" />
     <ClInclude Include="vendor\glm\glm\detail\type_vec_simd.inl" />
     <ClInclude Include="vendor\glm\glm\exponential.hpp" />
     <ClInclude Include="vendor\glm\glm\ext.hpp" />
@@ -503,7 +505,7 @@
     <ClInclude Include="vendor\glm\glm\gtx\fast_square_root.inl" />
     <ClInclude Include="vendor\glm\glm\gtx\fast_trigonometry.hpp" />
     <ClInclude Include="vendor\glm\glm\gtx\fast_trigonometry.inl" />
-    <ClInclude Include="vendor\glm\glm\gtx\float_normalize.inl" />
+    <ClInclude Include="vendor\glm\glm\gtx\float_notmalize.inl" />
     <ClInclude Include="vendor\glm\glm\gtx\functions.hpp" />
     <ClInclude Include="vendor\glm\glm\gtx\functions.inl" />
     <ClInclude Include="vendor\glm\glm\gtx\gradient_paint.hpp" />
@@ -518,8 +520,6 @@
     <ClInclude Include="vendor\glm\glm\gtx\intersect.inl" />
     <ClInclude Include="vendor\glm\glm\gtx\io.hpp" />
     <ClInclude Include="vendor\glm\glm\gtx\io.inl" />
-    <ClInclude Include="vendor\glm\glm\gtx\iteration.hpp" />
-    <ClInclude Include="vendor\glm\glm\gtx\iteration.inl" />
     <ClInclude Include="vendor\glm\glm\gtx\log_base.hpp" />
     <ClInclude Include="vendor\glm\glm\gtx\log_base.inl" />
     <ClInclude Include="vendor\glm\glm\gtx\matrix_cross_product.hpp" />
@@ -577,8 +577,6 @@
     <ClInclude Include="vendor\glm\glm\gtx\std_based_type.inl" />
     <ClInclude Include="vendor\glm\glm\gtx\string_cast.hpp" />
     <ClInclude Include="vendor\glm\glm\gtx\string_cast.inl" />
-    <ClInclude Include="vendor\glm\glm\gtx\structured_bindings.hpp" />
-    <ClInclude Include="vendor\glm\glm\gtx\structured_bindings.inl" />
     <ClInclude Include="vendor\glm\glm\gtx\texture.hpp" />
     <ClInclude Include="vendor\glm\glm\gtx\texture.inl" />
     <ClInclude Include="vendor\glm\glm\gtx\transform.hpp" />

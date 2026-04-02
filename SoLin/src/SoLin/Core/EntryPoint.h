@@ -13,10 +13,17 @@ void main(int argc,char** argv) {
 	SoLin::Log::Init();
 	SL_CORE_TRACE(u8"初始化日志");
 
+    SL_PROFILE_BEGIN_SESSION("Startup", "SoLinProfile-Startup.json");
 	auto app = SoLin::CreateApplication();
-	app->Run();
+    SL_PROFILE_END_SESSION();
 
+    SL_PROFILE_BEGIN_SESSION("Runtime", "SoLinProfile-Runtime.json");
+	app->Run();
+    SL_PROFILE_END_SESSION();
+
+    SL_PROFILE_BEGIN_SESSION("Shutdown", "SoLinProfile-Shutdown.json");
 	delete app;
+    SL_PROFILE_END_SESSION();
 
 }
 

@@ -36,6 +36,7 @@ namespace SoLin {
 		//stbi_uc* data = stbi_load(path.c_str(), &width, &height, &channels, 0);
         stbi_uc* data = stbi_load_from_file(file, &width, &height, &channels, 0);
 		SL_CORE_ASSERT(data, "Failed to load image!");
+        fclose(file);
 
 		m_Width = width;
 		m_Height = height;
