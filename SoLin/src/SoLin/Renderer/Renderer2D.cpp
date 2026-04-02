@@ -94,10 +94,14 @@ namespace SoLin {
 	{
         SL_PROFILE_FUNCTION();
 
-		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), { size.x,size.y,1.0f });
+		glm::mat4 transform = glm::translate(
+            glm::mat4(1.0f), position) *
+            glm::scale(glm::mat4(1.0f),{ size.x,size.y,1.0f }
+        );
 
 		s_Data->TextureShader->SetFloat4("u_Color", color);
 		s_Data->TextureShader->SetMat4("u_Transform", transform);
+        s_Data->TextureShader->SetFloat("u_TilingFactor",1.0f);
 
 		//使用白色像素纹理与color逐分量相乘，不影响传入的color颜色（纯色四边形关键）
 		s_Data->WhiteTexture->Bind();
@@ -106,25 +110,78 @@ namespace SoLin {
 		RendererCommand::DrawIndexed(s_Data->QuadVA);
 	}
 
-	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture2D>& texture)
+	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture2D>& texture,float tilingFactor,const glm::vec4& tintColor)
 	{
-		DrawQuad({ position.x,position.y,0.0f }, size, texture);
+		DrawQuad({ position.x,position.y,0.0f }, size, texture,tilingFactor,tintColor);
 	}
 
-	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture)
+	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture,float tilingFactor,const glm::vec4& tintColor)
 	{
         SL_PROFILE_FUNCTION();
 
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), { size.x,size.y,1.0f });
 
 		// 使用全1的RGBA不影响纹理的取色
-		s_Data->TextureShader->SetFloat4("u_Color", glm::vec4{ 1.0f });
+		s_Data->TextureShader->SetFloat4("u_Color", tintColor);
 		s_Data->TextureShader->SetMat4("u_Transform", transform);
+        s_Data->TextureShader->SetFloat("u_TilingFactor", tilingFactor);
 
 		texture->Bind();
 
 		s_Data->QuadVA->Bind();
 		RendererCommand::DrawIndexed(s_Data->QuadVA);
 	}
+
+    void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const glm::vec4& color)
+    {
+        DrawRotatedQuad({ position.x,position.y,0.0f }, size, rotation, color);
+    }
+
+    void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, float rotation, const glm::vec4& color)
+    {
+        SL_PROFILE_FUNCTION();
+
+        glm::mat4 transform =
+            glm::translate(glm::mat4(1.0f), position)
+            * glm::rotate(glm::mat4(1.0f), glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f))
+            * glm::scale(glm::mat4(1.0f), { size.x,size.y,1.0f }
+        );
+
+        s_Data->TextureShader->SetFloat4("u_Color", color);
+        s_Data->TextureShader->SetMat4("u_Transform", transform);
+        s_Data->TextureShader->SetFloat("u_TilingFactor", 1.0f);
+
+        //使用白色像素纹理与color逐分量相乘，不影响传入的color颜色（纯色四边形关键）
+        s_Data->WhiteTexture->Bind();
+
+        s_Data->QuadVA->Bind();
+        RendererCommand::DrawIndexed(s_Data->QuadVA);
+    }
+
+    void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor)
+    {
+        DrawRotatedQuad({ position.x, position.y, 0.0f }, size, rotation, texture, tilingFactor, tintColor);
+    }
+
+    void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, float rotation, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor)
+    {
+        SL_PROFILE_FUNCTION();
+
+        glm::mat4 transform =
+            glm::translate(glm::mat4(1.0f), position)
+            * glm::rotate(glm::mat4(1.0f), glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f))
+            * glm::scale(glm::mat4(1.0f), { size.x,size.y,1.0f }
+            );
+
+        // 使用全1的RGBA不影响纹理的取色
+        s_Data->TextureShader->SetFloat4("u_Color", tintColor);
+        s_Data->TextureShader->SetMat4("u_Transform", transform);
+        s_Data->TextureShader->SetFloat("u_TilingFactor", tilingFactor);
+
+        texture->Bind();
+
+        s_Data->QuadVA->Bind();
+        RendererCommand::DrawIndexed(s_Data->QuadVA);
+    }
 
 }

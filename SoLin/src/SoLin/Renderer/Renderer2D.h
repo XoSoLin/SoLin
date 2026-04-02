@@ -35,11 +35,51 @@ namespace SoLin {
 		//@param position 位置
 		//@param size 宽高
 		//@param texture 纹理
-		static void DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture2D>& texture);
+        //@param tilingFactor 填充因子
+        //@param tintColor 色调
+        static void DrawQuad(
+            const glm::vec2& position, const glm::vec2& size, const Ref<Texture2D>& texture,
+            float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
 		//@brief 画纹理四边形
 		//@param position 位置
 		//@param size 宽高
 		//@param texture 纹理
-		static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture);
+        //@param tilingFactor 填充因子
+        //@param tintColor 色调
+		static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture,
+            float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
+
+        //@brief 画四边形
+        //@param position 位置
+        //@param size 宽高
+        //@param rotation 旋转角度
+        //@param color 颜色
+        static void DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const glm::vec4& color);
+        //@brief 画四边形
+        //@param position 位置
+        //@param size 宽高
+        //@param rotation 旋转角度
+        //@param color 颜色
+        static void DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, float rotation, const glm::vec4& color);
+        //@brief 画纹理四边形
+        //@param position 位置
+        //@param size 宽高
+        // @param rotation 旋转角度
+        //@param texture 纹理
+        //@param tilingFactor 填充因子
+        //@param tintColor 色调
+        static void DrawRotatedQuad(
+            const glm::vec2& position, const glm::vec2& size, float rotation, const Ref<Texture2D>& texture,
+            float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
+        //@brief 画纹理四边形
+        //@param position 位置
+        //@param size 宽高
+        // @param rotation 旋转角度
+        //@param texture 纹理
+        //@param tilingFactor 填充因子
+        //@param tintColor 色调
+        static void DrawRotatedQuad(
+            const glm::vec3& position, const glm::vec2& size, float rotation, const Ref<Texture2D>& texture,
+            float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
 	};
 }
