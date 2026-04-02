@@ -22,7 +22,7 @@ namespace SoLin {
 	public:
 		using EventCallbackFn = std::function<void(Event&)>;
 		//---------------------All interfaces------------------------------
-		static Window* Create(const WindowProps& props = WindowProps());
+		static std::unique_ptr<Window> Create(const WindowProps& props = WindowProps());
 
 		virtual ~Window(){}
 

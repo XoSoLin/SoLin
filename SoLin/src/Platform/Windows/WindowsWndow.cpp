@@ -14,10 +14,6 @@ namespace SoLin {
 		SL_CORE_ASSERT("GLFW Error ({0}):{1}", error_code, description);
 	}
 
-	Window* Window::Create(const WindowProps& props) {
-		return new WindowsWindow(props);
-	}
-
 	WindowsWindow::WindowsWindow(const WindowProps& props)
 	{
         SL_PROFILE_FUNCTION();

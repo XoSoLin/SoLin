@@ -626,6 +626,7 @@
     <ClCompile Include="src\SoLin\Core\Layer.cpp" />
     <ClCompile Include="src\SoLin\Core\LayerStack.cpp" />
     <ClCompile Include="src\SoLin\Core\Log.cpp" />
+    <ClCompile Include="src\SoLin\Core\Window.cpp" />
     <ClCompile Include="src\SoLin\ImGui\ImGuiBuild.cpp" />
     <ClCompile Include="src\SoLin\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="src\SoLin\Renderer\Buffer.cpp" />

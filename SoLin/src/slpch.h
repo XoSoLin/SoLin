@@ -13,7 +13,10 @@
 #include<unordered_set>
 
 #include "SoLin/Core/Log.h"
+
+#ifdef SL_DEBUG
 #include"SoLin/Debug/Instrumentor.h"
+#endif
 
 #ifdef SL_PLATFORM_WINDOWS
 	#include<Windows.h>

@@ -4,6 +4,7 @@
 #include<chrono>
 #include<algorithm>
 #include<fstream>
+#include<iomanip>
 
 #include<thread>
 
@@ -11,9 +12,10 @@ namespace SoLin {
 
     //@brief 时间剖面结果数据
     struct ProfileResult {
-        std::string Name;           //名称
-        long long Start, End;       //时间终始点
-        uint32_t ThreadID;          
+        std::string Name;                                       //名称
+        std::chrono::duration<double,std::micro> Start;         //时间起始点
+        std::chrono::microseconds ElapsedTime;                  //已过去时间
+        std::thread::id ThreadID;                               //线程id
     };
 
     struct InstrumentationSession {
@@ -23,61 +25,94 @@ namespace SoLin {
     //@brief 性能剖析器
     class Instrumentor {
     private:
+        std::mutex m_Mutex;                         // 加入互斥锁
+
         InstrumentationSession* m_CurrentSession;   // 当前执行期指针
         std::ofstream m_OutputStream;               // 信息输出流
-        int m_ProfileCount;                         // 计数
     public:
         Instrumentor()
-            :m_CurrentSession(nullptr),m_ProfileCount(0)
+            :m_CurrentSession(nullptr)
         {}
 
         // @brief 开始分析
         // @param name 阶段名
         // @param filepath 存储路径
         void BeginSession(const std::string& name, const std::string& filepath = "results.json") {
+            std::lock_guard lock(m_Mutex);
+            if (m_CurrentSession) {
+                // 如果当前会话已经存在，则在开始新会话之前将其关闭。
+                // 针对原始会话的后续分析输出将最终出现在新打开的会话中。
+                // 这比格式错误的分析输出要好。
+                if (Log::GetCoreLogger()) {
+                    SL_CORE_ERROR("Instrumentor::BeginSession('{0}') is creating a new session when session '{1}' already open.", name, m_CurrentSession->Name);
+                }
+                InternalEndSession();
+            }
             m_OutputStream.open(filepath);
-            WriteHeader();
-            m_CurrentSession = new InstrumentationSession{ name };
+            if (m_OutputStream.is_open()) {
+                // InstrumentationSession 首先创建互斥锁，然后 WriteHeader 通过 std::lock_guard 管理锁
+                m_CurrentSession = new InstrumentationSession({ name });
+                WriteHeader();
+            }
+            else {
+                // Edge case : BeginSession() might be before Log::Init() !!!
+                if (Log::GetCoreLogger()) {
+                    SL_CORE_ERROR("Instrumentor can't open result file '{0}'.", filepath);
+                }
+            }
         }
 
         // @brief 结束分析
         void EndSession() {
-            WriteFooter();
-            m_OutputStream.close();
-            delete m_CurrentSession;
-            m_CurrentSession = nullptr;
-            m_ProfileCount = 0;
+            // 调用InternalEndSession时，必须确保互斥锁已经被创建
+            std::lock_guard lock(m_Mutex);
+            InternalEndSession();
         }
-
-        void WriteProfile(const ProfileResult& result) {
-            if (m_ProfileCount++ > 0) {
-                m_OutputStream << ",";
+    private:
+        void InternalEndSession() {
+            if (m_CurrentSession) {
+                WriteFooter();
+                m_OutputStream.close();
+                delete m_CurrentSession;
+                m_CurrentSession = nullptr;
             }
-
-            std::string name = result.Name;
-            std::replace(name.begin(), name.end(), '"', '\'');
-
-            m_OutputStream << "{";
-            m_OutputStream << "\"cat\":\"function\",";
-            m_OutputStream << "\"dur\":" << (result.End - result.Start) << ',';
-            m_OutputStream << "\"name\":\"" << name << "\",";
-            m_OutputStream << "\"ph\":\"X\",";
-            m_OutputStream << "\"pid\":0,";
-            m_OutputStream << "\"tid\":" << result.ThreadID << ",";
-            m_OutputStream << "\"ts\":" << result.Start;
-            m_OutputStream << "}";
-
-            m_OutputStream.flush();
         }
 
         void WriteHeader() {
-            m_OutputStream << "{\"otherData\":{},\"traceEvents\":[";
+            m_OutputStream << "{\"otherData\":{},\"traceEvents\":[{}";
             m_OutputStream.flush();
         }
 
         void WriteFooter() {
             m_OutputStream << "]}";
             m_OutputStream.flush();
+        }
+
+    public:
+        void WriteProfile(const ProfileResult& result) {
+            std::stringstream json;
+
+            std::string name = result.Name;
+            std::replace(name.begin(), name.end(), '"', '\'');
+
+            // 设置json 字符串流中浮点数的输出都是小数点后保留三位，且切小数点固定的格式
+            json << std::setprecision(3) << std::fixed;
+            // 默认添加一个','，故不用判断是否需要','。由于Header中多写了一个{}，故初始化时第一个','并不多余。
+            json << ",{";                                      
+            json << "\"cat\":\"function\",";
+            json << "\"dur\":" << result.ElapsedTime.count() << ',';
+            json << "\"name\":\"" << name << "\",";
+            json << "\"ph\":\"X\",";
+            json << "\"pid\":0,";
+            json << "\"tid\":" << result.ThreadID << ",";
+            json << "\"ts\":" << result.Start.count();
+            json << "}";
+
+            std::lock_guard lock(m_Mutex);
+            if (m_CurrentSession) {
+                m_OutputStream << json.str();
+                m_OutputStream.flush();
+            }
         }
 
         static Instrumentor& Get() {
@@ -91,7 +126,9 @@ namespace SoLin {
     public:
         InstrumentationTimer(const char* name)
             :m_Name(name),m_Stopped(false) {
-            m_StartTimePoint = std::chrono::high_resolution_clock::now();
+            // steady_clock 代替 high_resolution_clock
+            // 单调时钟永远不会向后调整，高精度时钟可能受系统时调整影响出现负数
+            m_StartTimePoint = std::chrono::steady_clock::now();
         }
         ~InstrumentationTimer() {
             if (!m_Stopped) {
@@ -99,12 +136,13 @@ namespace SoLin {
             }
         }
         void Stop() {
-            auto endTimePoint = std::chrono::high_resolution_clock::now();
-            long long start = std::chrono::time_point_cast<std::chrono::microseconds>(m_StartTimePoint).time_since_epoch().count();
-            long long end = std::chrono::time_point_cast<std::chrono::microseconds>(endTimePoint).time_since_epoch().count();
+            auto endTimePoint = std::chrono::steady_clock::now();
+            auto highResStart = std::chrono::duration<double, std::micro>{ m_StartTimePoint.time_since_epoch() };
+            auto elapsedTime =
+                std::chrono::time_point_cast<std::chrono::microseconds>(endTimePoint).time_since_epoch()
+                - std::chrono::time_point_cast<std::chrono::microseconds>(m_StartTimePoint).time_since_epoch();
 
-            uint32_t threadID = std::hash<std::thread::id>{}(std::this_thread::get_id());
-            Instrumentor::Get().WriteProfile({ m_Name,start,end,threadID });
+            Instrumentor::Get().WriteProfile({ m_Name, highResStart, elapsedTime, std::this_thread::get_id() });
 
             m_Stopped = true;
         }
