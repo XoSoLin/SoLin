@@ -629,6 +629,7 @@
     <ClCompile Include="src\SoLin\ImGui\ImGuiBuild.cpp" />
     <ClCompile Include="src\SoLin\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="src\SoLin\Renderer\Buffer.cpp" />
+    <ClCompile Include="src\SoLin\Renderer\GraphicsContext.cpp" />
     <ClCompile Include="src\SoLin\Renderer\OrthoGraphicCamera.cpp" />
     <ClCompile Include="src\SoLin\Renderer\OrthoGraphicCameraController.cpp" />
     <ClCompile Include="src\SoLin\Renderer\Renderer.cpp" />

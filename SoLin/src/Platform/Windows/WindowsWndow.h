@@ -6,7 +6,9 @@
 #include<GLFW/glfw3.h>
 
 namespace SoLin {
-	
+
+    // @brief window平台下的窗口类
+    // @brief 该类的实现目前还依赖OpenGL，后续更改
 	class WindowsWindow:public Window
 	{
 	public:
@@ -29,7 +31,7 @@ namespace SoLin {
 		virtual void Shutdown();
 	private:
 		GLFWwindow* m_Window;
-		Scope<GraphicsContext> m_Context;
+		std::unique_ptr<GraphicsContext> m_Context;
 
 		struct WindowData {
 			std::string Title;

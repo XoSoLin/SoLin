@@ -8,6 +8,7 @@
 namespace SoLin {
 	
 	//@brief 渲染器
+    //@brief 利用 着色器 与 顶点数组 等GPU数据以 指令类 间接进行操作
 	class Renderer {
 	public:
 		static void Init();

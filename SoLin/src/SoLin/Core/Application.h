@@ -1,9 +1,9 @@
 #pragma once
 
-#include"Core.h"
-#include"Window.h"
+#include"SoLin/Core/Core.h"
+#include"SoLin/Core/Window.h"
 
-#include"LayerStack.h"
+#include"SoLin/Core/LayerStack.h"
 #include"SoLin/ImGui/ImGuiLayer.h"
 #include "SoLin/Events/ApplicationEvent.h"
 

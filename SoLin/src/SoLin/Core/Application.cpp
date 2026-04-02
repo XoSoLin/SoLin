@@ -4,7 +4,7 @@
 
 #include "SoLin/Events/Event.h"
 #include "SoLin/Core/Log.h"
-#include"Input.h"
+#include"SoLin/Core/Input.h"
 
 #include"SoLin/Renderer/Renderer.h"
 

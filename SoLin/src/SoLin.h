@@ -2,6 +2,7 @@
 
 // 提供给应用端去使用
 
+#include"SoLin/Core/Core.h"
 #include"SoLin/Core/Application.h"
 #include"SoLin/Core/Layer.h"
 #include"SoLin/Core/Log.h"
