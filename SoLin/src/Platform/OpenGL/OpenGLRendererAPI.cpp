@@ -5,6 +5,8 @@
 
 namespace SoLin {
 	void OpenGLRendererAPI::Init() {
+        SL_PROFILE_FUNCTION();
+
 		//启用混合
 		glEnable(GL_BLEND);
 		// 设置混合函数：定义源因子和目标因子

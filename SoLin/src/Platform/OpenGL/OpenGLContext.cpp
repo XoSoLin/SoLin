@@ -8,6 +8,8 @@ namespace SoLin {
 	OpenGLContext::OpenGLContext(GLFWwindow* windowHandle)
 		:m_WindowHandle(windowHandle)
 	{
+        SL_PROFILE_FUNCTION();
+
 		SL_CORE_ASSERT(windowHandle,"Window handle is null !(But it Shouldn't be)")
 	}
 	void OpenGLContext::Init()
@@ -32,6 +34,8 @@ namespace SoLin {
 	}
 	void OpenGLContext::SwapBuffers()
 	{
+        SL_PROFILE_FUNCTION();
+
 		glfwSwapBuffers(m_WindowHandle);
 	}
 }

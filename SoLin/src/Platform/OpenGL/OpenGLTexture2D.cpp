@@ -9,6 +9,8 @@ namespace SoLin {
 	OpenGLTexture2D::OpenGLTexture2D(uint32_t width, uint32_t height)
 		:m_Width(width),m_Height(height)
 	{
+        SL_PROFILE_FUNCTION();
+
 		m_InternalFormat = GL_RGBA8;
 		m_DataFormat = GL_RGBA;
 
@@ -24,6 +26,8 @@ namespace SoLin {
 	OpenGLTexture2D::OpenGLTexture2D(const std::filesystem::path& path)
 		:m_Path(path)
 	{
+        SL_PROFILE_FUNCTION();
+
 		// 启用stb_image 垂直翻转，使图像原点与 OpenGL 纹理坐标一致
 		// （OpenGL 原点在左下角，图像原点在左上角）
 		stbi_set_flip_vertically_on_load(1);
@@ -92,11 +96,15 @@ namespace SoLin {
 
 	OpenGLTexture2D::~OpenGLTexture2D()
 	{
+        SL_PROFILE_FUNCTION();
+
 		glDeleteTextures(1, &m_RendererID);
 	}
 
 	void OpenGLTexture2D::SetData(void* data, uint32_t size)
 	{
+        SL_PROFILE_FUNCTION();
+
 		uint32_t bpp = (m_DataFormat == GL_RGBA ? 4 : 3);
 		SL_CORE_ASSERT((size == m_Width * m_Height * bpp), 
 			"Data must contain the full texture! Please check that the size of the data matches the format of the data"
@@ -107,6 +115,8 @@ namespace SoLin {
 
 	void OpenGLTexture2D::Bind(uint32_t slot) const
 	{
+        SL_PROFILE_FUNCTION();
+
 		glBindTextureUnit(slot, m_RendererID);
 	}
 }

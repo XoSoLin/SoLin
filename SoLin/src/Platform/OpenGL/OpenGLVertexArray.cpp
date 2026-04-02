@@ -8,24 +8,34 @@ namespace SoLin {
 
 	OpenGLVertexArray::OpenGLVertexArray()
 	{
+        SL_PROFILE_FUNCTION();
+
 		glCreateVertexArrays(1, &m_RendererID);
 	}
 
 	OpenGLVertexArray::~OpenGLVertexArray()
 	{
+        SL_PROFILE_FUNCTION();
+
 		glDeleteVertexArrays(1, &m_RendererID);
 	}
 
 	void OpenGLVertexArray::Bind() const
 	{
+        SL_PROFILE_FUNCTION();
+
 		glBindVertexArray(m_RendererID);
 	}
 	void OpenGLVertexArray::UnBind() const
 	{
+        SL_PROFILE_FUNCTION();
+
 		glBindVertexArray(0);
 	}
 	void OpenGLVertexArray::AddVertexBuffer(const Ref<VertexBuffer>& vertexbuffer)
 	{
+        SL_PROFILE_FUNCTION();
+
 		SL_CORE_ASSERT(vertexbuffer->GetLayout().GetElements().size(), "顶点缓冲布局现在是空的!");
 
 		glBindVertexArray(m_RendererID);
@@ -44,6 +54,8 @@ namespace SoLin {
 	}
 	void OpenGLVertexArray::SetIndexBuffer(const Ref<IndexBuffer>& indexbuffer)
 	{
+        SL_PROFILE_FUNCTION();
+
 		glBindVertexArray(m_RendererID);
 		indexbuffer->Bind();
 

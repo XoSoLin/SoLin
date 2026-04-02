@@ -23,6 +23,8 @@ namespace SoLin {
 	
 	Application::Application()
 	{
+        SL_PROFILE_FUNCTION();
+
 		// 如果Appliction再次被构造，将会触发ASSERT，因为第一次构造后将会使s_Instance不再为nullptr
 		SL_CORE_ASSERT(!s_Instance, "Application already exists!(The class Application is a Singleton,it just support one instance!)");
 		s_Instance = this;
@@ -33,8 +35,6 @@ namespace SoLin {
 		m_Window->SetVSync(true);
 		Renderer::Init();
 
-		/*auto f2 = std::bind(&Application::OnEvent,this,std::placeholders::_1);
-		m_Window->SetEventCallback(f2);*/
 
 		m_ImGuiLayer = new ImGuiLayer();												//初始化 m_ImGuiLayer 为原始指针，并推入层栈
 		PushOverlay(m_ImGuiLayer);
@@ -46,14 +46,22 @@ namespace SoLin {
 	}
 	
 	void Application::PushLayer(Layer* layer) {
+        SL_PROFILE_FUNCTION();
+
 		m_LayerStack.PushLayer(layer);
+        layer->OnAttach();
 	}
 
 	void Application::PushOverlay(Layer* overlay) {
+        SL_PROFILE_FUNCTION();
+
 		m_LayerStack.PushOverLay(overlay);
+        overlay->OnAttach();
 	}
 
 	void Application::OnEvent(Event& e) {
+        SL_PROFILE_FUNCTION();
+
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
 		dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FN(OnWindowResize));
@@ -72,25 +80,37 @@ namespace SoLin {
 	}
 
 	void Application::Run() {
+        SL_PROFILE_FUNCTION();
+
 		WindowResizeEvent e(1280, 720);
 		
 		while (m_Running) {
+            SL_PROFILE_SCOPE("RunLoop");
 
 			float time = (float)glfwGetTime();				//获取当前时间
 			Timestep timestep = time - m_LastFrameTime;		//计算变化时间
 			m_LastFrameTime = time;							//存储当前时间供下次使用
 			
 			if (!m_Minimized) {
-				for (Layer* layer : m_LayerStack) {				//更新图层
-					layer->OnUpdate(timestep);
-				}
+                {
+                    SL_PROFILE_SCOPE("LayerStack OnUpdate");
+
+				    for (Layer* layer : m_LayerStack) {				//更新图层
+					    layer->OnUpdate(timestep);
+				    }
+                }
 			}
 
 
 			m_ImGuiLayer->Begin();
-			for (Layer* layer : m_LayerStack)
-				layer->OnImGuiRender();
-			m_ImGuiLayer->End();
+
+            {
+                SL_PROFILE_SCOPE("LayerStack OnImGuiRenderer");
+
+                for (Layer* layer : m_LayerStack)
+                    layer->OnImGuiRender();
+            }
+            m_ImGuiLayer->End();
 
 			m_Window->OnUpdate();							//更新窗口
 		}
@@ -102,6 +122,8 @@ namespace SoLin {
 	}
 	bool Application::OnWindowResize(WindowResizeEvent& event)
 	{
+        SL_PROFILE_FUNCTION();
+
 		m_Minimized = false;
 		Renderer::OnWindowResize(event.GetWidth(), event.GetHeight());
 		

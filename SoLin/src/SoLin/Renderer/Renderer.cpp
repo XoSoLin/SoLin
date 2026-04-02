@@ -10,6 +10,8 @@ namespace SoLin {
 
 	void Renderer::Init()
 	{
+        SL_PROFILE_FUNCTION();
+
 		RendererCommand::Init();
 		Renderer2D::Init();
 	}

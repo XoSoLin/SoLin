@@ -12,6 +12,8 @@ namespace SoLin {
 
 	void OrthoGraphicCameraController::OnUpdate(Timestep ts)
 	{
+        SL_PROFILE_FUNCTION();
+
 		if (m_Rotation) {
 			// 相机朝向是z的负方向，OpenGL中是右手坐标系，旋转是绕z轴转，加角度是四指弯曲方向
 			// z正方向指向屏幕外，加角度就是逆时针转相机，物体是顺时针
@@ -54,6 +56,8 @@ namespace SoLin {
 	}
 	void OrthoGraphicCameraController::OnEvent(Event& e)
 	{
+        SL_PROFILE_FUNCTION();
+
 		EventDispatcher dispathcer(e);
 		dispathcer.Dispatch<MouseScrolledEvent>(SOLIN_BIND_EVENT_FN(OrthoGraphicCameraController::OnMouseScrolled));
 		dispathcer.Dispatch<WindowResizeEvent>(SOLIN_BIND_EVENT_FN(OrthoGraphicCameraController::OnWindowResized));
@@ -61,6 +65,8 @@ namespace SoLin {
 	}
 	bool OrthoGraphicCameraController::OnMouseScrolled(MouseScrolledEvent e)
 	{
+        SL_PROFILE_FUNCTION();
+
 		m_ZoomLevel -= e.GetYOffset() * 0.5f;							//向前滚动通常为负
 		m_ZoomLevel = std::max(m_ZoomLevel, 0.25f);			//保证缩放比例最低为0.25
 		m_Camera.SetProjectionMatrix(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
@@ -68,6 +74,8 @@ namespace SoLin {
 	}
 	bool OrthoGraphicCameraController::OnWindowResized(WindowResizeEvent e)
 	{
+        SL_PROFILE_FUNCTION();
+
 		// 更新宽高比
 		m_AspectRatio = (float)e.GetWidth() / (float)e.GetHeight();
 		m_Camera.SetProjectionMatrix(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);

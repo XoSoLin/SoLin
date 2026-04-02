@@ -15,7 +15,6 @@ namespace SoLin {
 	void LayerStack::PushLayer(Layer* layer) {
 		m_Layers.emplace(m_Layers.begin()+m_LayerInsertIndex, layer);	//从后向前插入(emplace)
 		m_LayerInsertIndex++;
-		layer->OnAttach();
 	}
 
 	//@brief 删除栈顶元素
@@ -30,7 +29,6 @@ namespace SoLin {
 
 	void LayerStack::PushOverLay(Layer* overlay) {
 		m_Layers.emplace_back(overlay);									//从前向后插（直接插在末尾）
-		overlay->OnAttach();
 	}
 
 	void LayerStack::PopOverLay(Layer* overlay) {

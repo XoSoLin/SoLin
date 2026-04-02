@@ -8,15 +8,21 @@ namespace SoLin {
 	OrthoGraphicCamera::OrthoGraphicCamera(float left, float right, float bottom, float top)
 		:m_ViewMatrix(1.0f),m_ProjectionMatrix(glm::ortho(left,right,bottom,top,-1.0f,1.0f))
 	{
+        SL_PROFILE_FUNCTION();
+
 		m_ViewProjectionMatrix = m_ViewMatrix * m_ProjectionMatrix;
 	}
 	void OrthoGraphicCamera::SetProjectionMatrix(float left, float right, float bottom, float top)
 	{
+        SL_PROFILE_FUNCTION();
+
 		m_ProjectionMatrix = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
 		m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
 	}
 	void OrthoGraphicCamera::UpdateViewMatrix()
 	{
+        SL_PROFILE_FUNCTION();
+
 		// 变化矩阵 = 位移矩阵 * 旋转矩阵（TR）
 		//OpenGL中是从右向左乘，先旋转再位移
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), m_Position)

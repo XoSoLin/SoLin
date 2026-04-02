@@ -122,6 +122,7 @@ namespace SoLin {
     #define SL_PROFILE_BEGIN_SESSION(name,filepath) ::SoLin::Instrumentor::Get().BeginSession(name,filepath)
     #define SL_PROFILE_END_SESSION() ::SoLin::Instrumentor::Get().EndSession()
     #define SL_PROFILE_SCOPE(name) ::SoLin::InstrumentationTimer timer##__LINE__(name)
+    //__FUNCSIG__ 获取当前函数的完整签名信息
     #define SL_PROFILE_FUNCTION() SL_PROFILE_SCOPE(__FUNCSIG__)
 #else
     #define SL_PROFILE_BEGIN_SESSION(name,filepath)

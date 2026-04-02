@@ -18,6 +18,7 @@ namespace SoLin {
 	ImGuiLayer::~ImGuiLayer(){}
 
 	void ImGuiLayer::OnAttach() {
+        SL_PROFILE_FUNCTION();
 
 		SL_CORE_INFO("void ImGuiLayer::OnAttach");
 
@@ -56,23 +57,31 @@ namespace SoLin {
 	}
 
 	void ImGuiLayer::OnDetach() {
+        SL_PROFILE_FUNCTION();
+
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();
 	}
 
 	void ImGuiLayer::Begin() {
+        SL_PROFILE_FUNCTION();
+
 		ImGui_ImplOpenGL3_NewFrame();										//每一帧开始时准备 OpenGL 渲染环境以供 Dear ImGui 绘制 UI 元素
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();													//清除之前的 UI 数据，准备接受新的 UI 绘制指令（准备新帧），并更新输入状态
 	}
 
 	void ImGuiLayer::OnImGuiRender() {
+        SL_PROFILE_FUNCTION();
+
 		static bool show = true;
 		//ImGui::ShowDemoWindow(&show);									//展示Demo窗口，内置的一个ImGui窗口
 	}
 
 	void ImGuiLayer::End() {
+        SL_PROFILE_FUNCTION();
+
 		ImGuiIO& io = ImGui::GetIO();
 		Application& app = Application::Get();
 		io.DisplaySize = ImVec2((float)app.GetWindow().GetWidth(), (float)app.GetWindow().GetHeight());

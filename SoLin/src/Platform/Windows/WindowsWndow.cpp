@@ -20,22 +20,30 @@ namespace SoLin {
 
 	WindowsWindow::WindowsWindow(const WindowProps& props)
 	{
+        SL_PROFILE_FUNCTION();
+
 		Init(props);
 	}
 
 	WindowsWindow::~WindowsWindow()
 	{
+        SL_PROFILE_FUNCTION();
+
 		Shutdown();
 	}
 
 	void WindowsWindow::OnUpdate()
 	{
+        SL_PROFILE_FUNCTION();
+
 		glfwPollEvents();
 		m_Context->SwapBuffers();
 	}
 
 	void WindowsWindow::SetVSync(bool enabled)
 	{
+        SL_PROFILE_FUNCTION();
+
 		if (enabled)
 			glfwSwapInterval(1);
 		else
@@ -49,6 +57,8 @@ namespace SoLin {
 	}
 	void WindowsWindow::Init(const WindowProps& props)
 	{
+        SL_PROFILE_FUNCTION();
+
 		m_Data.Title = props.Title;
 		m_Data.Width = props.Width;
 		m_Data.Height = props.Height;
@@ -56,6 +66,8 @@ namespace SoLin {
 		SL_CORE_INFO("Creating window:{0}({1},{2})", props.Title, props.Width, props.Height);
 
 		if (!s_GLFWInitialized) {
+            SL_PROFILE_SCOPE("glfwInitWindow");
+
 			//TODO: glfwTerminate on system shutdown
 
 			int success = glfwInit();
@@ -67,9 +79,12 @@ namespace SoLin {
 
 			s_GLFWInitialized = true;
 		}
-		// 初始化Windows对象并创建窗口上下文
-		m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
 
+        {
+            SL_PROFILE_SCOPE("glfwCreateWindow");
+            // 初始化Windows对象并创建窗口上下文
+            m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
+        }
 		m_Context = CreateScope<OpenGLContext>(m_Window);
 		m_Context->Init();
 
@@ -161,6 +176,8 @@ namespace SoLin {
 	}
 	void WindowsWindow::Shutdown()
 	{
+        SL_PROFILE_FUNCTION();
+
 		glfwDestroyWindow(m_Window);
 	}
 }
