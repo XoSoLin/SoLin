@@ -70,8 +70,8 @@ namespace SoLin {
 		// 目前只有WindowCloseEvent被处理，也就是执行了OnWindowClose()
 		//SL_CORE_TRACE("{0} | handled({1})", e.ToString(),e.Handled);
 
-		for (auto iter = m_LayerStack.end(); iter != m_LayerStack.begin();) {
-			(*--iter)->OnEvent(e);
+		for (auto iter = m_LayerStack.rbegin(); iter != m_LayerStack.rend();++iter) {
+			(*iter)->OnEvent(e);
 			if (e.Handled) {
 				break;
 			}

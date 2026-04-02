@@ -4,7 +4,7 @@
 
 extern SoLin::Application* SoLin::CreateApplication();
 
-void main(int argc,char** argv) {
+int main(int argc,char** argv) {
 
     //控制台输入输出均改为utf-8
     SetConsoleOutputCP(CP_UTF8);

@@ -9,6 +9,8 @@
 
 #include"SoLin/Core/Timestep.h"
 
+int main(int argc, char** argv);
+
 namespace SoLin {
 	
 	class SOLIN_API Application
@@ -18,7 +20,6 @@ namespace SoLin {
 		virtual ~Application();
 
 		void OnEvent(Event& e);				//事件分发
-		void Run();
 
 		void PushLayer(Layer* layer);
 		void PushOverlay(Layer* overlay);
@@ -28,6 +29,8 @@ namespace SoLin {
 		//@brief 返回该App单例指针
 		inline static Application& Get() { return *s_Instance; }
 	private:
+		void Run();                         // Run 函数现在为私有(Run 函数中定义 RunLoop)
+
 		//@brief 窗口关闭回调
 		bool OnWindowClose(WindowCloseEvent& event);
 		//@brief 窗口尺寸回调
@@ -43,6 +46,7 @@ namespace SoLin {
 		LayerStack m_LayerStack;						//程序的层栈
 	private:
 		static Application* s_Instance;
+        friend int ::main(int argc, char** argv);       //通过将 main 声明为友元函数，便可以在外部通过 main 来访问私有的 Run 函数
 	};
 
 	// 这个将会在用户端被定义 

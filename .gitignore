@@ -5,6 +5,15 @@
 **.vcxproj.filters          
 **.vcxproj.user
 
+
+# ! 表示不忽略vendor/bin/premake目录
+!vendor/bin/premake/
+
+# Ignore all .json files
+/Sandbox/*.json
+# Ignore imgui.ini file
+/Sandbox/imgui.ini
+
 # 编译输出目录
 [Bb]in/
 [Oo]bj/

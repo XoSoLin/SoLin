@@ -119,11 +119,34 @@ namespace SoLin {
 
 #define SL_PROFILE 1
 #if SL_PROFILE
+
+    //根据不同机器上的编辑器及其版本确定对应的合适的获取方式，
+    //将其定义为 SL_FUNC_SIG，自动获取函数签名
+    // 请注意，这只有在预编译器启动时才会解析，
+    // 因此语法高亮可能会在您的编辑器中标记错误的一个！
+
+    #if defined(__GNUC__) || (defined(__MWERKS__) && (__MWERKS__ >= 0x3000)) || (defined(__ICC) && (__ICC >= 600)) || defined(__ghs__)
+    #define SL_FUNC_SIG __PRETTY_FUNCTION__
+    #elif defined(__DMC__) && (__DMC__ >= 0x810)
+    #define SL_FUNC_SIG __PRETTY_FUNCTION__
+    #elif defined(__FUNCSIG__)
+    #define SL_FUNC_SIG __FUNCSIG__
+    #elif (defined(__INTEL_COMPILER) && (__INTEL_COMPILER >= 600)) || (defined(__IBMCPP__) && (__IBMCPP__ >= 500))
+    #define SL_FUNC_SIG __FUNCTION__
+    #elif defined(__BORLANDC__) && (__BORLANDC__ >= 0x550)
+    #define SL_FUNC_SIG __FUNC__
+    #elif defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 199901)
+    #define SL_FUNC_SIG __func__
+    #elif defined(__cplusplus) && (__cplusplus >= 201103)
+    #define SL_FUNC_SIG __func__
+    #else
+    #define SL_FUNC_SIG "SL_FUNC_SIG unknown!"
+    #endif
+    
     #define SL_PROFILE_BEGIN_SESSION(name,filepath) ::SoLin::Instrumentor::Get().BeginSession(name,filepath)
     #define SL_PROFILE_END_SESSION() ::SoLin::Instrumentor::Get().EndSession()
     #define SL_PROFILE_SCOPE(name) ::SoLin::InstrumentationTimer timer##__LINE__(name)
-    //__FUNCSIG__ 获取当前函数的完整签名信息
-    #define SL_PROFILE_FUNCTION() SL_PROFILE_SCOPE(__FUNCSIG__)
+    #define SL_PROFILE_FUNCTION() SL_PROFILE_SCOPE(SL_FUNC_SIG)
 #else
     #define SL_PROFILE_BEGIN_SESSION(name,filepath)
     #define SL_PROFILE_END_SESSION()
