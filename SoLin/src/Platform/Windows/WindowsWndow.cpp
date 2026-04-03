@@ -78,6 +78,12 @@ namespace SoLin {
 
         {
             SL_PROFILE_SCOPE("glfwCreateWindow");
+
+            #ifdef SL_DEBUG
+                // 启用调试上下文（以便在渲染的过程中通过MessageCallback监测）
+                glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
+            #endif
+
             // 初始化Windows对象并创建窗口上下文
             m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
             s_GLFWWindowCount++;

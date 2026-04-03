@@ -4,8 +4,34 @@
 #include<glad/glad.h>
 
 namespace SoLin {
+
+    #pragma region 报错信息回调函数(OpenGLMessageCallback)定义
+        void OpenGLMessageCallback
+        (unsigned source, unsigned type, unsigned id, unsigned severity, int length, const char* message, const void* userParam)
+        {
+            switch (severity)
+            {
+            case GL_DEBUG_SEVERITY_HIGH:         SL_CORE_CRITICAL(message); return;
+            case GL_DEBUG_SEVERITY_MEDIUM:       SL_CORE_ERROR(message); return;
+            case GL_DEBUG_SEVERITY_LOW:          SL_CORE_WARN(message); return;
+            case GL_DEBUG_SEVERITY_NOTIFICATION: SL_CORE_TRACE(message); return;
+            }
+
+            SL_CORE_ASSERT(false, "Unknown severity level!");
+        }
+    # pragma endregion
+
 	void OpenGLRendererAPI::Init() {
         SL_PROFILE_FUNCTION();
+
+        #ifdef SL_DEBUG
+            //控制OpenGL生成的调试消息的生成和过滤
+            glEnable(GL_DEBUG_OUTPUT);
+            glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+
+            glDebugMessageCallback(OpenGLMessageCallback, nullptr);
+            glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, NULL, GL_FALSE);
+        #endif
 
 		//启用混合
 		glEnable(GL_BLEND);
