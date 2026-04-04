@@ -20,6 +20,8 @@ namespace SoLin {
 
 		//@brief 用于设置着色器的单个int数据
 		virtual void SetInt		(const std::string& name, const int& value) = 0;
+        //@brief 用于设置着色器的count个int数据
+        virtual void SetIntArray(const std::string& name, int* values, uint32_t count) = 0;
         //@brief 用于设置着色器的vec3数据
         virtual void SetFloat   (const std::string& name, const float& value) = 0;
 		//@brief 用于设置着色器的vec3数据

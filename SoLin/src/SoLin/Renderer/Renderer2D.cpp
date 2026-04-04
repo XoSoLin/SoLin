@@ -16,15 +16,17 @@ namespace SoLin {
         glm::vec3 Position;
         glm::vec4 Color;
         glm::vec2 TexCoord;
-        // TODO:TexId
+
+        float TexIndex;
+        float TilingFactor;
     };
 
 	//@brief 2D渲染存储
 	struct Renderer2DData {
+        static const uint32_t MaxTextureSlots = 32;
         const uint32_t MaxQuads = 100;
         const uint32_t MaxVertices = MaxQuads * 4;
         const uint32_t MaxIndices = MaxQuads * 6;
-        uint32_t QuadIndexCount = 0;
 
 		Ref<VertexArray> QuadVA;		//方形顶点数组指针
         Ref<VertexBuffer> QuadVB;       //方形顶点缓冲区指针
@@ -32,8 +34,13 @@ namespace SoLin {
 		Ref<Shader> TextureShader;		//纹理着色器指针
 		Ref<Texture2D> WhiteTexture;	//1x1的白色纹理(与纹理着色器结合使用达到纯色着色器的效果)
 
+        uint32_t QuadIndexCount = 0;
         QuadVertex* QuadVBBase = nullptr;       //顶点指针起始
         QuadVertex* QuadVBHind = nullptr;       //顶点指针末尾
+
+        std::array<Ref<Texture2D>, MaxTextureSlots> Textures;
+        //从1开始，0是白色纹理用来扩展纯色渲染
+        uint32_t TextureSoltIndex = 1;
 	};
 	static Renderer2DData s_Data;	    //2D渲染器数据(批渲染改为栈上分配)
 
@@ -49,7 +56,9 @@ namespace SoLin {
 		BufferLayout squareLayout = {
 			{ShaderDataType::Float3,"a_Position"},
             {ShaderDataType::Float4,"a_Color"},
-			{ShaderDataType::Float2,"a_TexCoord"}
+			{ShaderDataType::Float2,"a_TexCoord"},
+            {ShaderDataType::Float, "a_TexIndex"},
+            {ShaderDataType::Float, "a_TilingFactor"}
 		};
 		s_Data.QuadVB->SetLayout(squareLayout);
 
@@ -82,17 +91,22 @@ namespace SoLin {
         // CPU在堆上创建VB数据，并保存VB指针初始位置
         s_Data.QuadVBBase = new QuadVertex[s_Data.MaxVertices];
 
+        // 创建采样器
+        int32_t samplers[s_Data.MaxTextureSlots];
+        for (uint32_t i = 0;i < s_Data.MaxTextureSlots;i++)
+            samplers[i] = i;
 
         //-----------Shader--------------
 		s_Data.TextureShader = Shader::Create("assets/shaders/TextureShader.glsl");
 		s_Data.TextureShader->Bind();
-		s_Data.TextureShader->SetInt("u_Texture", 0);
+		s_Data.TextureShader->SetIntArray("u_Textures",samplers,s_Data.MaxTextureSlots);
 
         //-----------Texture-------------
 		//创建单像素白色纹理
 		s_Data.WhiteTexture = Texture2D::Create(1, 1);
 		uint32_t whiteTextureData = 0xffffffff;
 		s_Data.WhiteTexture->SetData(&whiteTextureData, sizeof(uint32_t));
+        s_Data.Textures[0] = s_Data.WhiteTexture;
 	}
 
 	void Renderer2D::Shutdown()
@@ -110,6 +124,7 @@ namespace SoLin {
 
         // 批渲染重置计数和尾指针
         s_Data.QuadIndexCount = 0;
+        s_Data.TextureSoltIndex = 1;
         s_Data.QuadVBHind = s_Data.QuadVBBase;
 	}
 
@@ -129,6 +144,11 @@ namespace SoLin {
     {
         SL_PROFILE_FUNCTION();
 
+        //绑定纹理
+        for (uint32_t i = 0;i < s_Data.TextureSoltIndex;i++)
+            s_Data.Textures[i]->Bind(i);
+
+        //进行批渲染绘制
         RendererCommand::DrawIndexed(s_Data.QuadVA, s_Data.QuadIndexCount);
     }
 
@@ -141,24 +161,39 @@ namespace SoLin {
 	{
         SL_PROFILE_FUNCTION();
 
+        const float textureIndex = 0.0f;
+        const float tilingFactor = 1.0f;
+
+        // 左下(目前锚点默认为此处)
         s_Data.QuadVBHind->Position = position;
         s_Data.QuadVBHind->Color = color;
         s_Data.QuadVBHind->TexCoord = { 0.0f,0.0f };
+        s_Data.QuadVBHind->TexIndex = textureIndex;
+        s_Data.QuadVBHind->TilingFactor = tilingFactor;
         s_Data.QuadVBHind++;
 
+        //右下
         s_Data.QuadVBHind->Position = { position.x + size.x, position.y, 0.0f };
         s_Data.QuadVBHind->Color = color;
         s_Data.QuadVBHind->TexCoord = { 1.0f, 0.0f };
+        s_Data.QuadVBHind->TexIndex = textureIndex;
+        s_Data.QuadVBHind->TilingFactor = tilingFactor;
         s_Data.QuadVBHind++;
 
+        //右上
         s_Data.QuadVBHind->Position = { position.x + size.x, position.y + size.y, 0.0f };
         s_Data.QuadVBHind->Color = color;
         s_Data.QuadVBHind->TexCoord = { 1.0f, 1.0f };
+        s_Data.QuadVBHind->TexIndex = textureIndex;
+        s_Data.QuadVBHind->TilingFactor = tilingFactor;
         s_Data.QuadVBHind++;
 
+        //左上
         s_Data.QuadVBHind->Position = { position.x,			position.y + size.y, 0.0f };
         s_Data.QuadVBHind->Color = color;
         s_Data.QuadVBHind->TexCoord = { 0.0f, 1.0f };
+        s_Data.QuadVBHind->TexIndex = textureIndex;
+        s_Data.QuadVBHind->TilingFactor = tilingFactor;
         s_Data.QuadVBHind++;
 
         s_Data.QuadIndexCount += 6;
@@ -189,6 +224,57 @@ namespace SoLin {
 	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture,float tilingFactor,const glm::vec4& tintColor)
 	{
         SL_PROFILE_FUNCTION();
+
+        const glm::vec4 color = tintColor;
+
+        //寻找纹理指针在数组中的位置
+        float textureIndex = 0.0f;
+        for (uint32_t i = 1;i < s_Data.TextureSoltIndex;i++) {
+            if (*s_Data.Textures[i].get() == *texture.get()) {
+                textureIndex = (float)i;
+                break;
+            }
+        }
+        //纹理指针未命中就添加入数组中
+        if (textureIndex == 0.0f) {
+            s_Data.Textures[s_Data.TextureSoltIndex] = texture;
+            textureIndex = float(s_Data.TextureSoltIndex);
+            s_Data.TextureSoltIndex++;
+        }
+
+        // 左下(目前锚点默认为此处)
+        s_Data.QuadVBHind->Position = position;
+        s_Data.QuadVBHind->Color = color;
+        s_Data.QuadVBHind->TexCoord = { 0.0f,0.0f };
+        s_Data.QuadVBHind->TexIndex = textureIndex;
+        s_Data.QuadVBHind->TilingFactor = tilingFactor;
+        s_Data.QuadVBHind++;
+
+        //右下
+        s_Data.QuadVBHind->Position = { position.x + size.x, position.y, 0.0f };
+        s_Data.QuadVBHind->Color = color;
+        s_Data.QuadVBHind->TexCoord = { 1.0f, 0.0f };
+        s_Data.QuadVBHind->TexIndex = textureIndex;
+        s_Data.QuadVBHind->TilingFactor = tilingFactor;
+        s_Data.QuadVBHind++;
+
+        //右上
+        s_Data.QuadVBHind->Position = { position.x + size.x, position.y + size.y, 0.0f };
+        s_Data.QuadVBHind->Color = color;
+        s_Data.QuadVBHind->TexCoord = { 1.0f, 1.0f };
+        s_Data.QuadVBHind->TexIndex = textureIndex;
+        s_Data.QuadVBHind->TilingFactor = tilingFactor;
+        s_Data.QuadVBHind++;
+
+        //左上
+        s_Data.QuadVBHind->Position = { position.x,			position.y + size.y, 0.0f };
+        s_Data.QuadVBHind->Color = color;
+        s_Data.QuadVBHind->TexCoord = { 0.0f, 1.0f };
+        s_Data.QuadVBHind->TexIndex = textureIndex;
+        s_Data.QuadVBHind->TilingFactor = tilingFactor;
+        s_Data.QuadVBHind++;
+
+        s_Data.QuadIndexCount += 6;
 
         #if 0
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), { size.x,size.y,1.0f });
