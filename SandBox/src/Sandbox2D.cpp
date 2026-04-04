@@ -47,9 +47,20 @@ void Sandbox2D::OnUpdate(SoLin::Timestep ts)
 		SoLin::Renderer2D::DrawQuad({ 0.0f,0.0f }, { 1.0f, 1.0f }, { 0.8f, 0.2f, 0.3f, 1.0f });
 		SoLin::Renderer2D::DrawQuad({ 1.0f, -1.0f,-0.2 }, { 0.5f, 1.0f }, m_SquareColor);
 		//通过opengl设置后，纹理坐标超出-1到1的部分，会重复显示
-        //SoLin::Renderer2D::DrawRotatedQuad({ -1.0f, 1.0f }, { 1.0f, 1.0f }, 45.0f, { 0.3f, 0.2f, 0.8f, 1.0f });
+        SoLin::Renderer2D::DrawRotatedQuad({ -1.0f, 1.0f }, { 1.0f, 1.0f }, temp, { 0.3f, 0.2f, 0.8f, 1.0f });
 		SoLin::Renderer2D::DrawQuad({ 0.0f,0.0f,-0.1f }, { 2.0f,2.0f }, m_Texture,10.0f,{1.0,0.9,0.9,1.0});
 		SoLin::Renderer2D::EndScene();
+
+        /*SL::Renderer2D::BeginScene(m_CameraController.GetCamera());
+        for (float y = -5.0f; y < 5.0f; y += 0.5f)
+        {
+            for (float x = -5.0f; x < 5.0f; x += 0.5f)
+            {
+                glm::vec4 color = { 0.0f ,(x + 5.0f) / 10.0f, (y + 5.0f) / 10.0f, 0.7f };
+                SL::Renderer2D::DrawQuad({ x,y }, { 0.45f, 0.45f }, color);
+            }
+        }
+        SL::Renderer2D::EndScene();*/
 	}
 }
 
@@ -58,6 +69,12 @@ void Sandbox2D::OnImGuiRender()
     SL_PROFILE_FUNCTION();
 
 	ImGui::Begin("SandboxTest");
+    auto stats = SL::Renderer2D::GetStats();
+    ImGui::Text("Renderer2D Stats:");
+    ImGui::Text("Draw Calls: %d", stats.DrawCalls);
+    ImGui::Text("Quads: %d", stats.QuadCount);
+    ImGui::Text("Vertices: %d", stats.GetVertexCount());
+    ImGui::Text("Indices: %d", stats.GetIndexCount());
 	ImGui::ColorEdit4("Square Color Edit", glm::value_ptr(m_SquareColor));
 
 	ImGui::End();

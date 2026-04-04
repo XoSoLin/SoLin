@@ -20,7 +20,9 @@ namespace SoLin {
 		static void EndScene();
 
         static void Flush();
+        static void FlushAndReset();
 
+        static void TransportGLSL(const glm::mat4& transform, const glm::vec4& color, const float& textureIndex, const float& tilingFactor);
 		//--------------------图元---------------------------
 
 		//@brief 画四边形
@@ -76,12 +78,25 @@ namespace SoLin {
         //@brief 画纹理四边形
         //@param position 位置
         //@param size 宽高
-        // @param rotation 旋转角度
+        //@param rotation 旋转角度
         //@param texture 纹理
         //@param tilingFactor 填充因子
         //@param tintColor 色调
         static void DrawRotatedQuad(
             const glm::vec3& position, const glm::vec2& size, float rotation, const Ref<Texture2D>& texture,
             float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
+
+        struct Statistics {
+            uint32_t DrawCalls;
+            uint32_t QuadCount;
+
+            // 函数被调用时再计算Vertex或Index，节省性能
+            uint32_t GetVertexCount() { return QuadCount * 4; }
+            uint32_t GetIndexCount() { return QuadCount * 6; }
+        };
+
+        static void ClearStats();
+        static Statistics GetStats();
 	};
+
 }
