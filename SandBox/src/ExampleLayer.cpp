@@ -28,8 +28,8 @@ ExampleLayer::ExampleLayer()
     SoLin::Ref<SoLin::VertexBuffer> vertexBuffer;
     SoLin::Ref<SoLin::IndexBuffer> indexBuffer;
     m_VertexArray = SoLin::VertexArray::Create();
-    vertexBuffer.reset(SoLin::VertexBuffer::Create(vertices, sizeof(vertices)));
-    indexBuffer.reset(SoLin::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
+    vertexBuffer = SoLin::VertexBuffer::Create(vertices, sizeof(vertices));
+    indexBuffer = SoLin::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t));
     vertexBuffer->SetLayout(layout);
 
     m_VertexArray->AddVertexBuffer(vertexBuffer);
@@ -82,8 +82,8 @@ ExampleLayer::ExampleLayer()
     m_SquareVA = SoLin::VertexArray::Create();
     SoLin::Ref<SoLin::VertexBuffer> squareVB;
     SoLin::Ref<SoLin::IndexBuffer> squareIB;
-    squareVB.reset(SoLin::VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
-    squareIB.reset(SoLin::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t)));
+    squareVB = SoLin::VertexBuffer::Create(squareVertices, sizeof(squareVertices));
+    squareIB = SoLin::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t));
 
     SoLin::BufferLayout squareLayout = {
         {SoLin::ShaderDataType::Float3,"a_Position"},

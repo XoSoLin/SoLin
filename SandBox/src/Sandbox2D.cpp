@@ -44,8 +44,8 @@ void Sandbox2D::OnUpdate(SoLin::Timestep ts)
 		SoLin::Renderer2D::DrawQuad({ 0.0f,0.0f }, { 1.0f, 1.0f }, { 0.8f, 0.2f, 0.3f, 1.0f });
 		SoLin::Renderer2D::DrawQuad({ 1.0f, -1.0f,-0.2 }, { 0.5f, 1.0f }, m_SquareColor);
 		//通过opengl设置后，纹理坐标超出-1到1的部分，会重复显示
-        SoLin::Renderer2D::DrawRotatedQuad({ -1.0f, 1.0f }, { 1.0f, 1.0f }, 45.0f, { 0.3f, 0.2f, 0.8f, 1.0f });
-		SoLin::Renderer2D::DrawQuad({ 0.0f,0.0f,-0.1f }, { 2.0f,2.0f }, m_Texture,10.0f,{1.0,0.9,0.9,0.7});
+        //SoLin::Renderer2D::DrawRotatedQuad({ -1.0f, 1.0f }, { 1.0f, 1.0f }, 45.0f, { 0.3f, 0.2f, 0.8f, 1.0f });
+		//SoLin::Renderer2D::DrawQuad({ 0.0f,0.0f,-0.1f }, { 2.0f,2.0f }, m_Texture,10.0f,{1.0,0.9,0.9,0.7});
 		SoLin::Renderer2D::EndScene();
 }
 

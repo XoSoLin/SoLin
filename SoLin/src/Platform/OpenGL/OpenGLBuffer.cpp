@@ -9,7 +9,16 @@ namespace SoLin {
 	/////////////////// VertexBuffer /////////////////////
 	//////////////////////////////////////////////////////
 	
-	OpenGLVertexBuffer::OpenGLVertexBuffer(float* vertices, uint32_t size)
+    OpenGLVertexBuffer::OpenGLVertexBuffer(uint32_t size)
+    {
+        SL_PROFILE_FUNCTION();
+
+        glCreateBuffers(1, &m_RendererID);
+        glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
+        glBufferData(GL_ARRAY_BUFFER, size, nullptr, GL_STATIC_DRAW);
+    }
+
+    OpenGLVertexBuffer::OpenGLVertexBuffer(float* vertices, uint32_t size)
 	{
         SL_PROFILE_FUNCTION();
 
@@ -35,6 +44,15 @@ namespace SoLin {
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
+
+    void OpenGLVertexBuffer::SetData(const void* data, uint32_t size) const
+    {
+        SL_PROFILE_FUNCTION();
+
+        glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
+        //更新缓冲区对象
+        glBufferSubData(GL_ARRAY_BUFFER, 0,size, data);
+    }
 
 	//////////////////////////////////////////////////////
 	/////////////////// IndexBuffer //////////////////////

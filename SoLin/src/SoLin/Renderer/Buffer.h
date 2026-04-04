@@ -138,12 +138,19 @@ namespace SoLin {
 		virtual void Bind() const = 0;
 		virtual void UnBind() const = 0;
 
+        //@brief 一般与仅传入size的Create一起使用
+        //@param data 数据指针
+        //@param size 数据Byte大小
+        virtual void SetData(const void* data, uint32_t size)const = 0;
+
 		virtual const BufferLayout& GetLayout()const = 0;
 		virtual void SetLayout(const BufferLayout& layout) = 0;
 
+        //@param size 顶点缓冲区Byte大小
+        static std::shared_ptr<VertexBuffer> Create(uint32_t size);
 		//@param vertices 顶点数组指针
 		//@param size 顶点缓冲区Byte大小
-		static VertexBuffer* Create(float* vertices, uint32_t size);
+		static std::shared_ptr<VertexBuffer> Create(float* vertices, uint32_t size);
 	};
 
 	//////////////////////////////////////////////////////
@@ -162,6 +169,6 @@ namespace SoLin {
 
 		// @param indices 索引数组指针
 		// @param count 索引总数量
-		static IndexBuffer* Create(uint32_t* indices, uint32_t count);
+		static std::shared_ptr<IndexBuffer> Create(uint32_t* indices, uint32_t count);
 	};
 }

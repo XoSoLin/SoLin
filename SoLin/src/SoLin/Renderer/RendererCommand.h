@@ -22,6 +22,9 @@ namespace SoLin {
 		inline static void DrawIndexed(const Ref<VertexArray>& vertexArray) {
 			s_RendererAPI->DrawIndexed(vertexArray);
 		}
+        inline static void DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount) {
+            s_RendererAPI->DrawIndexed(vertexArray, indexCount);
+        }
 	private:
 		static Scope<RendererAPI> s_RendererAPI;
 	};

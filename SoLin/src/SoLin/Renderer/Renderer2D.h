@@ -19,6 +19,8 @@ namespace SoLin {
 		//@brief 结束布景
 		static void EndScene();
 
+        static void Flush();
+
 		//--------------------图元---------------------------
 
 		//@brief 画四边形

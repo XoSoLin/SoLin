@@ -10,6 +10,8 @@ namespace SoLin {
 	//@brief OpenGL顶点缓冲区
 	class OpenGLVertexBuffer :public VertexBuffer {
 	public:
+        //@param size 顶点缓冲区Byte大小
+        OpenGLVertexBuffer(uint32_t size);
 		//@param vertices 顶点数组指针
 		//@param size 顶点缓冲区Byte大小
 		OpenGLVertexBuffer(float* vertices, uint32_t size);
@@ -17,6 +19,8 @@ namespace SoLin {
 
 		virtual void Bind()const override;
 		virtual void UnBind()const override;
+
+        virtual void SetData(const void* data, uint32_t size)const override;
 
 		virtual const BufferLayout& GetLayout()const override { return m_Layout; }
 		virtual void SetLayout(const BufferLayout& layout)override { m_Layout = layout; }
