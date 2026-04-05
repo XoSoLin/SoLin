@@ -24,4 +24,6 @@ private:
 	glm::vec4 m_SquareColor = { 0.5412f, 0.1686f, 0.8863f, 1.0f };
     ParticleProps m_Particle;
     ParticleSystem m_ParticleSystem;
+    SoLin::Ref<SoLin::Texture2D> m_SpriteSheet;
+    SL::Ref<SL::SubTexture2D> m_subT1, m_subT2;
 };

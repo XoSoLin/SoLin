@@ -24,7 +24,7 @@ namespace SoLin {
 	//@brief 2D渲染存储
 	struct Renderer2DData {
         static const uint32_t MaxTextureSlots = 32;
-        static const uint32_t MaxQuads = 100;
+        static const uint32_t MaxQuads = 1000;
         static const uint32_t MaxVertices = MaxQuads * 4;
         static const uint32_t MaxIndices = MaxQuads * 6;
 
@@ -178,16 +178,16 @@ namespace SoLin {
         const glm::mat4& transform,
         const glm::vec4& color,
         const float& textureIndex,
-        const float& tilingFactor
+        const float& tilingFactor,
+        const glm::vec2* texcoords
     )
     {
         constexpr size_t quadVertexCount = 4;
-        constexpr glm::vec2 texCoords[4] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
 
         for (size_t i = 0;i < quadVertexCount;i++) {
             s_Data.QuadVBHind->Position = transform * s_Data.QuadVertexPosition[i];
             s_Data.QuadVBHind->Color = color;
-            s_Data.QuadVBHind->TexCoord = texCoords[i];
+            s_Data.QuadVBHind->TexCoord = texcoords[i];
             s_Data.QuadVBHind->TexIndex = textureIndex;
             s_Data.QuadVBHind->TilingFactor = tilingFactor;
             s_Data.QuadVBHind++;
@@ -195,6 +195,25 @@ namespace SoLin {
 
         s_Data.QuadIndexCount += 6;
         s_Data.Stats.QuadCount++;
+    }
+
+    void Renderer2D::QuadGetTextureIndex(Ref<Texture2D>& texture,float& index)
+    {
+        for (uint32_t i = 1;i < s_Data.TextureSlotIndex;i++) {
+            if (*s_Data.Textures[i].get() == *texture.get()) {
+                index = (float)i;
+                break;
+            }
+        }
+        if (index == 0.0f) {
+            if (s_Data.TextureSlotIndex >= s_Data.MaxTextureSlots) {
+                FlushAndReset();
+            }
+            s_Data.Textures[s_Data.TextureSlotIndex] = texture;
+            index = float(s_Data.TextureSlotIndex);
+
+            s_Data.TextureSlotIndex++;
+        }
     }
 
 	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color)
@@ -217,7 +236,8 @@ namespace SoLin {
         glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
             * glm::scale(glm::mat4(1.0f), { size.x, size.y, 0.0f });
 
-        QuadTransportGLSL(transform, color, textureIndex, tilingFactor);
+        constexpr glm::vec2 texCoords[4] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
+        QuadTransportGLSL(transform, color, textureIndex, tilingFactor, texCoords);
         
 	}
 
@@ -258,10 +278,43 @@ namespace SoLin {
         glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
             * glm::scale(glm::mat4(1.0f), { size.x, size.y, 0.0f });
 
-        QuadTransportGLSL(transform, color, textureIndex, tilingFactor);
+        constexpr glm::vec2 texCoords[4] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
+        QuadTransportGLSL(transform, color, textureIndex, tilingFactor,texCoords);
 
 
 	}
+
+    void Renderer2D::DrawQuad(
+        const glm::vec2& position, const glm::vec2& size,
+        const Ref<SubTexture2D>& subtexture, float tilingFactor,
+        const glm::vec4& tintColor) {
+        DrawQuad({ position.x, position.y }, size, subtexture, tilingFactor, tintColor);
+    }
+
+    void Renderer2D::DrawQuad(
+        const glm::vec3& position, const glm::vec2& size,
+        const Ref<SubTexture2D>& subtexture, float tilingFactor,
+        const glm::vec4& tintColor) {
+        SL_PROFILE_FUNCTION();
+
+        if (s_Data.QuadIndexCount >= s_Data.MaxIndices) {
+            FlushAndReset();
+        }
+
+        constexpr size_t quadVertexCount = 4;
+        const glm::vec2* subTexCoords = subtexture->GetCoords();
+        Ref<Texture2D>texture = subtexture->GetTexture();
+
+        float textureIndex = 0.0f;
+
+        QuadGetTextureIndex(texture, textureIndex);
+
+        glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
+            * glm::scale(glm::mat4(1.0f), { size.x,size.y,1.0f });
+
+        QuadTransportGLSL(transform, tintColor, textureIndex, tilingFactor,subTexCoords);
+
+    }
 
     void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const glm::vec4& color)
     {
@@ -283,7 +336,8 @@ namespace SoLin {
         const float textureIndex = 0.0f;
         const float tilingFactor = 1.0f;
 
-        QuadTransportGLSL(transform, color, textureIndex, tilingFactor);
+        constexpr glm::vec2 texCoords[4] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
+        QuadTransportGLSL(transform, color, textureIndex, tilingFactor,texCoords);
 
     }
 
@@ -323,8 +377,41 @@ namespace SoLin {
             s_Data.TextureSlotIndex++;
         }
 
-        QuadTransportGLSL(transform, tintColor, textureIndex, tilingFactor);
+        constexpr glm::vec2 texCoords[4] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
+        QuadTransportGLSL(transform, tintColor, textureIndex, tilingFactor,texCoords);
 
+    }
+
+    void Renderer2D::DrawRotatedQuad(
+        const glm::vec2& position, const glm::vec2& size, float rotation,
+        const Ref<SubTexture2D>& subtexture, float tilingFactor,
+        const glm::vec4& tintColor) {
+        DrawRotatedQuad({ position.x, position.y, 0.0f }, size, rotation, subtexture, tilingFactor, tintColor);
+    }
+
+    void Renderer2D::DrawRotatedQuad(
+        const glm::vec3& position, const glm::vec2& size, float rotation,
+        const Ref<SubTexture2D>& subtexture, float tilingFactor,
+        const glm::vec4& tintColor) {
+        SL_PROFILE_FUNCTION();
+
+        if (s_Data.QuadIndexCount >= s_Data.MaxIndices) {
+            FlushAndReset();
+        }
+
+        constexpr size_t quadVertexCount = 4;
+        const glm::vec2* subTexCoords = subtexture->GetCoords();
+        Ref<Texture2D>texture = subtexture->GetTexture();
+
+        float textureIndex = 0.0f;
+
+        QuadGetTextureIndex(texture, textureIndex);
+
+        glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
+            * glm::rotate(glm::mat4(1.0f),rotation,glm::vec3(0.0f,0.0f,1.0f))
+            * glm::scale(glm::mat4(1.0f), { size.x,size.y,1.0f });
+
+        QuadTransportGLSL(transform, tintColor, textureIndex, tilingFactor,subTexCoords);
     }
 
     void Renderer2D::ClearStats()

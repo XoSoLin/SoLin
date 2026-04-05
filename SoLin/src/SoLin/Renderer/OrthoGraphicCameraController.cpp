@@ -7,7 +7,7 @@
 namespace SoLin {
 	OrthoGraphicCameraController::OrthoGraphicCameraController(float aspectRatio, bool rotation)
 		:m_AspectRatio(aspectRatio),m_Rotation(rotation),
-        m_Camera(m_Bounds.Left,m_Bounds.Right,m_Bounds.Top,m_Bounds.Bottom),
+        m_Camera(m_Bounds.Left,m_Bounds.Right,m_Bounds.Bottom,m_Bounds.Top),
         m_Bounds({ -m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel })
 	{}
 

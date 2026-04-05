@@ -16,6 +16,10 @@ void Sandbox2D::OnAttach()
 	//文件编码转utf-8后在vs中运行时utf-8会被当作gb2312去处理，有中文时会导致程序运行时有乱码
 	m_Texture = SoLin::Texture2D::Create(SLPATH("assets/textures/千夏02.png"));
 
+    m_SpriteSheet = SL::Texture2D::Create("assets/textures/tilemap_packed .png");
+    m_subT1 = SL::SubTexture2D::Create(m_SpriteSheet, { 18, 18 }, { 6, 2 } /* ,{1,1} */);
+    m_subT2 = SL::SubTexture2D::Create(m_SpriteSheet, { 18, 18 }, { 5, 1 }, { 1, 1 });
+
 #pragma region Particle Init here
     m_Particle.ColorBegin = { 138 / 255.0f, 43 / 255.0f, 226 / 255.0f, 1.0f };
     m_Particle.ColorEnd = { 254 / 255.0f, 109 / 255.0f, 41 / 255.0f, 1.0f };
@@ -90,6 +94,12 @@ void Sandbox2D::OnUpdate(SoLin::Timestep ts)
         }
         m_ParticleSystem.OnUpdate(ts);											// 更新信息
         m_ParticleSystem.OnRender(m_CameraController.GetCamera());				// 渲染粒子
+        SL::Renderer2D::EndScene();
+
+        SL::Renderer2D::BeginScene(m_CameraController.GetCamera());
+        SL::Renderer2D::DrawQuad({ 1.0f, 1.0f, 0.4f }, { 1.0f, 1.0f }, m_subT1);
+        SL::Renderer2D::DrawQuad({ 1.0f, 0.0f, 0.4f }, { 1.0f, 1.0f }, m_subT2);
+        //SL::Renderer2D::DrawQuad({ 0.0f, 0.0f, 0.0f }, { 1.0f, 2.0f }, m_Flag);
         SL::Renderer2D::EndScene();
 	}
 }

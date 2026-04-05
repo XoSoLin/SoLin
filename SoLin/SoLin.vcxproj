@@ -191,6 +191,7 @@
     <ClInclude Include="src\SoLin\Renderer\RendererAPI.h" />
     <ClInclude Include="src\SoLin\Renderer\RendererCommand.h" />
     <ClInclude Include="src\SoLin\Renderer\Shader.h" />
+    <ClInclude Include="src\SoLin\Renderer\SubTexture2D.h" />
     <ClInclude Include="src\SoLin\Renderer\Texture.h" />
     <ClInclude Include="src\SoLin\Renderer\VertexArray.h" />
     <ClInclude Include="src\slpch.h" />
@@ -638,6 +639,7 @@
     <ClCompile Include="src\SoLin\Renderer\RendererAPI.cpp" />
     <ClCompile Include="src\SoLin\Renderer\RendererCommand.cpp" />
     <ClCompile Include="src\SoLin\Renderer\Shader.cpp" />
+    <ClCompile Include="src\SoLin\Renderer\SubTexture2D.cpp" />
     <ClCompile Include="src\SoLin\Renderer\Texture.cpp" />
     <ClCompile Include="src\SoLin\Renderer\VertexArray.cpp" />
     <ClCompile Include="src\slpch.cpp">

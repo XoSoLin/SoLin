@@ -1420,6 +1420,7 @@
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
     <ClInclude Include="src\SoLin\Debug\Instrumentor.h" />
+    <ClInclude Include="src\SoLin\Renderer\SubTexture2D.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp">
@@ -1502,5 +1503,6 @@
     </ClCompile>
     <ClCompile Include="src\SoLin\Renderer\GraphicsContext.cpp" />
     <ClCompile Include="src\SoLin\Core\Window.cpp" />
+    <ClCompile Include="src\SoLin\Renderer\SubTexture2D.cpp" />
   </ItemGroup>
 </Project>

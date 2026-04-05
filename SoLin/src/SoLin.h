@@ -25,6 +25,7 @@
 #include "SoLin/Renderer/Buffer.h"
 #include "SoLin/Renderer/Shader.h"
 #include "SoLin/Renderer/Texture.h"
+#include "SoLin/Renderer/SubTexture2D.h"
 #include "SoLin/Renderer/VertexArray.h"
 
 //----------------Renderer----------------
