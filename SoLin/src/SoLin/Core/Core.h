@@ -63,6 +63,17 @@
 
 #ifdef SL_DEBUG
 	#define SOLIN_ENABLE_ASSERTS
+
+    #ifdef SL_PLATFORM_WINDOWS
+        #define SL_DEBUGBREAK() __debugbreak();
+    #elif SL_PLATFORM_LINUX
+        #include <signal.h>
+        #define SL_DEBUGBREAK() raise(SIGTRAP)
+    #else
+        #error "Platform doesn't support debugbreak yet!"
+    #endif
+#else
+    #define SL_DEBUGBREAK()
 #endif
 
 #ifdef SOLIN_ENABLE_ASSERTS
@@ -70,12 +81,12 @@
 	#define SL_CORE_ASSERT(x,...)\
 		{if(!x){\
 			SL_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__);\
-			__debugbreak();}\
+			SL_DEBUGBREAK();}\
 		}
 	#define SL_ASSERT(x,...)\
 		{if(!x){\
 			SL_ERROR("Assertion Failed: {0}", __VA_ARGS__);\
-			__debugbreak();}\
+			SL_DEBUGBREAK();}\
 		}
 #else
 	#define SL_CORE_ASSERT(x,...)

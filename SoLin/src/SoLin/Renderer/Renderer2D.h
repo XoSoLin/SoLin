@@ -22,7 +22,7 @@ namespace SoLin {
         static void Flush();
         static void FlushAndReset();
 
-        static void TransportGLSL(const glm::mat4& transform, const glm::vec4& color, const float& textureIndex, const float& tilingFactor);
+        static void QuadTransportGLSL(const glm::mat4& transform, const glm::vec4& color, const float& textureIndex, const float& tilingFactor);
 		//--------------------图元---------------------------
 
 		//@brief 画四边形

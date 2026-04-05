@@ -51,7 +51,7 @@ void Sandbox2D::OnUpdate(SoLin::Timestep ts)
 		SoLin::Renderer2D::DrawQuad({ 0.0f,0.0f,-0.1f }, { 2.0f,2.0f }, m_Texture,10.0f,{1.0,0.9,0.9,1.0});
 		SoLin::Renderer2D::EndScene();
 
-        /*SL::Renderer2D::BeginScene(m_CameraController.GetCamera());
+        SL::Renderer2D::BeginScene(m_CameraController.GetCamera());
         for (float y = -5.0f; y < 5.0f; y += 0.5f)
         {
             for (float x = -5.0f; x < 5.0f; x += 0.5f)
@@ -60,7 +60,7 @@ void Sandbox2D::OnUpdate(SoLin::Timestep ts)
                 SL::Renderer2D::DrawQuad({ x,y }, { 0.45f, 0.45f }, color);
             }
         }
-        SL::Renderer2D::EndScene();*/
+        SL::Renderer2D::EndScene();
 	}
 }
 
