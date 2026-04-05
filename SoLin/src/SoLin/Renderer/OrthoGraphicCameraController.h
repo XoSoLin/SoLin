@@ -9,6 +9,18 @@
 
 namespace SoLin {
 
+    //@brief 正交相机范围 数据结构
+    struct OrthoGraphicCameraBounds {
+        float Left, Right;
+        float Bottom, Top;
+
+        //@biref 正交相机在x轴上视角的宽度
+        float GetWidth()const { return Right - Left; }
+        //@brief 正交相机在y轴上视角的高度
+        float GetHeight()const { return Top - Bottom; }
+    };
+
+    //@brief 正交相机 控制器
 	class OrthoGraphicCameraController {
 	public:
 		//@param aspectRation 宽高比(x/y)
@@ -23,6 +35,8 @@ namespace SoLin {
 
 		void SetZoomLevel(float level) { m_ZoomLevel = level; }
 		float GetZoomLevel()const { return m_ZoomLevel; }
+
+        const OrthoGraphicCameraBounds& GetBounds()const { return m_Bounds; }
 	private:
 		// @brief 鼠标滑轮回调
 		bool OnMouseScrolled(MouseScrolledEvent e);
@@ -32,6 +46,7 @@ namespace SoLin {
 	private:
 		float m_AspectRatio;						//宽高比
 		float m_ZoomLevel = 1.0f;					//缩放(默认1)
+        OrthoGraphicCameraBounds m_Bounds;          //正交相机数据，由其去处理m_Camera
 		OrthoGraphicCamera m_Camera;				//正交相机
 
 		bool m_Rotation;							//旋转标志

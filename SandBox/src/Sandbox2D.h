@@ -4,6 +4,7 @@
 
 #include "imgui/imgui.h"
 #include"SoLin/Renderer/Texture.h"
+#include "ParticleSystem.h"
 
 class Sandbox2D :public SoLin::Layer {
 public:
@@ -21,4 +22,6 @@ private:
 	SoLin::Ref<SoLin::Texture2D> m_Texture;
 
 	glm::vec4 m_SquareColor = { 0.5412f, 0.1686f, 0.8863f, 1.0f };
+    ParticleProps m_Particle;
+    ParticleSystem m_ParticleSystem;
 };

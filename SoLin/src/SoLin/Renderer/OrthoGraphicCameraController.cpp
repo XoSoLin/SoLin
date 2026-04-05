@@ -7,7 +7,8 @@
 namespace SoLin {
 	OrthoGraphicCameraController::OrthoGraphicCameraController(float aspectRatio, bool rotation)
 		:m_AspectRatio(aspectRatio),m_Rotation(rotation),
-		m_Camera(-m_AspectRatio*m_ZoomLevel,m_AspectRatio*m_ZoomLevel,-m_ZoomLevel,m_ZoomLevel)
+        m_Camera(m_Bounds.Left,m_Bounds.Right,m_Bounds.Top,m_Bounds.Bottom),
+        m_Bounds({ -m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel })
 	{}
 
 	void OrthoGraphicCameraController::OnUpdate(Timestep ts)
@@ -69,7 +70,8 @@ namespace SoLin {
 
 		m_ZoomLevel -= e.GetYOffset() * 0.5f;							//向前滚动通常为负
 		m_ZoomLevel = std::max(m_ZoomLevel, 0.25f);			//保证缩放比例最低为0.25
-		m_Camera.SetProjectionMatrix(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
+        m_Bounds = { -m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel };	//更新物体所在的世界空间的边界，以便更新矩阵
+        m_Camera.SetProjectionMatrix(m_Bounds.Left, m_Bounds.Right, m_Bounds.Bottom, m_Bounds.Top);
 		return false;
 	}
 	bool OrthoGraphicCameraController::OnWindowResized(WindowResizeEvent e)
@@ -78,7 +80,8 @@ namespace SoLin {
 
 		// 更新宽高比
 		m_AspectRatio = (float)e.GetWidth() / (float)e.GetHeight();
-		m_Camera.SetProjectionMatrix(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
+        m_Bounds = { -m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel };	//更新物体所在的世界空间的边界，以便更新矩阵
+        m_Camera.SetProjectionMatrix(m_Bounds.Left, m_Bounds.Right, m_Bounds.Bottom, m_Bounds.Top);
 		return false;
 	}
 }
