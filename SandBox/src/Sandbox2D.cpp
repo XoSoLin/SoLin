@@ -3,6 +3,21 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+static const char* s_GameMap = {
+    "AAAAAAAAAAAAAAAAAMMA"
+    "AAAAAAAAAAAAAAAALLLL"
+    "AAAAAAAAAAAAAAAADDDD"
+    "SAAAAAAAAAAAAAAAAAAA"
+    "LWWWWLAAAAAAAAAAABAA"
+    "LWWWWLLLLAAAAAAAAAAA"
+    "DDDDDDDDDAAAALLLLGGL"
+    "AAAAAAAAAAAAADDDDDDD"
+    "AAAAAAAAAAAAAAAAAAAA"
+    "AAALLLLAALLLLLLLLLLL"
+    "GGGDDDDGGDDDDDDDDDDD"
+    "DDDDDDDDDDDDDDDDDDDD" };
+static const  uint32_t s_MapWidth = 20;
+static const  uint32_t s_MapHeight = strlen(s_GameMap) / s_MapWidth;
 
 Sandbox2D::Sandbox2D()
 	:Layer("Sandbox2D"),m_CameraController(1280.0f/720.0f,true)
@@ -17,8 +32,18 @@ void Sandbox2D::OnAttach()
 	m_Texture = SoLin::Texture2D::Create(SLPATH("assets/textures/千夏02.png"));
 
     m_SpriteSheet = SL::Texture2D::Create("assets/textures/tilemap_packed .png");
-    m_subT1 = SL::SubTexture2D::Create(m_SpriteSheet, { 18, 18 }, { 6, 2 } /* ,{1,1} */);
-    m_subT2 = SL::SubTexture2D::Create(m_SpriteSheet, { 18, 18 }, { 5, 1 }, { 1, 1 });
+    m_TilesMap['D'] = SL::SubTexture2D::Create(m_SpriteSheet, { 18, 18 }, { 4, 8 } /* ,{1,1} */);
+    m_TilesMap['G'] = SL::SubTexture2D::Create(m_SpriteSheet, { 18, 18 }, { 0, 8 });
+    m_TilesMap['L'] = SL::SubTexture2D::Create(m_SpriteSheet, { 18, 18 }, { 0, 6 });
+    m_TilesMap['W'] = SL::SubTexture2D::Create(m_SpriteSheet, { 18, 18 }, { 13, 5 });
+    m_TilesMap['B'] = SL::SubTexture2D::Create(m_SpriteSheet, { 18, 18 }, { 9, 8 });
+    m_TilesMap['K'] = SL::SubTexture2D::Create(m_SpriteSheet, { 18, 18 }, { 7, 7 });
+    m_TilesMap['F'] = SL::SubTexture2D::Create(m_SpriteSheet, { 18, 18 }, { 11, 3 });
+    m_TilesMap['M'] = SL::SubTexture2D::Create(m_SpriteSheet, { 18, 18 }, { 8, 2 });
+    m_TilesMap['S'] = SL::SubTexture2D::Create(m_SpriteSheet, { 18, 18 }, { 5, 1 });
+
+    m_SpriteSheetRole = SL::Texture2D::Create("assets/textures/tilemap(2).png");
+    m_Role = SL::SubTexture2D::Create(m_SpriteSheetRole, { 16, 16 }, { 0, 3 }, { 1, 1 });
 
 #pragma region Particle Init here
     m_Particle.ColorBegin = { 138 / 255.0f, 43 / 255.0f, 226 / 255.0f, 1.0f };
@@ -29,6 +54,8 @@ void Sandbox2D::OnAttach()
     m_Particle.VelocityVariation = { 3.0f, 1.0f };
     m_Particle.Position = { 0.0f, 0.0f };
 #pragma endregion
+
+    m_CameraController.SetZoomLevel(5.0f);
 
 }
 
@@ -97,9 +124,23 @@ void Sandbox2D::OnUpdate(SoLin::Timestep ts)
         SL::Renderer2D::EndScene();
 
         SL::Renderer2D::BeginScene(m_CameraController.GetCamera());
-        SL::Renderer2D::DrawQuad({ 1.0f, 1.0f, 0.4f }, { 1.0f, 1.0f }, m_subT1);
-        SL::Renderer2D::DrawQuad({ 1.0f, 0.0f, 0.4f }, { 1.0f, 1.0f }, m_subT2);
-        //SL::Renderer2D::DrawQuad({ 0.0f, 0.0f, 0.0f }, { 1.0f, 2.0f }, m_Flag);
+
+        for (uint32_t x = 0; x < s_MapWidth; x++) {
+            for (uint32_t y = 0; y < s_MapHeight; y++)
+            {
+                char keyChar = s_GameMap[x + y * s_MapWidth];
+
+                SL::Ref<SL::SubTexture2D> subTexture;
+                if (m_TilesMap.find(keyChar) != m_TilesMap.end()) {
+                    subTexture = m_TilesMap[keyChar];
+                    SL::Renderer2D::DrawQuad({ x, s_MapHeight - y , 0.0f }, { 1.0f, 1.0f }, subTexture);
+                }
+                else
+                    SL::Renderer2D::DrawQuad({ x, s_MapHeight - y, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f, 1.0f });
+            }
+        }
+        SL::Renderer2D::DrawQuad({ 18.0f, 7.0f, 0.5f }, { 1.0f, 1.0f }, m_Role);
+
         SL::Renderer2D::EndScene();
 	}
 }

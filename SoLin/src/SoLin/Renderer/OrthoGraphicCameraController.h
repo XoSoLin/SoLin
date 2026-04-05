@@ -33,11 +33,14 @@ namespace SoLin {
 		OrthoGraphicCamera& GetCamera() { return m_Camera; }
 		const OrthoGraphicCamera& GetCamera()const { return m_Camera; }
 
-		void SetZoomLevel(float level) { m_ZoomLevel = level; }
+        void SetZoomLevel(float level) { m_ZoomLevel = level;UpdateViewport(); }
 		float GetZoomLevel()const { return m_ZoomLevel; }
 
         const OrthoGraphicCameraBounds& GetBounds()const { return m_Bounds; }
 	private:
+        // @brief 更新视图矩阵
+        void UpdateViewport();
+
 		// @brief 鼠标滑轮回调
 		bool OnMouseScrolled(MouseScrolledEvent e);
 		// @brief 窗口大小调整回调
