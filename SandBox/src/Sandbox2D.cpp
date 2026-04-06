@@ -42,7 +42,7 @@ void Sandbox2D::OnAttach()
     m_TilesMap['M'] = SL::SubTexture2D::Create(m_SpriteSheet, { 18, 18 }, { 8, 2 });
     m_TilesMap['S'] = SL::SubTexture2D::Create(m_SpriteSheet, { 18, 18 }, { 5, 1 });
 
-    m_SpriteSheetRole = SL::Texture2D::Create("assets/textures/tilemap(2).png");
+    m_SpriteSheetRole = SL::Texture2D::Create("assets/textures/tilemap_packed(2).png");
     m_Role = SL::SubTexture2D::Create(m_SpriteSheetRole, { 16, 16 }, { 0, 3 }, { 1, 1 });
 
 #pragma region Particle Init here

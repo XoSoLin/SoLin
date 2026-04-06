@@ -122,6 +122,7 @@ namespace SoLin {
 	{
         SL_PROFILE_FUNCTION();
 
+        delete[] s_Data.QuadVBBase;
 	}
 
 	void Renderer2D::BeginScene(const OrthoGraphicCamera& camera)
@@ -152,6 +153,9 @@ namespace SoLin {
     void Renderer2D::Flush()
     {
         SL_PROFILE_FUNCTION();
+
+        if (s_Data.QuadIndexCount == 0)
+            return;
 
         //绑定纹理
         for (uint32_t i = 0;i < s_Data.TextureSlotIndex;i++)

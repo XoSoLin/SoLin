@@ -71,10 +71,10 @@ namespace SoLin {
 		//SL_CORE_TRACE("{0} | handled({1})", e.ToString(),e.Handled);
 
 		for (auto iter = m_LayerStack.rbegin(); iter != m_LayerStack.rend();++iter) {
-			(*iter)->OnEvent(e);
 			if (e.Handled) {
 				break;
 			}
+			(*iter)->OnEvent(e);
 		}
 
 	}
