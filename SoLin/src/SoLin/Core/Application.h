@@ -28,6 +28,8 @@ namespace SoLin {
 		inline Window& GetWindow() { return *m_Window; }
 		//@brief 返回该App单例指针
 		inline static Application& Get() { return *s_Instance; }
+        //@brief 不同于 OnWindowClose ，WindowClose 是公有的关闭窗口函数，而 OnWindowClose 是回调函数中的事件处理
+        inline void WindowClose() { m_Running = false; }
 	private:
 		void Run();                         // Run 函数现在为私有(Run 函数中定义 RunLoop)
 
