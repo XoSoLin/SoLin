@@ -58,7 +58,7 @@ namespace SoLin {
 	void OrthoGraphicCameraController::OnEvent(Event& e)
 	{
         SL_PROFILE_FUNCTION();
-
+        
 		EventDispatcher dispathcer(e);
 		dispathcer.Dispatch<MouseScrolledEvent>(SOLIN_BIND_EVENT_FN(OrthoGraphicCameraController::OnMouseScrolled));
 		dispathcer.Dispatch<WindowResizeEvent>(SOLIN_BIND_EVENT_FN(OrthoGraphicCameraController::OnWindowResized));

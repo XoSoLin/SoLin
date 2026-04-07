@@ -17,9 +17,12 @@ namespace SoLin {
 	    virtual void OnEvent(Event& event)override;
     private:
 	    Ref<Texture2D> m_Texture;
+        std::vector<Ref<Texture2D>> m_TexShelter;
 
         Ref<SoLin::FrameBuffer> m_Framebuffer;
 
+        bool m_ViewportFocused = false;     // 视口聚焦标志
+        bool m_ViewportHovered = false;     // 鼠标悬浮在视口标志
         glm::vec2 m_ViewportSize = { 0.0f,0.0f };
 
 	    OrthoGraphicCameraController m_CameraController;

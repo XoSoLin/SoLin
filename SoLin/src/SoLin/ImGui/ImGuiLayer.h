@@ -20,8 +20,11 @@ namespace SoLin {
 
 		void Begin();
 		void End();
+        // @brief 设置阻塞事件标志
+        void BlockEvents(bool block) { m_BlockEvents = block; }
 	private:
 		float m_Time = 0.0f;
+        bool m_BlockEvents = true;  // 接收(阻塞)事件标志
 	};
 }
 

@@ -15,6 +15,7 @@ namespace SoLin {
     public:
         // @brief 根据渲染API创建帧缓冲区
         static Ref<FrameBuffer> Create(const FrameBufferSpecification& spec);
+        virtual ~FrameBuffer() = default;
 
         virtual void Bind() = 0;
         virtual void UnBind() = 0;

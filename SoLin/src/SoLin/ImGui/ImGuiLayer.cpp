@@ -66,10 +66,14 @@ namespace SoLin {
 
     void ImGuiLayer::OnEvent(Event& e)
     {
-        ImGuiIO& io = ImGui::GetIO();
+        if (m_BlockEvents) {
+            ImGuiIO& io = ImGui::GetIO();
 
-        e.Handled |= e.IsInCategory(EventCategoryMouse) & io.WantCaptureMouse;
-        e.Handled |= e.IsInCategory(EventCategoryKeyboard) & io.WantCaptureKeyboard;
+            // 当Imgui层想要处理鼠标与键盘输入时，将会消耗掉事件
+            SL_CORE_INFO("{0}",m_DebugName);//测试层对事件的处理
+            e.Handled |= e.IsInCategory(EventCategoryMouse) & io.WantCaptureMouse;
+            e.Handled |= e.IsInCategory(EventCategoryKeyboard) & io.WantCaptureKeyboard;
+        }
     }
 
 	void ImGuiLayer::Begin() {

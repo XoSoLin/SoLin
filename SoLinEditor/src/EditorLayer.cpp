@@ -19,6 +19,10 @@ namespace SoLin {
         m_Framebuffer = FrameBuffer::Create({ 1280,720 });
 
         m_Texture = SoLin::Texture2D::Create(SLPATH("assets/textures/千夏02.png"));
+        m_TexShelter.push_back(Texture2D::Create(SLPATH("assets/textures/shelter_m.png")));
+        m_TexShelter.push_back(Texture2D::Create(SLPATH("assets/textures/shelter_n.png")));
+        m_TexShelter.push_back(Texture2D::Create(SLPATH("assets/textures/shelter_e.png")));
+        m_TexShelter.push_back(Texture2D::Create(SLPATH("assets/textures/shelter_w.png")));
     }
 
     void EditorLayer::OnDetach()
@@ -31,7 +35,8 @@ namespace SoLin {
     {
         SL_PROFILE_FUNCTION();
         //Update
-        m_CameraController.OnUpdate(ts);
+        //if(m_ViewportFocused)
+            m_CameraController.OnUpdate(ts);
         //Render
         Renderer2D::ClearStats();// 每次更新前都要将Stats统计数据清零
         {
@@ -53,6 +58,8 @@ namespace SoLin {
             Renderer2D::DrawQuad({ 1.0f, -1.0f,-0.2 }, { 0.5f, 1.0f }, m_SquareColor);
             Renderer2D::DrawRotatedQuad({ -1.0f, 1.0f }, { 1.0f, 1.0f }, glm::radians(temp), { 0.3f, 0.2f, 0.8f, 1.0f });
             Renderer2D::DrawQuad({ 0.0f,0.0f,-0.1f }, { 2.0f,2.0f }, m_Texture, 10.0f, { 1.0,0.9,0.9,1.0 });
+            int i = int(temp / 100)%3;
+            Renderer2D::DrawQuad({ 0.0f,0.0f,0.1f }, { 1.0f,1.0f }, m_TexShelter[i], 1.0f, {1.0,1.0,1.0,1.0});
             Renderer2D::EndScene();
 
             Renderer2D::BeginScene(m_CameraController.GetCamera());
@@ -167,6 +174,13 @@ namespace SoLin {
 
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
         ImGui::Begin("Viewport");
+
+        m_ViewportFocused = ImGui::IsWindowFocused();   // 更新聚焦标志
+        m_ViewportHovered = ImGui::IsWindowHovered();   // 更新悬浮标志
+        // 该Imgui视口挡在了原本窗口之上，但其充当原先窗口来使用，所以聚焦并且鼠标悬浮在上面时
+        // 传入F，将原本在imgui的事件阻塞，让原本的窗口去执行
+        Application::Get().GetImGuiLayer()->BlockEvents(!m_ViewportFocused || !m_ViewportHovered);
+
         ImVec2 panelSize = ImGui::GetContentRegionAvail();  //获取面板大小
         if (m_ViewportSize != *(glm::vec2*)&panelSize) {
             m_ViewportSize = { panelSize.x,panelSize.y };
@@ -187,6 +201,7 @@ namespace SoLin {
 
     void EditorLayer::OnEvent(SoLin::Event& event)
     {
+        SL_CORE_INFO("{0}",m_DebugName);//测试层对事件的处理
         m_CameraController.OnEvent(event);
     }
 }

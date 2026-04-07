@@ -26,6 +26,8 @@ namespace SoLin {
 
 		//@brief 返回该应用窗口
 		inline Window& GetWindow() { return *m_Window; }
+        //@brief 获取Imgui层
+        inline ImGuiLayer* GetImGuiLayer() { return m_ImGuiLayer; }
 		//@brief 返回该App单例指针
 		inline static Application& Get() { return *s_Instance; }
         //@brief 不同于 OnWindowClose ，WindowClose 是公有的关闭窗口函数，而 OnWindowClose 是回调函数中的事件处理
