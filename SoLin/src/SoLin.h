@@ -23,6 +23,7 @@
 #include "SoLin/Renderer/RendererCommand.h"
 
 #include "SoLin/Renderer/Buffer.h"
+#include "SoLin/Renderer/FrameBuffer.h"
 #include "SoLin/Renderer/Shader.h"
 #include "SoLin/Renderer/Texture.h"
 #include "SoLin/Renderer/SubTexture2D.h"
