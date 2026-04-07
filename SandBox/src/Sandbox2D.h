@@ -26,8 +26,6 @@ private:
 
     std::unordered_map<char, SoLin::Ref<SoLin::SubTexture2D>> m_TilesMap;
 
-    SoLin::Ref<SoLin::FrameBuffer> m_Framebuffer;
-
 	glm::vec4 m_SquareColor = { 0.5412f, 0.1686f, 0.8863f, 1.0f };
     ParticleProps m_Particle;
     ParticleSystem m_ParticleSystem;

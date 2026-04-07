@@ -19,6 +19,9 @@
     <Filter Include="src\SoLin\Core">
       <UniqueIdentifier>{994055F8-850E-49FE-6EA2-B9245A0F2563}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\SoLin\Debug">
+      <UniqueIdentifier>{D7AE0903-433A-77C7-4C4B-FABBB855D3C7}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\SoLin\Events">
       <UniqueIdentifier>{65DCC967-51D5-E8B9-7A07-CE3E665FC8C5}</UniqueIdentifier>
     </Filter>
@@ -58,6 +61,9 @@
       <Filter>src\Platform\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\OpenGL\OpenGLContext.h">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\OpenGL\OpenGLFrameBuffer.h">
       <Filter>src\Platform\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\OpenGL\OpenGLRendererAPI.h">
@@ -114,6 +120,9 @@
     <ClInclude Include="src\SoLin\Core\Window.h">
       <Filter>src\SoLin\Core</Filter>
     </ClInclude>
+    <ClInclude Include="src\SoLin\Debug\Instrumentor.h">
+      <Filter>src\SoLin\Debug</Filter>
+    </ClInclude>
     <ClInclude Include="src\SoLin\Events\ApplicationEvent.h">
       <Filter>src\SoLin\Events</Filter>
     </ClInclude>
@@ -130,6 +139,9 @@
       <Filter>src\SoLin\ImGui</Filter>
     </ClInclude>
     <ClInclude Include="src\SoLin\Renderer\Buffer.h">
+      <Filter>src\SoLin\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SoLin\Renderer\FrameBuffer.h">
       <Filter>src\SoLin\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\SoLin\Renderer\GraphicsContext.h">
@@ -154,6 +166,9 @@
       <Filter>src\SoLin\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\SoLin\Renderer\Shader.h">
+      <Filter>src\SoLin\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SoLin\Renderer\SubTexture2D.h">
       <Filter>src\SoLin\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\SoLin\Renderer\Texture.h">
@@ -1419,16 +1434,15 @@
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
-    <ClInclude Include="src\SoLin\Debug\Instrumentor.h" />
-    <ClInclude Include="src\SoLin\Renderer\SubTexture2D.h" />
-    <ClInclude Include="src\SoLin\Renderer\FrameBuffer.h" />
-    <ClInclude Include="src\Platform\OpenGL\OpenGLFrameBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp">
       <Filter>src\Platform\OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="src\Platform\OpenGL\OpenGLContext.cpp">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Platform\OpenGL\OpenGLFrameBuffer.cpp">
       <Filter>src\Platform\OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="src\Platform\OpenGL\OpenGLRendererAPI.cpp">
@@ -1461,6 +1475,9 @@
     <ClCompile Include="src\SoLin\Core\Log.cpp">
       <Filter>src\SoLin\Core</Filter>
     </ClCompile>
+    <ClCompile Include="src\SoLin\Core\Window.cpp">
+      <Filter>src\SoLin\Core</Filter>
+    </ClCompile>
     <ClCompile Include="src\SoLin\ImGui\ImGuiBuild.cpp">
       <Filter>src\SoLin\ImGui</Filter>
     </ClCompile>
@@ -1468,6 +1485,12 @@
       <Filter>src\SoLin\ImGui</Filter>
     </ClCompile>
     <ClCompile Include="src\SoLin\Renderer\Buffer.cpp">
+      <Filter>src\SoLin\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SoLin\Renderer\FrameBuffer.cpp">
+      <Filter>src\SoLin\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SoLin\Renderer\GraphicsContext.cpp">
       <Filter>src\SoLin\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\SoLin\Renderer\OrthoGraphicCamera.cpp">
@@ -1491,6 +1514,9 @@
     <ClCompile Include="src\SoLin\Renderer\Shader.cpp">
       <Filter>src\SoLin\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\SoLin\Renderer\SubTexture2D.cpp">
+      <Filter>src\SoLin\Renderer</Filter>
+    </ClCompile>
     <ClCompile Include="src\SoLin\Renderer\Texture.cpp">
       <Filter>src\SoLin\Renderer</Filter>
     </ClCompile>
@@ -1503,10 +1529,5 @@
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
-    <ClCompile Include="src\SoLin\Renderer\GraphicsContext.cpp" />
-    <ClCompile Include="src\SoLin\Core\Window.cpp" />
-    <ClCompile Include="src\SoLin\Renderer\SubTexture2D.cpp" />
-    <ClCompile Include="src\SoLin\Renderer\FrameBuffer.cpp" />
-    <ClCompile Include="src\Platform\OpenGL\OpenGLFrameBuffer.cpp" />
   </ItemGroup>
 </Project>

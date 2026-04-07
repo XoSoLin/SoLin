@@ -156,10 +156,9 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\Platform\OpenGL\OpenGLFrameBuffer.h" />
-    <ClInclude Include="src\SoLin\Renderer\FrameBuffer.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLContext.h" />
+    <ClInclude Include="src\Platform\OpenGL\OpenGLFrameBuffer.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLRendererAPI.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLShader.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLTexture2D.h" />
@@ -185,6 +184,7 @@
     <ClInclude Include="src\SoLin\Events\MouseEvent.h" />
     <ClInclude Include="src\SoLin\ImGui\ImGuiLayer.h" />
     <ClInclude Include="src\SoLin\Renderer\Buffer.h" />
+    <ClInclude Include="src\SoLin\Renderer\FrameBuffer.h" />
     <ClInclude Include="src\SoLin\Renderer\GraphicsContext.h" />
     <ClInclude Include="src\SoLin\Renderer\OrthoGraphicCamera.h" />
     <ClInclude Include="src\SoLin\Renderer\OrthoGraphicCameraController.h" />
@@ -617,10 +617,9 @@
     <ClInclude Include="vendor\stb_image\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Platform\OpenGL\OpenGLFrameBuffer.cpp" />
-    <ClCompile Include="src\SoLin\Renderer\FrameBuffer.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLContext.cpp" />
+    <ClCompile Include="src\Platform\OpenGL\OpenGLFrameBuffer.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLRendererAPI.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLShader.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLTexture2D.cpp" />
@@ -635,6 +634,7 @@
     <ClCompile Include="src\SoLin\ImGui\ImGuiBuild.cpp" />
     <ClCompile Include="src\SoLin\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="src\SoLin\Renderer\Buffer.cpp" />
+    <ClCompile Include="src\SoLin\Renderer\FrameBuffer.cpp" />
     <ClCompile Include="src\SoLin\Renderer\GraphicsContext.cpp" />
     <ClCompile Include="src\SoLin\Renderer\OrthoGraphicCamera.cpp" />
     <ClCompile Include="src\SoLin\Renderer\OrthoGraphicCameraController.cpp" />

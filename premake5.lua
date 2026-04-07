@@ -20,6 +20,7 @@ IncludeDir["ImGui"] = "SoLin/vendor/imgui"
 IncludeDir["glm"] = "SoLin/vendor/glm"
 IncludeDir["stb_image"] = "SoLin/vendor/stb_image"
 
+group "Dependencies"
 --[[包含Nut/Nut/vendor/GLFW中的premake文件并合并到这里]]
 include "SoLin/vendor/GLFW"
 include "SoLin/vendor/GLad"
@@ -27,6 +28,7 @@ include "SoLin/vendor/imgui"
 --[[
 --    XXXX
 --]]
+group ""
 ---------------------------------------------------------------------------------------
 
 --引擎
@@ -141,6 +143,59 @@ project "Sandbox"
 
 		defines{
 			"SL_PLATFORM_WINDOWS"
+		}
+
+	filter "configurations:Debug"
+		defines "SL_DEBUG"
+		--buildoptions "/MDd"
+		runtime "Debug"
+		symbols "on"
+
+	filter "configurations:Release"
+		defines "SL_RELEASE"
+		--buildoptions "/MDd"
+		runtime "Release"
+		optimize "on"
+
+	filter "configurations:Dist"
+		defines "SL_DIST"
+		--buildoptions "/MD"
+		runtime "Release"
+		optimize "on"
+
+--引擎编辑器		--------------------------------------------------------------------------------------
+
+project "SoLinEditor"
+	location "SoLinEditor"
+	kind "ConsoleApp"
+	language "C++"
+	cppdialect "C++17"
+	staticruntime "on"
+
+	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("bin-intermediates/" .. outputdir .. "/%{prj.name}")
+
+	files{
+		"%{prj.name}/src/**.h",
+		"%{prj.name}/src/**.cpp"
+	}
+
+	includedirs{
+		"SoLin/vendor/spdlog/include",
+		"SoLin/src",
+		"SoLin/vendor",
+		"%{IncludeDir.glm}"
+	}
+
+	links{
+		"SoLin"
+	}
+
+	filter "system:windows"	
+		systemversion "latest"
+		buildoptions "/utf-8"
+
+		defines{
 		}
 
 	filter "configurations:Debug"
