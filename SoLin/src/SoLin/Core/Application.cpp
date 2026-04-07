@@ -21,7 +21,7 @@ namespace SoLin {
 	Application* Application::s_Instance = nullptr;									//初始化唯一实例的静态成员s_Instance;
 
 	
-	Application::Application()
+	Application::Application(const std::string& name)
 	{
         SL_PROFILE_FUNCTION();
 
@@ -29,7 +29,7 @@ namespace SoLin {
 		SL_CORE_ASSERT(!s_Instance, "Application already exists!(The class Application is a Singleton,it just support one instance!)");
 		s_Instance = this;
 
-		m_Window = std::unique_ptr<Window>(Window::Create());
+		m_Window = std::unique_ptr<Window>(Window::Create(WindowProps(name)));
 
 		m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
 		m_Window->SetVSync(true);

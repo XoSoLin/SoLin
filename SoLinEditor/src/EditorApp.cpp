@@ -3,17 +3,22 @@
 
 #include"EditorLayer.h"
 
-class SoLinEditor :public SoLin::Application { 
-public:
-	SoLinEditor() {
-		PushLayer(new EditorLayer());
-	}
-	~SoLinEditor() {
+namespace SoLin {
 
-	}
-};
+    class SoLinEditor :public SoLin::Application { 
+    public:
+	    SoLinEditor()
+            :Application("SoLin Editor")
+        {
+		    PushLayer(new EditorLayer());
+	    }
+	    ~SoLinEditor() {
+
+	    }
+    };
 
 
-SoLin::Application* SoLin::CreateApplication() {
-	return new SoLinEditor();
+    SoLin::Application* SoLin::CreateApplication() {
+	    return new SoLinEditor();
+    }
 }

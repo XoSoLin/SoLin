@@ -16,7 +16,7 @@ namespace SoLin {
 	class SOLIN_API Application
 	{
 	public:
-		Application();
+		Application(const std::string& name = "SoLin App");
 		virtual ~Application();
 
 		void OnEvent(Event& e);				//事件分发
