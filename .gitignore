@@ -11,8 +11,10 @@
 
 # Ignore all .json files
 /Sandbox/*.json
+/SoLinEditor/*.json
 # Ignore imgui.ini file
 /Sandbox/imgui.ini
+/SoLinEditor/imgui.ini
 
 # 编译输出目录
 [Bb]in/

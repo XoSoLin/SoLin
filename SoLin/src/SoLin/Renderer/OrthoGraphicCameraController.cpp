@@ -65,6 +65,12 @@ namespace SoLin {
 
 	}
 
+	void OrthoGraphicCameraController::ReSize(float width, float height)
+	{
+        m_AspectRatio = width / height;
+        UpdateViewport();
+	}
+
     void OrthoGraphicCameraController::UpdateViewport()
     {
         m_Bounds = { -m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel };	//更新物体所在的世界空间的边界，以便更新矩阵
@@ -86,9 +92,10 @@ namespace SoLin {
         SL_PROFILE_FUNCTION();
 
 		// 更新宽高比
-		m_AspectRatio = (float)e.GetWidth() / (float)e.GetHeight();
+        ReSize((float)e.GetWidth(), (float)e.GetHeight());
+		//m_AspectRatio = (float)e.GetWidth() / (float)e.GetHeight();
 
-        UpdateViewport();
+        //UpdateViewport();
 		return false;
 	}
 }

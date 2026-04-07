@@ -1,6 +1,6 @@
 workspace "SoLin"			--工作区
 	architecture "x64"		--架构
-	startproject "Sandbox"	--启动项目
+	startproject "SoLinEditor"	--启动项目
 
 	configurations{			--配置
 		"Debug",

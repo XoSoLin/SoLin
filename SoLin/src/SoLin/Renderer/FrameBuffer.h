@@ -19,6 +19,9 @@ namespace SoLin {
         virtual void Bind() = 0;
         virtual void UnBind() = 0;
 
+        // @brief 更新尺寸
+        virtual void ReSize(uint32_t width, uint32_t height) = 0;
+
         // @brief 获取附加色彩的渲染ID
         virtual uint32_t GetColorAttachmentRendererID()const = 0;
         // @brief 获取帧缓冲区必要数据

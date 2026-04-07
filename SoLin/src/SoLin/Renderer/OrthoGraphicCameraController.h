@@ -29,6 +29,8 @@ namespace SoLin {
 
 		void OnUpdate(Timestep ts);
 		void OnEvent(Event& e);
+        // @brief 更新尺寸
+        void ReSize(float width,float height);
 
 		OrthoGraphicCamera& GetCamera() { return m_Camera; }
 		const OrthoGraphicCamera& GetCamera()const { return m_Camera; }
