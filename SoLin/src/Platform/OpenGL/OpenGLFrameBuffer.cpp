@@ -62,5 +62,8 @@ namespace SoLin {
     {
         m_Specification.Width = width;
         m_Specification.Height = height;
+
+        // 更新数据后要重新创建
+        ReCreate();
     }
 }
