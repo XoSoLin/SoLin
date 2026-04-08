@@ -50,6 +50,7 @@ namespace SoLin {
 		// 声明事件分发器为友元
 		friend class EventDispatcher;
 	public:
+        virtual ~Event() = default;
 		// 是否已经处理
 		bool Handled = false;
 		// @brief 用于获取事件类型

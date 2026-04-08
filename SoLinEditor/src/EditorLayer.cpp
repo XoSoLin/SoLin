@@ -34,14 +34,21 @@ namespace SoLin {
     void EditorLayer::OnUpdate(SoLin::Timestep ts)
     {
         SL_PROFILE_FUNCTION();
+
+        // 提前处理ReSize,否则Framebuffer尺寸不符合会白屏闪烁
+        if ((m_ViewportSize.x != m_Framebuffer->GetSpecification().Width || m_ViewportSize.y != m_Framebuffer->GetSpecification().Height) && m_ViewportSize.x > 0.0f && m_ViewportSize.y > 0.0f)
+        {
+            m_Framebuffer->ReSize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+            m_CameraController.ReSize(m_ViewportSize.x, m_ViewportSize.y);
+        }
         //Update
-        //if(m_ViewportFocused)
+        if(m_ViewportFocused)
             m_CameraController.OnUpdate(ts);
         //Render
-        Renderer2D::ClearStats();// 每次更新前都要将Stats统计数据清零
         {
             SL_PROFILE_SCOPE("RenderCommand Prep");
             m_Framebuffer->Bind();
+            Renderer2D::ClearStats();// 每次更新前都要将Stats统计数据清零
             SoLin::RendererCommand::SetClearColor({ 0.1f,0.1f,0.1f,1 });
             SoLin::RendererCommand::Clear();
         }
@@ -182,11 +189,7 @@ namespace SoLin {
         Application::Get().GetImGuiLayer()->BlockEvents(!m_ViewportFocused || !m_ViewportHovered);
 
         ImVec2 panelSize = ImGui::GetContentRegionAvail();  //获取面板大小
-        if (m_ViewportSize != *(glm::vec2*)&panelSize) {
-            m_ViewportSize = { panelSize.x,panelSize.y };
-            m_Framebuffer->ReSize(panelSize.x, panelSize.y);
-            m_CameraController.ReSize(panelSize.x, panelSize.y);
-        }
+        m_ViewportSize = { panelSize.x, panelSize.y };
 
         ImTextureID textureID = m_Framebuffer->GetColorAttachmentRendererID();
         ImGui::Image(textureID, ImVec2{ m_ViewportSize.x,m_ViewportSize.y }, ImVec2{ 0,1 }, ImVec2{ 1,0 });
