@@ -27,10 +27,27 @@ namespace SoLin {
         //@brief 将GLSL的必要数据传输给CPU上的缓冲区，后续一起更新至GPU
         static void QuadTransportGLSL(const glm::mat4& transform, const glm::vec4& color, const float& textureIndex, const float& tilingFactor,const glm::vec2* texcoords);
         //@brief 寻找纹理索引
-        static void QuadGetTextureIndex(Ref<Texture2D>& texture,float& index);
+        static void QuadGetTextureIndex(const Ref<Texture2D>& texture,float& index);
 
     public:
         //--------------------图元---------------------------
+
+        //@brief 画四边形
+        //@param transform 变换矩阵
+        //@param color 颜色
+        static void DrawQuad(const glm::mat4 transform, const glm::vec4 color);
+        //@brief 画纹理四边形
+        //@param transform 变换矩阵
+        //@param texture 纹理
+        //@param tilingFactor 填充因子
+        //@param tintColor 色调
+        static void DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
+        //@brief 画子纹理四边形
+        //@param transform 变换矩阵
+        //@param subtexture 子纹理
+        //@param tilingFactor 填充因子
+        //@param tintColor 色调
+        static void DrawQuad(const glm::mat4& transform, const Ref<SubTexture2D>& subtexture, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
 
 		//@brief 画四边形
 		//@param position 位置
@@ -82,7 +99,25 @@ namespace SoLin {
             const glm::vec4& tintColor = glm::vec4(1.0f));
 
 
-
+        //@brief 画可旋四边形
+        //@param transform 变换矩阵
+        //@param rotation 旋转角度
+        //@param color 颜色
+        static void DrawRotatedQuad(const glm::mat4& transform, float rotation, const glm::vec4& color);
+        //@brief 画可旋纹理四边形
+        //@param transform 变换矩阵
+        //@param rotation 旋转角度
+        //@param texture 纹理
+        //@param tilingFactor 填充因子
+        //@param tintColor 色调
+        static void DrawRotatedQuad(const glm::mat4& transform, float rotation, const Ref<Texture2D>& texture, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
+        //@brief 画可旋子纹理四边形
+        //@param transform 变换矩阵
+        //@param rotation 旋转角度
+        //@param subtexture 子纹理
+        //@param tilingFactor 填充因子
+        //@param tintColor 色调
+        static void DrawRotatedQuad(const glm::mat4& transform, float rotation, const Ref<SubTexture2D>& subtexture, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
 
         //@brief 画可旋四边形
         //@param position 位置

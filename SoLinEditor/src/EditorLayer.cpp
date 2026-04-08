@@ -23,6 +23,11 @@ namespace SoLin {
         m_TexShelter.push_back(Texture2D::Create(SLPATH("assets/textures/shelter_n.png")));
         m_TexShelter.push_back(Texture2D::Create(SLPATH("assets/textures/shelter_e.png")));
         m_TexShelter.push_back(Texture2D::Create(SLPATH("assets/textures/shelter_w.png")));
+
+        m_ActiveScene = CreateRef<Scene>();
+        m_SquareEntity = m_ActiveScene->CreateEntity();
+        m_ActiveScene->Reg().emplace<TransformComponent>(m_SquareEntity, glm::mat4{ 1.0f });
+        m_ActiveScene->Reg().emplace<SpriteComponent>(m_SquareEntity, glm::vec4{ 0.0f,1.0f,1.0f,1.0f });
     }
 
     void EditorLayer::OnDetach()
@@ -47,8 +52,8 @@ namespace SoLin {
         //Render
         {
             SL_PROFILE_SCOPE("RenderCommand Prep");
-            m_Framebuffer->Bind();
             Renderer2D::ClearStats();// 每次更新前都要将Stats统计数据清零
+            m_Framebuffer->Bind();
             SoLin::RendererCommand::SetClearColor({ 0.1f,0.1f,0.1f,1 });
             SoLin::RendererCommand::Clear();
         }
@@ -60,14 +65,14 @@ namespace SoLin {
             static float temp = 0.0f;
             temp += ts * 100.0f;
 
-            Renderer2D::BeginScene(m_CameraController.GetCamera());
+            /*Renderer2D::BeginScene(m_CameraController.GetCamera());
             Renderer2D::DrawQuad({ 0.0f,0.0f }, { 1.0f, 1.0f }, { 0.8f, 0.2f, 0.3f, 1.0f });
             Renderer2D::DrawQuad({ 1.0f, -1.0f,-0.2 }, { 0.5f, 1.0f }, m_SquareColor);
             Renderer2D::DrawRotatedQuad({ -1.0f, 1.0f }, { 1.0f, 1.0f }, glm::radians(temp), { 0.3f, 0.2f, 0.8f, 1.0f });
             Renderer2D::DrawQuad({ 0.0f,0.0f,-0.1f }, { 2.0f,2.0f }, m_Texture, 10.0f, { 1.0,0.9,0.9,1.0 });
             int i = int(temp / 100)%3;
             Renderer2D::DrawQuad({ 0.0f,0.0f,0.1f }, { 1.0f,1.0f }, m_TexShelter[i], 1.0f, {1.0,1.0,1.0,1.0});
-            Renderer2D::EndScene();
+            Renderer2D::EndScene();*/
 
             Renderer2D::BeginScene(m_CameraController.GetCamera());
             for (float y = -5.0f; y < 5.0f; y += 0.5f)
@@ -78,6 +83,7 @@ namespace SoLin {
                     Renderer2D::DrawQuad({ x,y }, { 0.45f, 0.45f }, color);
                 }
             }
+            m_ActiveScene->OnUpdate(ts);
             Renderer2D::EndScene();
 #endif
             m_Framebuffer->UnBind();

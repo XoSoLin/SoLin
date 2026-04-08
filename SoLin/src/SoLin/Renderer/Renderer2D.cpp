@@ -201,7 +201,7 @@ namespace SoLin {
         s_Data.Stats.QuadCount++;
     }
 
-    void Renderer2D::QuadGetTextureIndex(Ref<Texture2D>& texture,float& index)
+    void Renderer2D::QuadGetTextureIndex(const Ref<Texture2D>& texture,float& index)
     {
         for (uint32_t i = 1;i < s_Data.TextureSlotIndex;i++) {
             if (*s_Data.Textures[i].get() == *texture.get()) {
@@ -220,7 +220,53 @@ namespace SoLin {
         }
     }
 
-	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color)
+    void Renderer2D::DrawQuad(const glm::mat4 transform, const glm::vec4 color)
+    {
+        SL_PROFILE_FUNCTION();
+        if (s_Data.QuadIndexCount >= s_Data.MaxIndices) {
+            FlushAndReset();
+        }
+
+        constexpr glm::vec2 texCoords[4] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
+        constexpr float textureIndex = 0.0f;									
+        constexpr float tilingFactor = 1.0f;									
+
+        QuadTransportGLSL(transform, color, textureIndex, tilingFactor, texCoords);
+    }
+
+    void Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor)
+    {
+        SL_PROFILE_FUNCTION();
+        if (s_Data.QuadIndexCount >= s_Data.MaxIndices) {
+            FlushAndReset();
+        }
+
+        float textureIndex = 0.0f;
+        constexpr glm::vec2 texCoords[4] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
+
+        QuadGetTextureIndex(texture, textureIndex);
+        QuadTransportGLSL(transform, tintColor, textureIndex, tilingFactor, texCoords);
+
+    }
+
+    void Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<SubTexture2D>& subtexture, float tilingFactor, const glm::vec4& tintColor)
+    {
+        SL_PROFILE_FUNCTION();
+        if (s_Data.QuadIndexCount >= s_Data.MaxIndices) {
+            FlushAndReset();
+        }
+
+        constexpr size_t quadVertexCount = 4;
+        const glm::vec2* subTexCoords = subtexture->GetCoords();
+        Ref<Texture2D> texture = subtexture->GetTexture();
+
+        float textureIndex = 0.0f;
+
+        QuadGetTextureIndex(texture, textureIndex);
+        QuadTransportGLSL(transform, tintColor, textureIndex, tilingFactor, subTexCoords);
+    }
+
+    void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color)
 	{
 		DrawQuad({ position.x,position.y,0.0f }, size, color);
 	}
@@ -318,6 +364,59 @@ namespace SoLin {
 
         QuadTransportGLSL(transform, tintColor, textureIndex, tilingFactor,subTexCoords);
 
+    }
+
+    void Renderer2D::DrawRotatedQuad(const glm::mat4& transform, float rotation, const glm::vec4& color)
+    {
+        SL_PROFILE_FUNCTION();
+
+        if (s_Data.QuadIndexCount >= s_Data.MaxIndices) {
+            FlushAndReset();
+        }
+        const float textureIndex = 0.0f;
+        const float tilingFactor = 1.0f;
+
+        glm::mat4 new_transform = transform
+            * glm::rotate(glm::mat4(1.0f), glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
+
+        constexpr glm::vec2 texCoords[4] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
+        QuadTransportGLSL(new_transform, color, textureIndex, tilingFactor, texCoords);
+    }
+
+    void Renderer2D::DrawRotatedQuad(const glm::mat4& transform, float rotation, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor)
+    {
+        SL_PROFILE_FUNCTION();
+        if (s_Data.QuadIndexCount >= s_Data.MaxIndices) {
+            FlushAndReset();
+        }
+
+        float textureIndex = 0.0f;
+        constexpr glm::vec2 texCoords[4] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
+
+        glm::mat4 new_transform = transform
+            * glm::rotate(glm::mat4(1.0f), glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
+
+        QuadGetTextureIndex(texture, textureIndex);
+        QuadTransportGLSL(new_transform, tintColor, textureIndex, tilingFactor, texCoords);
+    }
+
+    void Renderer2D::DrawRotatedQuad(const glm::mat4& transform, float rotation, const Ref<SubTexture2D>& subtexture, float tilingFactor, const glm::vec4& tintColor) {
+        SL_PROFILE_FUNCTION();
+        if (s_Data.QuadIndexCount >= s_Data.MaxIndices) {
+            FlushAndReset();
+        }
+
+        constexpr size_t quadVertexCount = 4;
+        const glm::vec2* subTexCoords = subtexture->GetCoords();
+        Ref<Texture2D> texture = subtexture->GetTexture();
+
+        float textureIndex = 0.0f;
+
+        glm::mat4 new_transform = transform
+            * glm::rotate(glm::mat4(1.0f), glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
+
+        QuadGetTextureIndex(texture, textureIndex);
+        QuadTransportGLSL(new_transform, tintColor, textureIndex, tilingFactor, subTexCoords);
     }
 
     void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const glm::vec4& color)

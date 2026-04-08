@@ -1,63 +1,35 @@
 #include"slpch.h"
 #include"Scene.h"
 
+#include"Component.h"
+#include"SoLin/Renderer/Renderer2D.h"
+
 #include"glm/glm.hpp"
 
 namespace SoLin {
-    static void DoMath(const glm::mat4& transform) {
-        // Do some math
-    }
 
     Scene::Scene() {
-        //@brief 变化组件
-        struct TransformComponent {
-            glm::mat4 Transform;
-
-            TransformComponent() = default;
-            TransformComponent(const glm::mat4& trans)
-                :Transform(trans) {
-            }
-            TransformComponent(const TransformComponent&) = default;				//复制函数
-
-            // 类型转换运算符重载(方便直接以对应类型去使用该类)
-            operator glm::mat4& () { return Transform; }
-            operator const glm::mat4& () const { return Transform; }
-        };
-
-        // @brief 网格组件
-        struct MeshComponent
-        {
-            int ID;
-
-            MeshComponent() = default;
-        };
-
-        TransformComponent transform;
-        // 测试类型转换运算符的重载
-        DoMath(transform);
-
-        entt::entity Entity = m_Registry.create();  // 创建一个实体
-        m_Registry.emplace<TransformComponent>(Entity, glm::mat4(1.0f));// 为该实体添加一个变换组件
-
-        if (m_Registry.try_get<TransformComponent>(Entity)) {
-
-        }
-
-        auto view = m_Registry.view<TransformComponent>();
-        for (auto entity : view)
-        {
-            auto& transform = view.get<TransformComponent>(entity);					// 在视图中检索transform组件，性能高（视图只包含了特定组件的实体）
-            //auto transform = m_Registry.get<TransformComponent>(entity);			// 在注册表中检索transform组件，性能弱（祖册表包含所有实体）
-        }
-
-        auto group = m_Registry.group<TransformComponent>(entt::get<MeshComponent>);
-        for (auto entity : group)
-        {
-            auto& [transform, mesh] = group.get<TransformComponent, MeshComponent>(entity);
-        }
+    
     }
 
     Scene::~Scene() {
 
+    }
+
+    void Scene::OnUpdate(Timestep ts)
+    {
+        // 在所有含有Transform组件的实体中找含有Sprite组件的实体，返回一个表
+        auto group = m_Registry.group<TransformComponent>(entt::get<SpriteComponent>);
+
+        for (auto entity : group) {
+            auto& [transform, color] = group.get<TransformComponent, SpriteComponent>(entity);
+
+            Renderer2D::DrawQuad(transform, color);
+        }
+    }
+
+    entt::entity Scene::CreateEntity()
+    {
+        return m_Registry.create();
     }
 }

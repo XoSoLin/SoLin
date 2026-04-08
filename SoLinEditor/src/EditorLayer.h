@@ -21,6 +21,9 @@ namespace SoLin {
 
         Ref<SoLin::FrameBuffer> m_Framebuffer;
 
+        Ref<Scene> m_ActiveScene;
+        entt::entity m_SquareEntity;
+
         bool m_ViewportFocused = false;     // 视口聚焦标志
         bool m_ViewportHovered = false;     // 鼠标悬浮在视口标志
         glm::vec2 m_ViewportSize = { 0.0f,0.0f };
