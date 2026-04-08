@@ -19,6 +19,7 @@ IncludeDir["GLad"] = "SoLin/vendor/GLad/include"
 IncludeDir["ImGui"] = "SoLin/vendor/imgui"
 IncludeDir["glm"] = "SoLin/vendor/glm"
 IncludeDir["stb_image"] = "SoLin/vendor/stb_image"
+IncludeDir["entt"] = "SoLin/vendor/entt/include"
 
 group "Dependencies"
 --[[包含Nut/Nut/vendor/GLFW中的premake文件并合并到这里]]
@@ -65,7 +66,8 @@ project "SoLin"				--项目
 		"%{IncludeDir.GLad}",
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.stb_image}",
-		"%{IncludeDir.glm}"
+		"%{IncludeDir.glm}",
+        "%{IncludeDir.entt}"
 	}
 
 	links{                           --为SoLin项目(.dll)链接文件
@@ -184,7 +186,8 @@ project "SoLinEditor"
 		"SoLin/vendor/spdlog/include",
 		"SoLin/src",
 		"SoLin/vendor",
-		"%{IncludeDir.glm}"
+		"%{IncludeDir.glm}",
+        "%{IncludeDir.entt}"
 	}
 
 	links{
