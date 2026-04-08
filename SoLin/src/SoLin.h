@@ -13,6 +13,7 @@
 #include"SoLin/Core/KeyCodes.h"
 #include"SoLin/Core/MouseButtonCodes.h"
 
+#include"SoLin/Renderer/Camera.h"
 #include"SoLin/Renderer/OrthoGraphicCameraController.h"
 
 #include"SoLin/ImGui/ImGuiLayer.h"

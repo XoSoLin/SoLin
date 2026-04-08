@@ -24,6 +24,10 @@ namespace SoLin {
         Ref<Scene> m_ActiveScene;
         Entity m_SquareEntity;
 
+        Entity m_CameraEntity, m_SecondCamera;// 相机实体
+
+        bool m_PrimaryCamera = true;
+
         bool m_ViewportFocused = false;     // 视口聚焦标志
         bool m_ViewportHovered = false;     // 鼠标悬浮在视口标志
         glm::vec2 m_ViewportSize = { 0.0f,0.0f };

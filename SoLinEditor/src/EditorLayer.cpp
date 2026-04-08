@@ -27,6 +27,16 @@ namespace SoLin {
         m_ActiveScene = CreateRef<Scene>();
         m_SquareEntity = m_ActiveScene->CreateEntity("Square");
         m_SquareEntity.AddComponent<SpriteComponent>(m_SquareColor);
+
+        // 创建主相机实体，传入视口矩阵
+        m_CameraEntity = m_ActiveScene->CreateEntity("Main-Camera");
+        auto& firstController = m_CameraEntity.AddComponent<CameraComponent>(glm::ortho(-16.0f, 16.0f, -9.0f, 9.0f, -1.0f, 1.0f));
+        firstController.Primary = true;
+
+        // 创建普通相机实体，传入视口矩阵
+        m_SecondCamera = m_ActiveScene->CreateEntity("Clip-Camera");
+        auto& secondController = m_SecondCamera.AddComponent<CameraComponent>(glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f));
+        secondController.Primary = false;
     }
 
     void EditorLayer::OnDetach()
@@ -73,17 +83,17 @@ namespace SoLin {
             Renderer2D::DrawQuad({ 0.0f,0.0f,0.1f }, { 1.0f,1.0f }, m_TexShelter[i], 1.0f, {1.0,1.0,1.0,1.0});
             Renderer2D::EndScene();*/
 
-            Renderer2D::BeginScene(m_CameraController.GetCamera());
-            for (float y = -5.0f; y < 5.0f; y += 0.5f)
+            //Renderer2D::BeginScene(m_CameraController.GetCamera());
+            /*for (float y = -5.0f; y < 5.0f; y += 0.5f)
             {
                 for (float x = -5.0f; x < 5.0f; x += 0.5f)
                 {
                     glm::vec4 color = { 0.0f ,(x + 5.0f) / 10.0f, (y + 5.0f) / 10.0f, 0.7f };
                     Renderer2D::DrawQuad({ x,y }, { 0.45f, 0.45f }, color);
                 }
-            }
+            }*/
             m_ActiveScene->OnUpdate(ts);
-            Renderer2D::EndScene();
+            //Renderer2D::EndScene();
 #endif
             m_Framebuffer->UnBind();
         }
@@ -191,6 +201,18 @@ namespace SoLin {
             ImGui::ColorEdit4("Square Color Edit", glm::value_ptr(SquareColor));
             ImGui::Separator();// 线
         }
+
+        if (ImGui::Checkbox("World space Camera", &m_PrimaryCamera))
+        {
+            m_CameraEntity.GetComponent<CameraComponent>().Primary = m_PrimaryCamera;
+            m_SecondCamera.GetComponent<CameraComponent>().Primary = !m_PrimaryCamera;
+        }
+        // 变换矩阵会以四元数的方式存储位置信息，在索引3处就相当于相机的位置
+        m_PrimaryCamera == true ?
+            ImGui::DragFloat3("Camera Transform", glm::value_ptr(m_CameraEntity.GetComponent<TransformComponent>().Transform[3]))
+            : ImGui::DragFloat3("Camera Transform", glm::value_ptr(m_SecondCamera.GetComponent<TransformComponent>().Transform[3]));
+
+
         ImGui::End();//Test
 
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));

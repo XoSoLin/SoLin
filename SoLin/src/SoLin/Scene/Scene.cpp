@@ -20,13 +20,37 @@ namespace SoLin {
 
     void Scene::OnUpdate(Timestep ts)
     {
-        // 在所有含有Transform组件的实体中找含有Sprite组件的实体，返回一个表
-        auto group = m_Registry.group<TransformComponent>(entt::get<SpriteComponent>);
+        Camera* mainCamera = nullptr;
+        glm::mat4* mainTransform = nullptr;
 
-        for (auto entity : group) {
-            auto& [transform, color] = group.get<TransformComponent, SpriteComponent>(entity);
+        // 寻找主相机，并获取其必要组件地址
+        auto view = m_Registry.view<TransformComponent,CameraComponent>();
+        for (auto entity : view) {
+            auto& [transform, camera] = view.get<TransformComponent, CameraComponent>(entity);
+            // 若检测到某摄像机被标记为主摄像机，则传出主摄像机的数据，然后跳出。
+            if (camera.Primary)
+            {
+                mainCamera = &camera.Camera;
+                mainTransform = &transform.Transform;
+                break;
+            }
+        }
 
-            Renderer2D::DrawQuad(transform, color);
+        // 如果主相机存在，进行场景渲染
+        if (mainCamera) {
+            // 将存有投影矩阵的相机 和 其变换矩阵的逆，也就是视口矩阵，传入布景器
+            Renderer2D::BeginScene(*mainCamera, glm::inverse(*mainTransform));
+
+            // 在所有含有Transform组件的实体中找含有Sprite组件的实体，返回一个表
+            auto view = m_Registry.view<TransformComponent, SpriteComponent>();
+
+            for (auto entity : view) {
+                auto& [transform, color] = view.get<TransformComponent, SpriteComponent>(entity);
+
+                Renderer2D::DrawQuad(transform, color);
+            }
+
+            Renderer2D::EndScene();
         }
     }
 

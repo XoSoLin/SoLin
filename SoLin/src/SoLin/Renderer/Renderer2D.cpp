@@ -125,7 +125,22 @@ namespace SoLin {
         delete[] s_Data.QuadVBBase;
 	}
 
-	void Renderer2D::BeginScene(const OrthoGraphicCamera& camera)
+    void Renderer2D::BeginScene(const Camera& camera, const glm::mat4& viewMatrix)
+    {
+        SL_PROFILE_FUNCTION();
+
+        glm::mat4 viewProjectionMatrix = camera.GetProjection() * viewMatrix;
+
+        s_Data.TextureShader->Bind();
+        s_Data.TextureShader->SetMat4("u_ViewProjection", viewProjectionMatrix);
+
+        // 批渲染重置计数和尾指针
+        s_Data.QuadIndexCount = 0;
+        s_Data.TextureSlotIndex = 1;
+        s_Data.QuadVBHind = s_Data.QuadVBBase;
+    }
+
+    void Renderer2D::BeginScene(const OrthoGraphicCamera& camera)
 	{
         SL_PROFILE_FUNCTION();
 

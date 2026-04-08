@@ -2,6 +2,8 @@
 
 #include"glm/glm.hpp"
 
+#include"SoLin/Renderer/Camera.h"
+
 namespace SoLin {
 
     //@brief 标志组件
@@ -43,5 +45,14 @@ namespace SoLin {
         operator const glm::vec4& ()const { return Color; }
     };
 
+    // @brief 相机组件
+    struct CameraComponent {
+        SoLin::Camera Camera;
+        bool Primary = false;   // 主相机标志
 
+        CameraComponent() = default;
+        CameraComponent(const glm::mat4& projection)
+            :Camera(projection){ }
+        CameraComponent(const CameraComponent&) = default;
+    };
 }
