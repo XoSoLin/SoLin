@@ -3,6 +3,17 @@
 #include"glm/glm.hpp"
 
 namespace SoLin {
+
+    //@brief 标志组件
+    struct TagComponent {
+        std::string Tag;
+        TagComponent() = default;
+        TagComponent(const std::string& tag)
+            :Tag(tag) {
+        };
+        TagComponent(const TagComponent&) = default;
+    };
+
     //@brief 变化组件
     struct TransformComponent {
         glm::mat4 Transform{ 1.0f };

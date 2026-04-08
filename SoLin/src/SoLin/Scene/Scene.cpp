@@ -1,8 +1,10 @@
 #include"slpch.h"
 #include"Scene.h"
 
-#include"Component.h"
 #include"SoLin/Renderer/Renderer2D.h"
+
+#include"SoLin/Scene/Component.h"
+#include"SoLin/Scene/Entity.h"
 
 #include"glm/glm.hpp"
 
@@ -28,8 +30,12 @@ namespace SoLin {
         }
     }
 
-    entt::entity Scene::CreateEntity()
+    Entity Scene::CreateEntity(const std::string& name)
     {
-        return m_Registry.create();
+        Entity entity = { m_Registry.create(),this };
+        entity.AddComponent<TransformComponent>(glm::mat4{ 1.0f });
+        auto& tag = entity.AddComponent<TagComponent>();
+        tag.Tag = name.empty() ? "Unnamed Entity" : name;
+        return entity;
     }
 }

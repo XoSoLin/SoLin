@@ -3,6 +3,9 @@
 #include"SoLin/Core/Timestep.h"
 
 namespace SoLin {
+
+    class Entity;
+
     class Scene {
     public:
         Scene();
@@ -11,11 +14,13 @@ namespace SoLin {
         void OnUpdate(Timestep ts);
 
         // @brief 创建实体
-        entt::entity CreateEntity();
+        Entity CreateEntity(const std::string& name = "");
 
         // @brief 返回注册表
         entt::registry& Reg() { return m_Registry; }
     private:
         entt::registry m_Registry;
+
+        friend class Entity;
     };
 }

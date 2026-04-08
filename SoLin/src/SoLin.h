@@ -18,6 +18,7 @@
 #include"SoLin/ImGui/ImGuiLayer.h"
 
 #include"SoLin/Scene/Scene.h"
+#include"SoLin/Scene/Entity.h"
 #include"SoLin/Scene/Component.h"
 //-----------------渲染器-----------------
 #include "SoLin/Renderer/Renderer.h"

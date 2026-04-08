@@ -25,9 +25,8 @@ namespace SoLin {
         m_TexShelter.push_back(Texture2D::Create(SLPATH("assets/textures/shelter_w.png")));
 
         m_ActiveScene = CreateRef<Scene>();
-        m_SquareEntity = m_ActiveScene->CreateEntity();
-        m_ActiveScene->Reg().emplace<TransformComponent>(m_SquareEntity, glm::mat4{ 1.0f });
-        m_ActiveScene->Reg().emplace<SpriteComponent>(m_SquareEntity, glm::vec4{ 0.0f,1.0f,1.0f,1.0f });
+        m_SquareEntity = m_ActiveScene->CreateEntity("Square");
+        m_SquareEntity.AddComponent<SpriteComponent>(m_SquareColor);
     }
 
     void EditorLayer::OnDetach()
@@ -182,7 +181,16 @@ namespace SoLin {
         ImGui::Text("Quads: %d", stats.QuadCount);
         ImGui::Text("Vertices: %d", stats.GetVertexCount());
         ImGui::Text("Indices: %d", stats.GetIndexCount());
-        ImGui::ColorEdit4("Square Color Edit", glm::value_ptr(m_SquareColor));
+        //if (m_SquareEntity.HasComponent<TagComponent>()) {
+        if (m_SquareEntity) {// 重载了bool类型转换
+            ImGui::Separator();// 线
+            auto& tag = m_SquareEntity.GetComponent<TagComponent>().Tag;
+            ImGui::Text("%s", tag.c_str());
+
+            auto& SquareColor = m_SquareEntity.GetComponent<SpriteComponent>().Color;
+            ImGui::ColorEdit4("Square Color Edit", glm::value_ptr(SquareColor));
+            ImGui::Separator();// 线
+        }
         ImGui::End();//Test
 
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
