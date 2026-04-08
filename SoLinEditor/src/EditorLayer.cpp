@@ -30,12 +30,12 @@ namespace SoLin {
 
         // 创建主相机实体，传入视口矩阵
         m_CameraEntity = m_ActiveScene->CreateEntity("Main-Camera");
-        auto& firstController = m_CameraEntity.AddComponent<CameraComponent>(glm::ortho(-16.0f, 16.0f, -9.0f, 9.0f, -1.0f, 1.0f));
+        auto& firstController = m_CameraEntity.AddComponent<CameraComponent>();
         firstController.Primary = true;
 
         // 创建普通相机实体，传入视口矩阵
         m_SecondCamera = m_ActiveScene->CreateEntity("Clip-Camera");
-        auto& secondController = m_SecondCamera.AddComponent<CameraComponent>(glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f));
+        auto& secondController = m_SecondCamera.AddComponent<CameraComponent>();
         secondController.Primary = false;
     }
 
@@ -54,6 +54,8 @@ namespace SoLin {
         {
             m_Framebuffer->ReSize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
             m_CameraController.ReSize(m_ViewportSize.x, m_ViewportSize.y);
+
+            m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
         }
         //Update
         if(m_ViewportFocused)
@@ -211,6 +213,11 @@ namespace SoLin {
         m_PrimaryCamera == true ?
             ImGui::DragFloat3("Camera Transform", glm::value_ptr(m_CameraEntity.GetComponent<TransformComponent>().Transform[3]))
             : ImGui::DragFloat3("Camera Transform", glm::value_ptr(m_SecondCamera.GetComponent<TransformComponent>().Transform[3]));
+
+        auto& camera = m_SecondCamera.GetComponent<CameraComponent>().Camera;
+        float orthoSize = camera.GetOrthographicSize();
+        if (ImGui::DragFloat("Second Camera Ortho Size", &orthoSize))
+            camera.SetOrthographicSize(orthoSize);
 
 
         ImGui::End();//Test

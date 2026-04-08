@@ -2,7 +2,7 @@
 
 #include"glm/glm.hpp"
 
-#include"SoLin/Renderer/Camera.h"
+#include"SoLin/Scene/SceneCamera.h"
 
 namespace SoLin {
 
@@ -47,12 +47,11 @@ namespace SoLin {
 
     // @brief 相机组件
     struct CameraComponent {
-        SoLin::Camera Camera;
+        SceneCamera Camera;
         bool Primary = false;   // 主相机标志
+        bool FixedAspectRatio = false; //宽高比未变标志
 
         CameraComponent() = default;
-        CameraComponent(const glm::mat4& projection)
-            :Camera(projection){ }
         CameraComponent(const CameraComponent&) = default;
     };
 }
