@@ -42,6 +42,7 @@ namespace SoLin {
         secondController.Primary = false;
         m_SecondCamera.AddComponent<NativeScriptComponent>().Bind<ScriptCameraController>();			//添加本机脚本
 
+        m_HierarchyPanel.SetContext(m_ActiveScene);
     }
 
     void EditorLayer::OnDetach()
@@ -192,6 +193,8 @@ namespace SoLin {
 
             ImGui::EndMenuBar();
         }
+
+        m_HierarchyPanel.OnImGuiRender();
 
         ImGui::Begin("Test");
         auto stats = Renderer2D::GetStats();

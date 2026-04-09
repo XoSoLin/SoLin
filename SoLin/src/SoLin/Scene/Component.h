@@ -9,7 +9,7 @@ namespace SoLin {
 
     //@brief 标志组件
     struct TagComponent {
-        std::string Tag;
+        std::string Tag;    // 组件名称
         TagComponent() = default;
         TagComponent(const std::string& tag)
             :Tag(tag) {
@@ -19,7 +19,7 @@ namespace SoLin {
 
     //@brief 变化组件
     struct TransformComponent {
-        glm::mat4 Transform{ 1.0f };
+        glm::mat4 Transform{ 1.0f };// 四元数
 
         TransformComponent() = default;
         TransformComponent(const glm::mat4& transform)
@@ -34,7 +34,7 @@ namespace SoLin {
 
     //@brief 精灵组件
     struct SpriteComponent {
-        glm::vec4 Color{ 1.0f,1.0f,1.0f,1.0f };
+        glm::vec4 Color{ 1.0f,1.0f,1.0f,1.0f }; // 颜色
 
         SpriteComponent() = default;
         SpriteComponent(const glm::vec4& color)
@@ -48,7 +48,7 @@ namespace SoLin {
 
     // @brief 相机组件
     struct CameraComponent {
-        SceneCamera Camera;
+        SceneCamera Camera;     //场景相机
         bool Primary = false;   // 主相机标志
         bool FixedAspectRatio = false; //宽高比未变标志
 
@@ -70,7 +70,7 @@ namespace SoLin {
         // @brief 根据实体类型为 函数指针绑定 可调度对象
         template<typename T>
         void Bind() {
-            InstantiateScript = []() { return new T(); };
+            InstantiateScript = []() { return static_cast<ScriptableEntity*>(new T()); };
             DeinstantiateScript = [](NativeScriptComponent* nsc) {delete nsc->Instance; nsc->Instance = nullptr;}; 
         }
 

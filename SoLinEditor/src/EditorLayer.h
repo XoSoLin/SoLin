@@ -1,6 +1,7 @@
 #pragma once
 
 #include "SoLin.h"
+#include"Panels/SceneHierarchyPanel.h"
 
 namespace SoLin {
 
@@ -35,5 +36,8 @@ namespace SoLin {
 	    OrthoGraphicCameraController m_CameraController;
 
 	    glm::vec4 m_SquareColor = { 0.5412f, 0.1686f, 0.8863f, 1.0f };
+
+        //Panels
+        SceneHierarchyPanel m_HierarchyPanel;
     };
 }
