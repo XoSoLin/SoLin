@@ -1,0 +1,33 @@
+#pragma once
+
+#include"SoLin/Scene/Entity.h"
+
+namespace SoLin {
+    // @brief 脚本实体
+    // @brief 用于运行时添加其他实体
+    class ScriptableEntity {
+    public:
+        virtual ~ScriptableEntity() = default;
+
+        // @brief 获取模板类型组件
+        template<typename T>
+        T& GetComponent() {
+            return m_ScriptableEntity.GetComponent<T>();
+        }
+    private:
+        friend class Scene;
+        Entity m_ScriptableEntity;
+    protected:
+        virtual void OnCreate() = 0;
+        virtual void OnDestroy() = 0;
+        virtual void OnUpdate(Timestep ts) = 0;
+    };
+
+    //@brief 相机控制器脚本
+    class ScriptCameraController :public ScriptableEntity {
+    public:
+        virtual void OnCreate() override;
+        virtual void OnDestroy()override;
+        virtual void OnUpdate(Timestep ts)override;
+    };
+}

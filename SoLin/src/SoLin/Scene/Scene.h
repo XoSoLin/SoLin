@@ -12,6 +12,7 @@ namespace SoLin {
         ~Scene();
 
         void OnUpdate(Timestep ts);
+        void OnScript(Timestep ts);
 
         // @brief 视口变换尺寸回调
         void OnViewportResize(uint32_t width, uint32_t height);

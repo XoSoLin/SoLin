@@ -1,5 +1,7 @@
 #include "EditorLayer.h"
 
+#include"SoLin/Scene/ScriptableEntity.h"
+
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
@@ -32,11 +34,14 @@ namespace SoLin {
         m_CameraEntity = m_ActiveScene->CreateEntity("Main-Camera");
         auto& firstController = m_CameraEntity.AddComponent<CameraComponent>();
         firstController.Primary = true;
+        m_CameraEntity.AddComponent<NativeScriptComponent>().Bind<ScriptCameraController>();			//添加本机脚本
 
         // 创建普通相机实体，传入视口矩阵
         m_SecondCamera = m_ActiveScene->CreateEntity("Clip-Camera");
         auto& secondController = m_SecondCamera.AddComponent<CameraComponent>();
         secondController.Primary = false;
+        m_SecondCamera.AddComponent<NativeScriptComponent>().Bind<ScriptCameraController>();			//添加本机脚本
+
     }
 
     void EditorLayer::OnDetach()
@@ -73,8 +78,8 @@ namespace SoLin {
             SL_PROFILE_SCOPE("Renderer2D Draw");
 
 #if 1
-            static float temp = 0.0f;
-            temp += ts * 100.0f;
+            /*static float temp = 0.0f;
+            temp += ts * 100.0f;*/
 
             /*Renderer2D::BeginScene(m_CameraController.GetCamera());
             Renderer2D::DrawQuad({ 0.0f,0.0f }, { 1.0f, 1.0f }, { 0.8f, 0.2f, 0.3f, 1.0f });
@@ -94,7 +99,9 @@ namespace SoLin {
                     Renderer2D::DrawQuad({ x,y }, { 0.45f, 0.45f }, color);
                 }
             }*/
+
             m_ActiveScene->OnUpdate(ts);
+            m_ActiveScene->OnScript(ts);
             //Renderer2D::EndScene();
 #endif
             m_Framebuffer->UnBind();

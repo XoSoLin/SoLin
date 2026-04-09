@@ -3,6 +3,7 @@
 #include"glm/glm.hpp"
 
 #include"SoLin/Scene/SceneCamera.h"
+#include"SoLin/Scene/ScriptableEntity.h"
 
 namespace SoLin {
 
@@ -53,5 +54,25 @@ namespace SoLin {
 
         CameraComponent() = default;
         CameraComponent(const CameraComponent&) = default;
+    };
+
+    // @brief 原生脚本组件
+    // @brief 本质上存储一个其他实体
+    struct NativeScriptComponent {
+        // @brief 脚本实体
+        ScriptableEntity* Instance = nullptr;
+
+        // @brief 实例化脚本实体的 函数指针
+        std::function<ScriptableEntity* ()> InstantiateScript;
+        // @brief 移除脚本实体的 函数指针
+        std::function<void(NativeScriptComponent*)> DeinstantiateScript;
+
+        // @brief 根据实体类型为 函数指针绑定 可调度对象
+        template<typename T>
+        void Bind() {
+            InstantiateScript = []() { return new T(); };
+            DeinstantiateScript = [](NativeScriptComponent* nsc) {delete nsc->Instance; nsc->Instance = nullptr;}; 
+        }
+
     };
 }
