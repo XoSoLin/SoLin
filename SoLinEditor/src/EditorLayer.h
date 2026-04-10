@@ -9,6 +9,8 @@ namespace SoLin {
     public:
         EditorLayer();
 	    virtual ~EditorLayer() = default;
+        // 使用 * 对指针类型的变量 s_Instance 进行解引用，返回指针变量所指向对象的引用
+        static EditorLayer& Get() { return *s_Instance; }
 
 	    virtual void OnAttach() override;
 	    virtual void OnDetach()override;
@@ -16,7 +18,13 @@ namespace SoLin {
 	    virtual void OnUpdate(Timestep ts) override;
 	    virtual void OnImGuiRender()override;
 	    virtual void OnEvent(Event& event)override;
+
+    public:
+        glm::vec2 GetImGuiViewportSize() { return m_ViewportSize; };
     private:
+        // Instance 单例
+        static EditorLayer* s_Instance;
+
 	    Ref<Texture2D> m_Texture;
         std::vector<Ref<Texture2D>> m_TexShelter;
 
@@ -24,6 +32,7 @@ namespace SoLin {
 
         Ref<Scene> m_ActiveScene;
         Entity m_SquareEntity;
+        Entity m_BlueSquare, m_RedSquare;
 
         Entity m_CameraEntity, m_SecondCamera;// 相机实体
 

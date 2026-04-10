@@ -70,7 +70,6 @@ namespace SoLin {
             ImGuiIO& io = ImGui::GetIO();
 
             // 当Imgui层想要处理鼠标与键盘输入时，将会消耗掉事件
-            SL_CORE_INFO("{0}",m_DebugName);//测试层对事件的处理
             e.Handled |= e.IsInCategory(EventCategoryMouse) & io.WantCaptureMouse;
             e.Handled |= e.IsInCategory(EventCategoryKeyboard) & io.WantCaptureKeyboard;
         }

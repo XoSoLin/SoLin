@@ -9,9 +9,13 @@
 
 namespace SoLin {
 
+    EditorLayer* EditorLayer::s_Instance = nullptr;
+
     EditorLayer::EditorLayer()
         :Layer("Editor"), m_CameraController(1280.0f / 720.0f, true)
     {
+        SL_CORE_ASSERT(!s_Instance, "EditorLayer Instance already exists!(EditorLayer is a Singleton!)");
+        s_Instance = this;
     }
 
     void EditorLayer::OnAttach()
@@ -29,6 +33,10 @@ namespace SoLin {
         m_ActiveScene = CreateRef<Scene>();
         m_SquareEntity = m_ActiveScene->CreateEntity("Square");
         m_SquareEntity.AddComponent<SpriteComponent>(m_SquareColor);
+        m_BlueSquare = m_ActiveScene->CreateEntity("BlueSquare");
+        m_BlueSquare.AddComponent<SpriteComponent>(glm::vec4{ 0.0f, 1.0f, 1.0f, 1.0f });
+        m_RedSquare = m_ActiveScene->CreateEntity("RedSquare");
+        m_RedSquare.AddComponent<SpriteComponent>(glm::vec4{ 1.0f, 0.0f, 1.0f, 1.0f });
 
         // 创建主相机实体，传入视口矩阵
         m_CameraEntity = m_ActiveScene->CreateEntity("Main-Camera");
@@ -253,7 +261,6 @@ namespace SoLin {
 
     void EditorLayer::OnEvent(SoLin::Event& event)
     {
-        SL_CORE_INFO("{0}",m_DebugName);//测试层对事件的处理
         m_CameraController.OnEvent(event);
     }
 }
