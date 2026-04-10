@@ -1,6 +1,7 @@
 #pragma once
 
 #include"glm/glm.hpp"
+#include <glm/gtc/matrix_transform.hpp>
 
 #include"SoLin/Scene/SceneCamera.h"
 #include"SoLin/Scene/ScriptableEntity.h"
@@ -19,17 +20,31 @@ namespace SoLin {
 
     //@brief 变化组件
     struct TransformComponent {
-        glm::mat4 Transform{ 1.0f };// 四元数
+        // @brief 位置
+        glm::vec3 Translation = { 0.0f, 0.0f, 0.0f };
+        // @brief 旋转
+        glm::vec3 Rotation = { 0.0f, 0.0f, 0.0f };
+        // @brief 缩放
+        glm::vec3 Scale = { 1.0f, 1.0f, 1.0f };
 
         TransformComponent() = default;
-        TransformComponent(const glm::mat4& transform)
-            :Transform(transform) {
+        TransformComponent(const glm::vec3& translation)
+            :Translation(translation) {
         }
         TransformComponent(const TransformComponent&) = default;				//复制函数
 
         // 类型转换运算符重载(方便直接以对应类型去使用该类)
-        operator glm::mat4& () { return Transform; }
-        operator const glm::mat4& () const { return Transform; }
+        operator glm::mat4& () { return GetTransform(); }
+        operator const glm::mat4& () const { return GetTransform(); }
+
+        glm::mat4 GetTransform() const
+        {
+            glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), Rotation.x, { 1.0f, 0.0f, 0.0f })
+                * glm::rotate(glm::mat4(1.0f), Rotation.y, { 0.0f, 1.0f, 0.0f })
+                * glm::rotate(glm::mat4(1.0f), Rotation.z, { 0.0f, 0.0f, 1.0f });
+
+            return glm::translate(glm::mat4(1.0f), Translation) * rotation * glm::scale(glm::mat4(1.0f), Scale);
+        }
     };
 
     //@brief 精灵组件

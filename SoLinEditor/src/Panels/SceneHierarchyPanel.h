@@ -1,5 +1,7 @@
 #pragma once
 
+#include <glm/glm.hpp>
+
 #include"SoLin/Scene/Scene.h"
 #include"SoLin/Scene/Entity.h"
 
@@ -21,6 +23,14 @@ namespace SoLin {
         void DrawEntityNode(Entity entity);
         // @brief 画所含组件
         void DrawComponents(Entity entity);
+        // @brief 画三维控制器
+        // @brief label 属性标记
+        // @param values 值
+        // @param resetValue 重置值(默认0)
+        // @param columnWidth 区域宽(默认100)
+        static void DrawVec3Controller(
+            const std::string& label, glm::vec3& values, float resetValue = 0.0f, float columnWidth = 100.0f
+        );
     private:
         // @brief 场景上下文
         Ref<Scene> m_Context;
