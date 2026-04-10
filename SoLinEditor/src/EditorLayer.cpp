@@ -219,10 +219,6 @@ namespace SoLin {
             m_CameraEntity.GetComponent<CameraComponent>().Primary = m_PrimaryCamera;
             m_SecondCamera.GetComponent<CameraComponent>().Primary = !m_PrimaryCamera;
         }
-        // 变换矩阵会以四元数的方式存储位置信息，在索引3处就相当于相机的位置
-        m_PrimaryCamera == true ?
-            ImGui::DragFloat3("Camera Transform", glm::value_ptr(m_CameraEntity.GetComponent<TransformComponent>().Transform[3]))
-            : ImGui::DragFloat3("Camera Transform", glm::value_ptr(m_SecondCamera.GetComponent<TransformComponent>().Transform[3]));
 
         auto& camera = m_SecondCamera.GetComponent<CameraComponent>().Camera;
         float orthoSize = camera.GetOrthographicSize();

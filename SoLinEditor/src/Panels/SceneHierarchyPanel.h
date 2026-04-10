@@ -19,6 +19,8 @@ namespace SoLin {
     private:
         // @brief 画实体结点
         void DrawEntityNode(Entity entity);
+        // @brief 画所含组件
+        void DrawComponents(Entity entity);
     private:
         // @brief 场景上下文
         Ref<Scene> m_Context;
