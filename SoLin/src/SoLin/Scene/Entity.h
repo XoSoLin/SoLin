@@ -18,7 +18,10 @@ namespace SoLin {
         template<typename T,typename... Args>
         T& AddComponent(Args&&... args) {
             SL_CORE_ASSERT(!HasComponent<T>(), "This Entity already has component!");
-            return m_Scene->Reg().emplace<T>(m_EntityHandle, std::forward<Args>(args)...);
+            T& component = m_Scene->Reg().emplace<T>(m_EntityHandle, std::forward<Args>(args)...);
+            // 执行添加组件回调
+            m_Scene->OnComponentAdded<T>(*this, component);
+            return component;
         }
 
         // @brief 获取组件 模板

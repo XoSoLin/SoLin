@@ -24,6 +24,12 @@ namespace SoLin {
 
         // @brief 返回注册表
         entt::registry& Reg() { return m_Registry; }
+
+    private:
+        // @brief 添加组件回调
+        template<typename T>
+        void OnComponentAdded(Entity entity, T& component);
+
     private:
         entt::registry m_Registry;
 

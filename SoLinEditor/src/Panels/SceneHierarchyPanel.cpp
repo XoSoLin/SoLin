@@ -64,9 +64,6 @@ namespace SoLin {
                 ImGui::EndPopup();
             }
 
-            // 更新视口
-            glm::vec2 viewportSize = EditorLayer::Get().GetImGuiViewportSize();
-            m_Context->OnViewportResize((uint32_t)viewportSize.x, (uint32_t)viewportSize.y);
         }
 
         ImGui::End();//Properties 选中实体属性面板

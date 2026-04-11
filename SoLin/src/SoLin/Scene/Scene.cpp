@@ -119,4 +119,28 @@ namespace SoLin {
         // 重载过Entity的类型转换，因此可以将其直接当作entt::entity使用
         m_Registry.destroy(entity);
     }
+
+    template<typename T>
+    void Scene::OnComponentAdded(Entity entity, T& component) {
+        // 没被特化就是不存在，进行静态断言
+        static_assert(false);
+    }
+    template<>
+    void Scene::OnComponentAdded<TagComponent>
+        (Entity entity,TagComponent& component){}
+    template<>
+    void Scene::OnComponentAdded<TransformComponent>
+        (Entity entity, TransformComponent& component){}
+    template<>
+    void Scene::OnComponentAdded<SpriteComponent>
+        (Entity entity, SpriteComponent& component){}
+    template<>
+    void Scene::OnComponentAdded<CameraComponent>(Entity entity, CameraComponent& component)
+    {
+        // 相机组件需要更新其视口大小
+        component.Camera.ViewportResize(m_ViewportWidth, m_ViewportHeight);
+    }
+    template<>
+    void Scene::OnComponentAdded<NativeScriptComponent>
+        (Entity entity, NativeScriptComponent& component){}
 }
