@@ -45,7 +45,29 @@ namespace SoLin {
         // 选中实体属性面板---------------------------------------------------
         ImGui::Begin("Properties");
         if (m_SelectionContext)
+        {
             DrawComponents(m_SelectionContext);
+
+            if (ImGui::Button("AddComponent"))
+                ImGui::OpenPopup("AddComponentMenu");
+
+            if (ImGui::BeginPopup("AddComponentMenu")) {
+                if (ImGui::MenuItem("CmaeraComponent")) {
+                    m_SelectionContext.AddComponent<CameraComponent>();
+                    ImGui::CloseCurrentPopup();
+                }
+                if (ImGui::MenuItem("SpriteRendererComponent")) {
+                    m_SelectionContext.AddComponent<SpriteComponent>();
+                    ImGui::CloseCurrentPopup();
+                }
+
+                ImGui::EndPopup();
+            }
+
+            // 更新视口
+            glm::vec2 viewportSize = EditorLayer::Get().GetImGuiViewportSize();
+            m_Context->OnViewportResize((uint32_t)viewportSize.x, (uint32_t)viewportSize.y);
+        }
 
         ImGui::End();//Properties 选中实体属性面板
     }
@@ -149,8 +171,32 @@ namespace SoLin {
 //------------------------------CameraComponent--------------------------------
         if(entity.HasComponent<CameraComponent>())
         {
-            if (ImGui::TreeNodeEx((void*)typeid(CameraComponent).hash_code(),
-                ImGuiTreeNodeFlags_DefaultOpen, "Camera"))
+            bool open = ImGui::TreeNodeEx((void*)typeid(CameraComponent).hash_code(),
+                ImGuiTreeNodeFlags_DefaultOpen, "Camera");
+
+            // 按钮必要数据
+            float buttonWidth = ImGui::CalcTextSize("+").x + GImGui->Style.FramePadding.x * 2.0f;
+            float buttonHeight = ImGui::CalcTextSize("+").y + GImGui->Style.FramePadding.y * 2.0f;
+
+            // 创建一个“+”按钮
+            // 将下一个控件放置在与窗口右边缘保持固定距离（25像素）的位置。
+            ImGui::SameLine(ImGui::GetWindowWidth() - 25.0f);
+            if (ImGui::Button("+", { buttonWidth,buttonHeight })) {
+                // 打开一个名为 "ComponentSettings" 的弹出窗口/上下文菜单。
+                ImGui::OpenPopup("ComponentSettings");
+            }
+
+            bool deleted = false;   // 移除组件标志
+            // 如果组件设置激活，出现一个菜单，可以移除组件
+            if (ImGui::BeginPopup("ComponentSettings")) {
+                if (ImGui::MenuItem("Remove component"))
+                    deleted = true;
+
+                ImGui::EndPopup();
+            }
+
+            // 如果相机组件结点存在，就画
+            if (open)
             {
                 // 获取必要数据
                 auto& cameraComponent = entity.GetComponent<CameraComponent>();
@@ -213,15 +259,50 @@ namespace SoLin {
                 }
                 ImGui::TreePop();//Camera
             }
+
+            // 移除标志激活就移除相机组件
+            if (deleted) {
+                entity.RemoveComponent<CameraComponent>();
+            }
         }
 
 //------------------------------SpriteComponent--------------------------------
         if (entity.HasComponent<SpriteComponent>()) {
-            if (ImGui::TreeNodeEx((void*)typeid(SpriteComponent).hash_code(),
-                ImGuiTreeNodeFlags_DefaultOpen, "Sprite Renderer")) {
+
+            bool open = ImGui::TreeNodeEx((void*)typeid(SpriteComponent).hash_code(),
+                ImGuiTreeNodeFlags_DefaultOpen, "Sprite Renderer");
+
+            // 按钮必要数据
+            float buttonWidth = ImGui::CalcTextSize("+").x + GImGui->Style.FramePadding.x * 2.0f;
+            float buttonHeight = ImGui::CalcTextSize("+").y + GImGui->Style.FramePadding.y * 2.0f;
+
+            // 创建一个“+”按钮
+            // 将下一个控件放置在与窗口右边缘保持固定距离（25像素）的位置。
+            ImGui::SameLine(ImGui::GetWindowWidth() - 25.0f);
+            if (ImGui::Button("+", { buttonWidth,buttonHeight })) {
+                // 打开一个名为 "ComponentSettings" 的弹出窗口/上下文菜单。
+                ImGui::OpenPopup("ComponentSettings");
+            }
+            
+            bool deleted = false;   // 移除组件标志
+            // 如果组件设置激活，出现一个菜单，可以移除组件
+            if (ImGui::BeginPopup("ComponentSettings")) {
+                if (ImGui::MenuItem("Remove component"))
+                    deleted = true;
+
+                ImGui::EndPopup();
+            }
+
+            // 如果精灵组件结点存在，就画出来
+            if(open) {
                 auto& controller = entity.GetComponent<SpriteComponent>();
                 ImGui::ColorEdit4("Color", glm::value_ptr(controller.Color));
                 ImGui::TreePop();
+            }
+
+            // 如果移除标志激活，就移除精灵组件
+            if (deleted) {
+                entity.RemoveComponent<SpriteComponent>();
             }
         }
 
