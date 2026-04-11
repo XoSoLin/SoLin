@@ -20,9 +20,9 @@ namespace SoLin {
         void OnImGuiRender();
     private:
         // @brief 画实体结点
-        void DrawEntityNode(Entity entity);
+        void DrawEntityNode(Entity& entity);
         // @brief 画所含组件
-        void DrawComponents(Entity entity);
+        void DrawComponents(Entity& entity);
         // @brief 画三维控制器
         // @brief label 属性标记
         // @param values 值

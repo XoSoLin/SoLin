@@ -114,4 +114,9 @@ namespace SoLin {
         tag.Tag = name.empty() ? "Unnamed Entity" : name;
         return entity;
     }
+    void Scene::DestoryEntity(Entity& entity)
+    {
+        // 重载过Entity的类型转换，因此可以将其直接当作entt::entity使用
+        m_Registry.destroy(entity);
+    }
 }

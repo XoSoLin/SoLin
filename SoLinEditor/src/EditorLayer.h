@@ -5,6 +5,7 @@
 
 namespace SoLin {
 
+    // @brief 编辑器 层
     class EditorLayer :public Layer {
     public:
         EditorLayer();

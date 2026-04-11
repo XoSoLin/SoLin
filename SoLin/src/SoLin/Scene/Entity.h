@@ -46,6 +46,9 @@ namespace SoLin {
         operator bool() const { return m_EntityHandle != entt::null; }
         // @brief 重载uint32_t类型转换
         operator uint32_t() const { return (uint32_t)m_EntityHandle; }
+        // @brief 重载entt::entity类型转换
+        operator entt::entity() const { return m_EntityHandle; }
+
         bool operator==(const Entity& other) const { return m_EntityHandle == other.m_EntityHandle && m_Scene == other.m_Scene; }
         bool operator!=(const Entity& other) const { return !(*this == other); }
     private:

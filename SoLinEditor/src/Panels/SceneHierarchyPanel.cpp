@@ -12,13 +12,16 @@ namespace SoLin {
     {
         SetContext(scene);
     }
+
     void SceneHierarchyPanel::SetContext(const Ref<Scene>& scene)
     {
         m_Context = scene;
     }
+
     void SceneHierarchyPanel::OnImGuiRender()
     {
-        ImGui::Begin("Scene Hierarchy");// 场景层级结构
+        // 场景层级结构---------------------------------------------------------
+        ImGui::Begin("Scene Hierarchy");
         m_Context->m_Registry.view<entt::entity>().each(
             [&](auto entityID) {
                 Entity entity{ entityID,m_Context.get() };
@@ -28,15 +31,26 @@ namespace SoLin {
         );
         if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
             m_SelectionContext = {};
-        ImGui::End();//Scene Hierarchy
 
+        // 右击出现窗口菜单
+        if (ImGui::BeginPopupContextWindow(0, 1 | ImGuiPopupFlags_NoOpenOverItems)) {
+            // 创建空实体
+            if (ImGui::MenuItem("Create Empty Entity"))
+                m_Context->CreateEntity("Empty Entity");
+            ImGui::EndPopup();
+        }
+
+        ImGui::End();//Scene Hierarchy 场景层级结构
+
+        // 选中实体属性面板---------------------------------------------------
         ImGui::Begin("Properties");
         if (m_SelectionContext)
             DrawComponents(m_SelectionContext);
 
-        ImGui::End();//Properties
+        ImGui::End();//Properties 选中实体属性面板
     }
-    void SceneHierarchyPanel::DrawEntityNode(Entity entity)
+
+    void SceneHierarchyPanel::DrawEntityNode(Entity& entity)
     {
         auto& tag = entity.GetComponent<TagComponent>().Tag;
 
@@ -48,6 +62,16 @@ namespace SoLin {
         // 检测上一个控件是否被点击，被点击就设置为选中状态
         if (ImGui::IsItemClicked())
             m_SelectionContext = entity;
+
+        bool entityDeleted = false;// 实体删除标志
+        // 在“上一个已注册的控件”上点击鼠标右键时，打开一个弹出上下文菜单。
+        if (ImGui::BeginPopupContextItem()) {
+            // 在弹出菜单中创建一个可点击的菜单项。
+            if (ImGui::MenuItem("Delete Entity"))
+                entityDeleted = true;
+
+            ImGui::EndPopup();
+        }
 
         // 如果父节点是展开状态
         if (opened) {
@@ -61,8 +85,16 @@ namespace SoLin {
             ImGui::TreePop();
         }
 
+        // 如果删除标志为真，则移除当前选定的实体
+        if (entityDeleted) {
+            m_Context->DestoryEntity(entity);
+            if (entity == m_SelectionContext)
+                m_SelectionContext = {};
+        }
+
     }
-    void SceneHierarchyPanel::DrawComponents(Entity entity)
+
+    void SceneHierarchyPanel::DrawComponents(Entity& entity)
     {
 //------------------------------TagComponent--------------------------------
         if (entity.HasComponent<TagComponent>()) {

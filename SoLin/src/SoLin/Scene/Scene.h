@@ -19,6 +19,8 @@ namespace SoLin {
 
         // @brief 创建实体
         Entity CreateEntity(const std::string& name = "");
+        // @brief 移除实体
+        void DestoryEntity(Entity& entity);
 
         // @brief 返回注册表
         entt::registry& Reg() { return m_Registry; }
