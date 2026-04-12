@@ -168,11 +168,20 @@ namespace SoLin {
 
         // 提交停靠空间
         ImGuiIO& io = ImGui::GetIO();
+
+        ImGuiStyle& style = ImGui::GetStyle();// 获取样式引用
+        float minWinSizeX = style.WindowMinSize.x;// 临时存储最小宽度(结束时要恢复)
+        float minWinSizeY = style.WindowMinSize.y;
+        style.WindowMinSize.x = 370.0f;// 为所创建的MyDockSpace使用的最小宽度
+        style.WindowMinSize.y = 180.0f;
+
         if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
         {
             ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
             ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
         }
+        style.WindowMinSize.x = minWinSizeX;// 恢复
+        style.WindowMinSize.y = minWinSizeY;
 
         if (ImGui::BeginMenuBar())
         {

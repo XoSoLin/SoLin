@@ -22,6 +22,17 @@ namespace SoLin {
 		void End();
         // @brief 设置阻塞事件标志
         void BlockEvents(bool block) { m_BlockEvents = block; }
+
+        enum class ThemeColor {
+            //灰黑，蓝白，粉红
+            Dark,Blue,Red
+        };
+        // @brief 设置主题色
+        void SetThemeColors(ThemeColor type);
+    private:
+        void SetDarkThemeColors();
+        void SetBlueThemeColors();
+        void SetRedThemeColors();
 	private:
 		float m_Time = 0.0f;
         bool m_BlockEvents = true;  // 接收(阻塞)事件标志

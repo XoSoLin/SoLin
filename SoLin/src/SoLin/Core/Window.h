@@ -12,8 +12,8 @@ namespace SoLin {
         uint32_t Height;
 
 		WindowProps(const std::string& title = "SoLin Engine",
-            uint32_t width = 1280,
-            uint32_t height = 720)
+            uint32_t width = 1280+370,
+            uint32_t height = 720+180)
 			:Title(title), Width(width), Height(height) {}
 	};
 
