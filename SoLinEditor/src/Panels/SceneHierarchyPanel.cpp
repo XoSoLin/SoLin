@@ -47,23 +47,6 @@ namespace SoLin {
         if (m_SelectionContext)
         {
             DrawComponents(m_SelectionContext);
-
-            if (ImGui::Button("AddComponent"))
-                ImGui::OpenPopup("AddComponentMenu");
-
-            if (ImGui::BeginPopup("AddComponentMenu")) {
-                if (ImGui::MenuItem("CmaeraComponent")) {
-                    m_SelectionContext.AddComponent<CameraComponent>();
-                    ImGui::CloseCurrentPopup();
-                }
-                if (ImGui::MenuItem("SpriteRendererComponent")) {
-                    m_SelectionContext.AddComponent<SpriteComponent>();
-                    ImGui::CloseCurrentPopup();
-                }
-
-                ImGui::EndPopup();
-            }
-
         }
 
         ImGui::End();//Properties 选中实体属性面板
@@ -120,15 +103,6 @@ namespace SoLin {
         if (entity.HasComponent<TagComponent>()) {
             auto& tag = entity.GetComponent<TagComponent>().Tag;
 
-            if (ImGui::TreeNodeEx((void*)typeid(TagComponent).hash_code(),
-                ImGuiTreeNodeFlags_DefaultOpen,"Tag")) {
-                // 分为两列
-                ImGui::Columns(2);
-                ImGui::SetColumnWidth(0, 100.0f);
-                ImGui::Text("Tagname");
-
-                // 移动到第二列
-                ImGui::NextColumn();
                 // 创建缓冲区并清0，然后传入tag内容
                 char buffer[256];
                 memset(buffer, 0, sizeof(buffer));
@@ -140,21 +114,35 @@ namespace SoLin {
                 }
                 // 总结就是将tag数据传输给buffer，然后再由buffer实时修改tag
 
-                ImGui::Columns(1);
 
-                ImGui::TreePop();
-            }
+                ImGui::SameLine();          // 下一个控件在同一行
+                ImGui::PushItemWidth(-1);   // 设置width，-1表示当前可用区域的剩余宽度
+                {
+                    // AddComponent 按钮
+                    if (ImGui::Button("AddComponent"))
+                        ImGui::OpenPopup("AddComponentMenu");
+
+                    // AddComponentMenu 弹出框
+                    if (ImGui::BeginPopup("AddComponentMenu")) {
+
+                        if (ImGui::MenuItem("CameraComponent")) {
+                            m_SelectionContext.AddComponent<CameraComponent>();
+                            ImGui::CloseCurrentPopup();
+                        }
+                        if (ImGui::MenuItem("SpriteComponent")) {
+                            m_SelectionContext.AddComponent<SpriteComponent>();
+                            ImGui::CloseCurrentPopup();
+                        }
+                        ImGui::EndPopup(); //AddComponentMenu
+                    }
+                }
+                ImGui::PopItemWidth();
 
         }
 
 
 //------------------------------TransformComponent--------------------------------
         DrawComponent<TransformComponent>("Transform", entity, [](auto& tc) {
-            //if (entity.HasComponent<TransformComponent>()) {
-            //if (ImGui::TreeNodeEx((void*)typeid(TransformComponent).hash_code(),        // 使用类型哈希码作为唯一 ID，确保同一类型组件只创建一次节点
-            //    ImGuiTreeNodeFlags_DefaultOpen, "Transform"))
-            //{
-            //    auto& tc = entity.GetComponent<TransformComponent>();
 
                 DrawVec3Controller("Translation", tc.Translation);
 
@@ -163,148 +151,75 @@ namespace SoLin {
                 tc.Rotation = glm::radians(rotation);
 
                 DrawVec3Controller("Scale", tc.Scale, 1.0f);
-                //ImGui::TreePop();//Transform
-            //}
         });
 
 //------------------------------CameraComponent--------------------------------
-        //DrawComponent<CameraComponent>("Camera",entity,[this](auto& cc))
-        if(entity.HasComponent<CameraComponent>())
-        {
-            bool open = ImGui::TreeNodeEx((void*)typeid(CameraComponent).hash_code(),
-                ImGuiTreeNodeFlags_DefaultOpen, "Camera");
+        DrawComponent<CameraComponent>("Camera", entity, [this](auto& cc) {
 
-            // 按钮必要数据
-            float buttonWidth = ImGui::CalcTextSize("+").x + GImGui->Style.FramePadding.x * 2.0f;
-            float buttonHeight = ImGui::CalcTextSize("+").y + GImGui->Style.FramePadding.y * 2.0f;
+            auto& camera = cc.Camera;
+            bool& primary = cc.Primary;
+            bool& fixedAspectRatio = cc.FixedAspectRatio;
 
-            // 创建一个“+”按钮
-            // 将下一个控件放置在与窗口右边缘保持固定距离（25像素）的位置。
-            ImGui::SameLine(ImGui::GetWindowWidth() - 25.0f);
-            if (ImGui::Button("+", { buttonWidth,buttonHeight })) {
-                // 打开一个名为 "ComponentSettings" 的弹出窗口/上下文菜单。
-                ImGui::OpenPopup("ComponentSettings");
-            }
+            ImGui::Checkbox("Primary", &primary);
 
-            bool deleted = false;   // 移除组件标志
-            // 如果组件设置激活，出现一个菜单，可以移除组件
-            if (ImGui::BeginPopup("ComponentSettings")) {
-                if (ImGui::MenuItem("Remove component"))
-                    deleted = true;
-
-                ImGui::EndPopup();
-            }
-
-            // 如果相机组件结点存在，就画
-            if (open)
-            {
-                // 获取必要数据
-                auto& cameraComponent = entity.GetComponent<CameraComponent>();
-                auto& camera = cameraComponent.Camera;
-                bool& primary = cameraComponent.Primary;
-                bool& fixedAspectRatio = cameraComponent.FixedAspectRatio;
-
-                ImGui::Checkbox("Primary", &primary);
-
-                const char* projectionType[] = { "Perspective","Orthographic" };
-                const char* currentProjectionType = projectionType[(int)camera.GetProjectionType()];
-                if (ImGui::BeginCombo("Projection", currentProjectionType)) {
-                    for (int i = 0;i < 2;i++) {
-                        bool isSelected = currentProjectionType == projectionType[i];
-                        if (ImGui::Selectable(projectionType[i], isSelected)) {
-                            currentProjectionType = projectionType[i];
-                            cameraComponent.Camera.SetProjectionType((SceneCamera::ProjectionType)i);
-                            glm::vec2 viewportSize = EditorLayer::Get().GetImGuiViewportSize();
-                            m_Context->OnViewportResize((uint32_t)viewportSize.x, (uint32_t)viewportSize.y);
-                        }
-                        if (isSelected)
-                            //用于更新焦点（焦点不同于高亮显示）
-                            ImGui::SetItemDefaultFocus();
+            const char* projectionType[] = { "Perspective","Orthographic" };
+            const char* currentProjectionType = projectionType[(int)camera.GetProjectionType()];
+            if (ImGui::BeginCombo("Projection", currentProjectionType)) {
+                for (int i = 0;i < 2;i++) {
+                    bool isSelected = currentProjectionType == projectionType[i];
+                    if (ImGui::Selectable(projectionType[i], isSelected)) {
+                        currentProjectionType = projectionType[i];
+                        cc.Camera.SetProjectionType((SceneCamera::ProjectionType)i);
+                        glm::vec2 viewportSize = EditorLayer::Get().GetImGuiViewportSize();
+                        m_Context->OnViewportResize((uint32_t)viewportSize.x, (uint32_t)viewportSize.y);
                     }
-                    ImGui::EndCombo();//Projection
+                    if (isSelected)
+                        //用于更新焦点（焦点不同于高亮显示）
+                        ImGui::SetItemDefaultFocus();
                 }
-
-                // -------- Draw Perspective Camera Controller --------
-                if (camera.GetProjectionType() == SceneCamera::ProjectionType::Perspective)
-                {
-                    float verticalFov = glm::degrees(camera.GetPerspectiveVerticalFOV());
-                    if (ImGui::DragFloat("Vertical FOV", &verticalFov, 1.0f, 30.0f, 120.0f))
-                        camera.SetPerspectiveVerticalFOV(glm::radians(verticalFov));
-
-                    float perspectiveNear = camera.GetPerspectiveNearClip();
-                    if (ImGui::DragFloat("Near", &perspectiveNear))
-                        camera.SetPerspectiveNearClip(perspectiveNear);
-
-                    float perspectiveFar = camera.GetPerspectiveFarClip();
-                    if (ImGui::DragFloat("Far", &perspectiveFar))
-                        camera.SetPerspectiveFarClip(perspectiveFar);
-                }
-
-                // -------- Draw Orthographic Camera Controller --------
-                if (camera.GetProjectionType() == SceneCamera::ProjectionType::Orthographic)
-                {
-                    ImGui::Checkbox("Fixed Aspect Ratio", &fixedAspectRatio);
-
-                    float orthoSize = camera.GetOrthographicSize();
-                    if (ImGui::DragFloat("Size", &orthoSize))
-                        camera.SetOrthographicSize(orthoSize);
-
-                    float orthoNear = camera.GetOrthographicNearClip();
-                    if (ImGui::DragFloat("Near", &orthoNear))
-                        camera.SetOrthographicNearClip(orthoNear);
-
-                    float orthoFar = camera.GetOrthographicFarClip();
-                    if (ImGui::DragFloat("Far", &orthoFar))
-                        camera.SetOrthographicFarClip(orthoFar);
-                }
-                ImGui::TreePop();//Camera
+                ImGui::EndCombo();//Projection
             }
 
-            // 移除标志激活就移除相机组件
-            if (deleted) {
-                entity.RemoveComponent<CameraComponent>();
+            // -------- Draw Perspective Camera Controller --------
+            if (camera.GetProjectionType() == SceneCamera::ProjectionType::Perspective)
+            {
+                float verticalFov = glm::degrees(camera.GetPerspectiveVerticalFOV());
+                if (ImGui::DragFloat("Vertical FOV", &verticalFov, 1.0f, 30.0f, 120.0f))
+                    camera.SetPerspectiveVerticalFOV(glm::radians(verticalFov));
+
+                float perspectiveNear = camera.GetPerspectiveNearClip();
+                if (ImGui::DragFloat("Near", &perspectiveNear))
+                    camera.SetPerspectiveNearClip(perspectiveNear);
+
+                float perspectiveFar = camera.GetPerspectiveFarClip();
+                if (ImGui::DragFloat("Far", &perspectiveFar))
+                    camera.SetPerspectiveFarClip(perspectiveFar);
             }
-        }
+
+            // -------- Draw Orthographic Camera Controller --------
+            if (camera.GetProjectionType() == SceneCamera::ProjectionType::Orthographic)
+            {
+                ImGui::Checkbox("Fixed Aspect Ratio", &fixedAspectRatio);
+
+                float orthoSize = camera.GetOrthographicSize();
+                if (ImGui::DragFloat("Size", &orthoSize))
+                    camera.SetOrthographicSize(orthoSize);
+
+                float orthoNear = camera.GetOrthographicNearClip();
+                if (ImGui::DragFloat("Near", &orthoNear))
+                    camera.SetOrthographicNearClip(orthoNear);
+
+                float orthoFar = camera.GetOrthographicFarClip();
+                if (ImGui::DragFloat("Far", &orthoFar))
+                    camera.SetOrthographicFarClip(orthoFar);
+            }
+        });
 
 //------------------------------SpriteComponent--------------------------------
-        if (entity.HasComponent<SpriteComponent>()) {
-
-            bool open = ImGui::TreeNodeEx((void*)typeid(SpriteComponent).hash_code(),
-                ImGuiTreeNodeFlags_DefaultOpen, "Sprite Renderer");
-
-            // 按钮必要数据
-            float buttonWidth = ImGui::CalcTextSize("+").x + GImGui->Style.FramePadding.x * 2.0f;
-            float buttonHeight = ImGui::CalcTextSize("+").y + GImGui->Style.FramePadding.y * 2.0f;
-
-            // 创建一个“+”按钮
-            // 将下一个控件放置在与窗口右边缘保持固定距离（25像素）的位置。
-            ImGui::SameLine(ImGui::GetWindowWidth() - 25.0f);
-            if (ImGui::Button("+", { buttonWidth,buttonHeight })) {
-                // 打开一个名为 "ComponentSettings" 的弹出窗口/上下文菜单。
-                ImGui::OpenPopup("ComponentSettings");
-            }
-            
-            bool deleted = false;   // 移除组件标志
-            // 如果组件设置激活，出现一个菜单，可以移除组件
-            if (ImGui::BeginPopup("ComponentSettings")) {
-                if (ImGui::MenuItem("Remove component"))
-                    deleted = true;
-
-                ImGui::EndPopup();
-            }
-
-            // 如果精灵组件结点存在，就画出来
-            if(open) {
-                auto& controller = entity.GetComponent<SpriteComponent>();
-                ImGui::ColorEdit4("Color", glm::value_ptr(controller.Color));
-                ImGui::TreePop();
-            }
-
-            // 如果移除标志激活，就移除精灵组件
-            if (deleted) {
-                entity.RemoveComponent<SpriteComponent>();
-            }
-        }
+        DrawComponent<SpriteComponent>("Sprite Renderer", entity, [](auto& sc) {
+            ImGui::ColorEdit4("Color", glm::value_ptr(sc.Color));
+        });
+        
 
     }
 
@@ -313,19 +228,32 @@ namespace SoLin {
         const ImGuiTreeNodeFlags treeNodeFlags =
             ImGuiTreeNodeFlags_DefaultOpen |
             ImGuiTreeNodeFlags_SpanAvailWidth |     // 将点击响应区域向右延伸，即使点击文字右侧的空白也可响应
+            ImGuiTreeNodeFlags_Framed |             // 让树节点（TreeNode）拥有一个完整的、带背景色的矩形框架
+            ImGuiTreeNodeFlags_FramePadding |       // 让一个没有边框（Framed）的普通树节点，也应用控件框架的内边距（FramePadding），使其文本的垂直高度与标准控件（如按钮、输入框）对齐
             ImGuiTreeNodeFlags_AllowOverlap;        // 允许此节点与其他有点击事情的区域相互重叠(比如按钮)
 
         if (entity.HasComponent<T>())
         {
+            // 设置样式
+            // 获取可用区域尺寸
+            ImVec2 contentRegionAvail = ImGui::GetContentRegionAvail();
+            // 临时修改内边距
+            ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 4,4 });
+            // 计算行高
+            float lineHeight = ImGui::CalcTextSize("+").y + GImGui->Style.FramePadding.y * 2.0f;
+            ImGui::Separator();// 分割线
+
+
             // 获取组件并创建该类型T组件的结点
             auto& component = entity.GetComponent<T>();
             bool open = ImGui::TreeNodeEx((void*)typeid(T).hash_code(), treeNodeFlags, name.c_str());
 
+
+            ImGui::PopStyleVar();// 弹出样式
+
             // 管理组件的按钮
-            float buttonWidth = ImGui::CalcTextSize("+").x + GImGui->Style.FramePadding.x * 2.0f;
-            float buttonHeight = ImGui::CalcTextSize("+").y + GImGui->Style.FramePadding.y * 2.0f;
-            ImGui::SameLine(ImGui::GetWindowWidth() - 30.0f);
-            if (ImGui::Button("+", { buttonWidth,buttonHeight })) {
+            ImGui::SameLine(contentRegionAvail.x - lineHeight * 0.5f);
+            if (ImGui::Button("+", { lineHeight,lineHeight })) {
                 ImGui::OpenPopup("ComponentSettings");
             }
             bool removeComponent = false;
