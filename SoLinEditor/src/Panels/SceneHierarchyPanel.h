@@ -31,6 +31,13 @@ namespace SoLin {
         static void DrawVec3Controller(
             const std::string& label, glm::vec3& values, float resetValue = 0.0f, float columnWidth = 100.0f
         );
+
+        // @brief 利用UIFunction画T组件
+        // @param name 组件名
+        // @param entity 作用的实体
+        // @param func 根据组件有差异的绘画行为
+        template<typename T,typename UIFunction>
+        static void DrawComponent(const std::string& name, Entity& entity, UIFunction func);
     private:
         // @brief 场景上下文
         Ref<Scene> m_Context;

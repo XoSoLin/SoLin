@@ -76,6 +76,7 @@ namespace SoLin {
         //Draw first TreeNode
         ImGuiTreeNodeFlags flags =
             ImGuiTreeNodeFlags_OpenOnArrow |    // 添加箭头
+            ImGuiTreeNodeFlags_SpanAvailWidth | // 将点击响应区域向右延伸，即使点击文字右侧的空白也可响应
             ((m_SelectionContext == entity) ? ImGuiTreeNodeFlags_Selected : 0);// 如果当前entity是被选中实体，则添加高亮
         bool opened = ImGui::TreeNodeEx((void*)(uint64_t)(uint32_t)entity, flags, tag.c_str());
         // 检测上一个控件是否被点击，被点击就设置为选中状态
@@ -95,7 +96,7 @@ namespace SoLin {
         // 如果父节点是展开状态
         if (opened) {
             // Draw nested TreeNode
-            ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow;
+            ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
             // (void*)666999是一个占位符
             bool opened = ImGui::TreeNodeEx((void*)666999, flags, tag.c_str());
             if (opened)     // TreeNodeEx 开始一个节点，TreePop 结束一个节点
@@ -148,11 +149,12 @@ namespace SoLin {
 
 
 //------------------------------TransformComponent--------------------------------
-        if (entity.HasComponent<TransformComponent>()) {
-            if (ImGui::TreeNodeEx((void*)typeid(TransformComponent).hash_code(),        // 使用类型哈希码作为唯一 ID，确保同一类型组件只创建一次节点
-                ImGuiTreeNodeFlags_DefaultOpen, "Transform"))
-            {
-                auto& tc = entity.GetComponent<TransformComponent>();
+        DrawComponent<TransformComponent>("Transform", entity, [](auto& tc) {
+            //if (entity.HasComponent<TransformComponent>()) {
+            //if (ImGui::TreeNodeEx((void*)typeid(TransformComponent).hash_code(),        // 使用类型哈希码作为唯一 ID，确保同一类型组件只创建一次节点
+            //    ImGuiTreeNodeFlags_DefaultOpen, "Transform"))
+            //{
+            //    auto& tc = entity.GetComponent<TransformComponent>();
 
                 DrawVec3Controller("Translation", tc.Translation);
 
@@ -161,11 +163,12 @@ namespace SoLin {
                 tc.Rotation = glm::radians(rotation);
 
                 DrawVec3Controller("Scale", tc.Scale, 1.0f);
-                ImGui::TreePop();//Transform
-            }
-        }
+                //ImGui::TreePop();//Transform
+            //}
+        });
 
 //------------------------------CameraComponent--------------------------------
+        //DrawComponent<CameraComponent>("Camera",entity,[this](auto& cc))
         if(entity.HasComponent<CameraComponent>())
         {
             bool open = ImGui::TreeNodeEx((void*)typeid(CameraComponent).hash_code(),
@@ -301,6 +304,49 @@ namespace SoLin {
             if (deleted) {
                 entity.RemoveComponent<SpriteComponent>();
             }
+        }
+
+    }
+
+    template<typename T,typename UIFunction>
+    static void SceneHierarchyPanel::DrawComponent(const std::string& name, Entity& entity, UIFunction uiFunc) {
+        const ImGuiTreeNodeFlags treeNodeFlags =
+            ImGuiTreeNodeFlags_DefaultOpen |
+            ImGuiTreeNodeFlags_SpanAvailWidth |     // 将点击响应区域向右延伸，即使点击文字右侧的空白也可响应
+            ImGuiTreeNodeFlags_AllowOverlap;        // 允许此节点与其他有点击事情的区域相互重叠(比如按钮)
+
+        if (entity.HasComponent<T>())
+        {
+            // 获取组件并创建该类型T组件的结点
+            auto& component = entity.GetComponent<T>();
+            bool open = ImGui::TreeNodeEx((void*)typeid(T).hash_code(), treeNodeFlags, name.c_str());
+
+            // 管理组件的按钮
+            float buttonWidth = ImGui::CalcTextSize("+").x + GImGui->Style.FramePadding.x * 2.0f;
+            float buttonHeight = ImGui::CalcTextSize("+").y + GImGui->Style.FramePadding.y * 2.0f;
+            ImGui::SameLine(ImGui::GetWindowWidth() - 30.0f);
+            if (ImGui::Button("+", { buttonWidth,buttonHeight })) {
+                ImGui::OpenPopup("ComponentSettings");
+            }
+            bool removeComponent = false;
+            if (ImGui::BeginPopup("ComponentSettings")) {
+                if(ImGui::MenuItem("Remove component"))
+                    removeComponent = true;
+                ImGui::EndPopup();
+            }
+
+            // 如果创建了T组件结点
+            if (open) {
+                // 执行实际画ui的逻辑，一般由lamda表达式灵活提供
+                uiFunc(component);
+                ImGui::TreePop();   // 对应所画的name.c_str()结点
+            }
+
+            // 如果移除标志激活，就移除组件
+            if (removeComponent) {
+                entity.RemoveComponent<T>();
+            }
+
         }
 
     }

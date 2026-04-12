@@ -36,6 +36,9 @@ namespace SoLin {
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // Enable Docking
 		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;       // Enable Multi-Viewport / Platform Windows
 
+        // 修改默认字体
+        io.FontDefault = io.Fonts->AddFontFromFileTTF("assets/fonts/VonwaonBitmap-16px.ttf", 16.0f);
+
 		// When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
 		ImGuiStyle& style = ImGui::GetStyle();
 		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
