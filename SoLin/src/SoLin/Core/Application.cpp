@@ -32,7 +32,8 @@ namespace SoLin {
 		m_Window = std::unique_ptr<Window>(Window::Create(WindowProps(name)));
 
 		m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
-		m_Window->SetVSync(true);
+		m_Window->SetVSync(false);
+        m_timeStep.SetTargetFPS(60.0f);
 		Renderer::Init();
 
 
@@ -86,17 +87,18 @@ namespace SoLin {
 		
 		while (m_Running) {
             SL_PROFILE_SCOPE("RunLoop");
-
-			float time = (float)glfwGetTime();				//获取当前时间
-			Timestep timestep = time - m_LastFrameTime;		//计算变化时间
-			m_LastFrameTime = time;							//存储当前时间供下次使用
+            m_timeStep.Tick();
+            SL_CORE_INFO("{0}",m_timeStep.GetSeconds());
+			//float time = (float)glfwGetTime();				//获取当前时间
+			//Timestep timestep = time - m_LastFrameTime;		//计算变化时间
+			//m_LastFrameTime = time;							//存储当前时间供下次使用
 			
 			if (!m_Minimized) {
                 {
                     SL_PROFILE_SCOPE("LayerStack OnUpdate");
 
 				    for (Layer* layer : m_LayerStack) {				//更新图层
-					    layer->OnUpdate(timestep);
+					    layer->OnUpdate(m_timeStep);
 				    }
                 }
 			}

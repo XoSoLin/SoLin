@@ -44,6 +44,7 @@ namespace SoLin {
 		bool m_Running = true;							//程序运行标志
 		bool m_Minimized = false;
 		float m_LastFrameTime = 0.0f;					//上一帧时间
+        Timestep m_timeStep = 0.0f;
 		ImGuiLayer* m_ImGuiLayer;						//imgui层
 		std::unique_ptr<Window> m_Window;				//程序的主窗口
 
