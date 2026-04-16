@@ -24,12 +24,6 @@ namespace SoLin {
 
         m_Framebuffer = FrameBuffer::Create({ 1280,720 });
 
-        m_resource.loadTexture("assets/textures/shelter_n.png");
-        m_resource.loadTexture("assets/textures/shelter_e.png");
-        m_resource.loadTexture("assets/textures/shelter_w.png");
-        m_resource.loadTexture("assets/textures/shelter_w.png");// 重复
-        m_resource.loadTexture("assets/textures/shelter.png");// 不存在
-
         m_Texture = SoLin::Texture2D::Create(SLPATH("assets/textures/千夏02.png"));
         m_TexShelter.push_back(m_resource.getTexture("assets/textures/shelter_m.png"));
         m_TexShelter.push_back(m_resource.getTexture("assets/textures/shelter_n.png"));
@@ -93,7 +87,7 @@ namespace SoLin {
             SL_PROFILE_SCOPE("Renderer2D Draw");
 
 #if 1
-            static float temp = 0.0f;
+            /*static float temp = 0.0f;
             temp += ts * 100.0f;
 
             Renderer2D::BeginScene(m_CameraController.GetCamera());
@@ -103,7 +97,7 @@ namespace SoLin {
             Renderer2D::DrawQuad({ 0.0f,0.0f,-0.1f }, { 2.0f,2.0f }, m_Texture, 10.0f, { 1.0,0.9,0.9,1.0 });
             int i = int(temp / 100)%3;
             Renderer2D::DrawQuad({ 0.0f,0.0f,0.1f }, { 1.0f,1.0f }, m_TexShelter[i], 1.0f, {1.0,1.0,1.0,1.0});
-            Renderer2D::EndScene();
+            Renderer2D::EndScene();*/
 
             //Renderer2D::BeginScene(m_CameraController.GetCamera());
             /*for (float y = -5.0f; y < 5.0f; y += 0.5f)

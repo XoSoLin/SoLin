@@ -10,3 +10,6 @@
 [submodule "SoLin/vendor/glm"]
 	path = SoLin/vendor/glm
 	url = https://github.com/g-truc/glm
+[submodule "SoLin/vendor/yaml-cpp"]
+	path = SoLin/vendor/yaml-cpp
+	url = https://github.com/XoSoLin/yaml_cpp.git

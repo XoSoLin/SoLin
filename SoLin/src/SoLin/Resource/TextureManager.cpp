@@ -11,7 +11,6 @@ namespace SoLin {
         // 查看是否已经加载
         auto it = m_textures.find(filepath);
         if (it != m_textures.end()) {
-            SL_CORE_WARN("{0}：纹理重复加载，直接返回已存储资源", filepath);
             return it->second;
         }
 
@@ -33,7 +32,6 @@ namespace SoLin {
         }
 
         // 没找到就尝试加载
-        SL_CORE_WARN("{0}：纹理获取失败，尝试加载", filepath);
         return loadTexture(filepath);
     }
     glm::vec2 TextureManager::getTextureSize(const std::string& filepath)

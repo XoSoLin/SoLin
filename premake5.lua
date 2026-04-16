@@ -20,12 +20,14 @@ IncludeDir["ImGui"] = "SoLin/vendor/imgui"
 IncludeDir["glm"] = "SoLin/vendor/glm"
 IncludeDir["stb_image"] = "SoLin/vendor/stb_image"
 IncludeDir["entt"] = "SoLin/vendor/entt/include"
+IncludeDir["yaml_cpp"] = "SoLin/vendor/yaml-cpp/include"
 
 group "Dependencies"
 --[[包含Nut/Nut/vendor/GLFW中的premake文件并合并到这里]]
 include "SoLin/vendor/GLFW"
 include "SoLin/vendor/GLad"
 include "SoLin/vendor/imgui"
+include "SoLin/vendor/yaml-cpp"
 --[[
 --    XXXX
 --]]
@@ -67,13 +69,15 @@ project "SoLin"				--项目
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.stb_image}",
 		"%{IncludeDir.glm}",
-        "%{IncludeDir.entt}"
+        "%{IncludeDir.entt}",
+        "%{IncludeDir.yaml_cpp}"
 	}
 
 	links{                           --为SoLin项目(.dll)链接文件
         "GLFW",                                                                 --链接上方项目GLFW
 		"GLad",
 		"ImGui",
+        "yaml",                     --子lua脚本中的项目名叫yaml
         "opengl32.lib"
     }
 
@@ -187,7 +191,8 @@ project "SoLinEditor"
 		"SoLin/src",
 		"SoLin/vendor",
 		"%{IncludeDir.glm}",
-        "%{IncludeDir.entt}"
+        "%{IncludeDir.entt}",
+        "%{IncludeDir.yaml_cpp}"
 	}
 
 	links{
