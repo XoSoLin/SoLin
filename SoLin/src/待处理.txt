@@ -1,0 +1,4 @@
+赶毕设阶段会遗留一些做的不好的，后续完善
+
+// Core/Timestep中的帧率控制
+// Resource 中的path使用的string

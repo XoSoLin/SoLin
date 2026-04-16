@@ -88,7 +88,7 @@ namespace SoLin {
 		while (m_Running) {
             SL_PROFILE_SCOPE("RunLoop");
             m_timeStep.Tick();
-            SL_CORE_INFO("{0}",m_timeStep.GetSeconds());
+            //SL_CORE_INFO("{0}",m_timeStep.GetSeconds());
 			//float time = (float)glfwGetTime();				//获取当前时间
 			//Timestep timestep = time - m_LastFrameTime;		//计算变化时间
 			//m_LastFrameTime = time;							//存储当前时间供下次使用

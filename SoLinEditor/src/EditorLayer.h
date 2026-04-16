@@ -28,6 +28,7 @@ namespace SoLin {
 
 	    Ref<Texture2D> m_Texture;
         std::vector<Ref<Texture2D>> m_TexShelter;
+        ResourceManager m_resource;
 
         Ref<SoLin::FrameBuffer> m_Framebuffer;
 

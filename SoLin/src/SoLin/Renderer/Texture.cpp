@@ -21,6 +21,13 @@ namespace SoLin {
 
 	Ref<Texture2D> Texture2D::Create(const std::filesystem::path& path) {
 
+        // 打开文件失败就返回空
+        FILE* file = SLOPEN(path);
+        if (!file) {
+            return nullptr;
+        }
+        fclose(file);
+
 		switch (Renderer::GetAPI()) {
 		case RendererAPI::API::None:
 			SL_CORE_ASSERT(false, "RendererAPI::API::None is currently not supported!");

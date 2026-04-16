@@ -37,6 +37,7 @@ namespace SoLin {
 		// &width, &height, &channels：用于接收图像的宽度、高度和通道数（例如 3=RGB, 4=RGBA）
 		// 最后一个参数 0 表示保持图像的原始通道数
         FILE* file = SLOPEN(path);
+        SL_CORE_ASSERT(file, "Failed to open file!");
 		//stbi_uc* data = stbi_load(path.c_str(), &width, &height, &channels, 0);
         stbi_uc* data = stbi_load_from_file(file, &width, &height, &channels, 0);
 		SL_CORE_ASSERT(data, "Failed to load image!");

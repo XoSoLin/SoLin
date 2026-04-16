@@ -33,6 +33,9 @@
 #include "SoLin/Renderer/SubTexture2D.h"
 #include "SoLin/Renderer/VertexArray.h"
 
+//-----------------资源管理----------------
+#include "SoLin/Resource/ResourceManager.h"
+
 //----------------Renderer----------------
 
 //----------------程序入口----------------
