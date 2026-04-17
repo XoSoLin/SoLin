@@ -1,6 +1,7 @@
 #include "EditorLayer.h"
 
 #include"SoLin/Scene/ScriptableEntity.h"
+#include"SoLin/Scene/SceneSerializer.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -199,6 +200,8 @@ namespace SoLin {
                 if (ImGui::MenuItem("Flag: NoResize", "", (dockspace_flags & ImGuiDockNodeFlags_NoResize) != 0)) { dockspace_flags ^= ImGuiDockNodeFlags_NoResize; }
                 if (ImGui::MenuItem("Flag: AutoHideTabBar", "", (dockspace_flags & ImGuiDockNodeFlags_AutoHideTabBar) != 0)) { dockspace_flags ^= ImGuiDockNodeFlags_AutoHideTabBar; }
                 if (ImGui::MenuItem("Flag: PassthruCentralNode", "", (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode) != 0, opt_fullscreen)) { dockspace_flags ^= ImGuiDockNodeFlags_PassthruCentralNode; }*/
+                if (ImGui::MenuItem("SaveToFile")) { SceneSerializer serializer(m_ActiveScene);  serializer.SceneSerializer::Serialize("assets/scenes/Example.yaml"); }
+                if (ImGui::MenuItem("LoadFromFile")) { SceneSerializer serializer(m_ActiveScene);  serializer.SceneSerializer::Deserialize("assets/scenes/Example.yaml"); }
                 if (ImGui::MenuItem("Exit")) { SoLin::Application::Get().WindowClose(); }
 
                 /*ImGui::Separator();

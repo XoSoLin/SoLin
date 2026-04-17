@@ -1,0 +1,65 @@
+Scene: Untitled
+Entities:
+  - Entity: 256257383941
+    TagComponent:
+      Tag: Clip-Camera
+    TransformComponent:
+      Translation: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    CameraComponent:
+      Camera:
+        ProjectionType: 1
+        PerspectiveFOV: 0.7853982
+        PerspectiveNear: 0.01
+        PerspectiveFar: 1000
+        OrthographicSize: 10
+        OrthographicNear: -1
+        OrthographicFar: 1
+      Primary: false
+      Fixed Aspect Ratio: false
+  - Entity: 256257383941
+    TagComponent:
+      Tag: Main-Camera
+    TransformComponent:
+      Translation: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    CameraComponent:
+      Camera:
+        ProjectionType: 1
+        PerspectiveFOV: 0.7853982
+        PerspectiveNear: 0.01
+        PerspectiveFar: 1000
+        OrthographicSize: 10
+        OrthographicNear: -1
+        OrthographicFar: 1
+      Primary: true
+      Fixed Aspect Ratio: false
+  - Entity: 256257383941
+    TagComponent:
+      Tag: RedSquare
+    TransformComponent:
+      Translation: [-2.7, 2.5, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      Color: [1, 0, 1, 1]
+  - Entity: 256257383941
+    TagComponent:
+      Tag: BlueSquare
+    TransformComponent:
+      Translation: [4.3, 1.9, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      Color: [0, 1, 1, 1]
+  - Entity: 256257383941
+    TagComponent:
+      Tag: Square
+    TransformComponent:
+      Translation: [3.5, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      Color: [0.5412, 0.1686, 0.8863, 1]

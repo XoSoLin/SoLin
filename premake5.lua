@@ -58,7 +58,9 @@ project "SoLin"				--项目
 	}
 
 	defines{
-		"_CRT_SECURE_NO_WARNINGS"
+		"_CRT_SECURE_NO_WARNINGS",
+        "GLFW_INCLUDE_NONE",
+        "YAML_CPP_STATIC_DEFINE"
 	}
 
 	includedirs{
@@ -186,6 +188,11 @@ project "SoLinEditor"
 		"%{prj.name}/src/**.cpp"
 	}
 
+    defines
+    {
+        "YAML_CPP_STATIC_DEFINE"
+    }
+
 	includedirs{
 		"SoLin/vendor/spdlog/include",
 		"SoLin/src",
@@ -203,8 +210,6 @@ project "SoLinEditor"
 		systemversion "latest"
 		buildoptions "/utf-8"
 
-		defines{
-		}
 
 	filter "configurations:Debug"
 		defines "SL_DEBUG"
