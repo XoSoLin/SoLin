@@ -20,6 +20,7 @@ namespace SoLin {
 	    virtual void OnImGuiRender()override;
 	    virtual void OnEvent(Event& event)override;
 
+        bool OnKeyPressed(KeyPressedEvent& event);
     public:
         // @brief 获取ImGui视口尺寸
         glm::vec2 GetImGuiViewportSize() { return m_ViewportSize; };

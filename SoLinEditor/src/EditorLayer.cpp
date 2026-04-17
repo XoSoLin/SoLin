@@ -201,11 +201,11 @@ namespace SoLin {
                 if (ImGui::MenuItem("Flag: NoResize", "", (dockspace_flags & ImGuiDockNodeFlags_NoResize) != 0)) { dockspace_flags ^= ImGuiDockNodeFlags_NoResize; }
                 if (ImGui::MenuItem("Flag: AutoHideTabBar", "", (dockspace_flags & ImGuiDockNodeFlags_AutoHideTabBar) != 0)) { dockspace_flags ^= ImGuiDockNodeFlags_AutoHideTabBar; }
                 if (ImGui::MenuItem("Flag: PassthruCentralNode", "", (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode) != 0, opt_fullscreen)) { dockspace_flags ^= ImGuiDockNodeFlags_PassthruCentralNode; }*/
-                if (ImGui::MenuItem("New"))
+                if (ImGui::MenuItem("New","Ctrl + N"))
                     NewScene();
-                if (ImGui::MenuItem("Save AS ..."))
+                if (ImGui::MenuItem("Save AS ...", "Ctrl + S"))
                     SaveSceneAs();
-                if (ImGui::MenuItem("Open ..."))
+                if (ImGui::MenuItem("Open ...","Ctrl + O"))
                     OpenScene();
                 if (ImGui::MenuItem("Exit"))
                     SoLin::Application::Get().WindowClose();
@@ -259,6 +259,32 @@ namespace SoLin {
     void EditorLayer::OnEvent(SoLin::Event& event)
     {
         m_CameraController.OnEvent(event);
+
+        EventDispatcher dispatcher(event);
+        dispatcher.Dispatch<KeyPressedEvent>(SOLIN_BIND_EVENT_FN(EditorLayer::OnKeyPressed));
+    }
+
+    bool EditorLayer::OnKeyPressed(KeyPressedEvent& event)
+    {
+        if (event.GetRepeatCount() > 0)
+            return false;
+
+        bool ctrl = Input::IsKeyPressed(SL_KEY_LEFT_CONTROL) || Input::IsKeyPressed(SL_KEY_RIGHT_CONTROL);
+        bool shift = Input::IsKeyPressed(SL_KEY_LEFT_SHIFT) || Input::IsKeyPressed(SL_KEY_RIGHT_SHIFT);
+        switch (event.GetKeyCode()) {
+        case SL_KEY_N:
+            if (ctrl)
+                NewScene();
+            break;
+        case SL_KEY_O:
+            if (ctrl)
+                OpenScene();
+            break;
+        case SL_KEY_S:
+            if (ctrl)
+                SaveSceneAs();
+            break;
+        }
     }
 
     void EditorLayer::NewScene()
