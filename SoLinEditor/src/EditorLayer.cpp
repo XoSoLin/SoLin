@@ -2,6 +2,7 @@
 
 #include"SoLin/Scene/ScriptableEntity.h"
 #include"SoLin/Scene/SceneSerializer.h"
+#include"SoLin/Utils/PlatformUtils.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -51,7 +52,7 @@ namespace SoLin {
         secondController.Primary = false;
         m_SecondCamera.AddComponent<NativeScriptComponent>().Bind<ScriptCameraController>();			//添加本机脚本
 
-        m_HierarchyPanel.SetContext(m_ActiveScene);
+        m_SceneHierarchyPanel.SetContext(m_ActiveScene);
     }
 
     void EditorLayer::OnDetach()
@@ -200,9 +201,14 @@ namespace SoLin {
                 if (ImGui::MenuItem("Flag: NoResize", "", (dockspace_flags & ImGuiDockNodeFlags_NoResize) != 0)) { dockspace_flags ^= ImGuiDockNodeFlags_NoResize; }
                 if (ImGui::MenuItem("Flag: AutoHideTabBar", "", (dockspace_flags & ImGuiDockNodeFlags_AutoHideTabBar) != 0)) { dockspace_flags ^= ImGuiDockNodeFlags_AutoHideTabBar; }
                 if (ImGui::MenuItem("Flag: PassthruCentralNode", "", (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode) != 0, opt_fullscreen)) { dockspace_flags ^= ImGuiDockNodeFlags_PassthruCentralNode; }*/
-                if (ImGui::MenuItem("SaveToFile")) { SceneSerializer serializer(m_ActiveScene);  serializer.SceneSerializer::Serialize("assets/scenes/Example.yaml"); }
-                if (ImGui::MenuItem("LoadFromFile")) { SceneSerializer serializer(m_ActiveScene);  serializer.SceneSerializer::Deserialize("assets/scenes/Example.yaml"); }
-                if (ImGui::MenuItem("Exit")) { SoLin::Application::Get().WindowClose(); }
+                if (ImGui::MenuItem("New"))
+                    NewScene();
+                if (ImGui::MenuItem("Save AS ..."))
+                    SaveSceneAs();
+                if (ImGui::MenuItem("Open ..."))
+                    OpenScene();
+                if (ImGui::MenuItem("Exit"))
+                    SoLin::Application::Get().WindowClose();
 
                 /*ImGui::Separator();
                 if (ImGui::MenuItem("Close", NULL, false))
@@ -214,7 +220,7 @@ namespace SoLin {
             ImGui::EndMenuBar();
         }
 
-        m_HierarchyPanel.OnImGuiRender();
+        m_SceneHierarchyPanel.OnImGuiRender();
 
         ImGui::Begin("Stats");
         auto stats = Renderer2D::GetStats();
@@ -253,5 +259,34 @@ namespace SoLin {
     void EditorLayer::OnEvent(SoLin::Event& event)
     {
         m_CameraController.OnEvent(event);
+    }
+
+    void EditorLayer::NewScene()
+    {
+        m_ActiveScene = CreateRef<Scene>();
+        m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+        m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+    }
+    void EditorLayer::OpenScene()
+    {
+        std::string filepath = FileDialogs::OpenFile("SoLin Scene(*.yaml)\0 *.yaml\0All Files (*.*)\0*.*\0\0");
+        // 如果文件路径不为空就新创建场景再做反序列化读取数据
+        if (!filepath.empty()) {
+            m_ActiveScene = CreateRef<Scene>();
+            m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+            m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+
+            SceneSerializer serializer(m_ActiveScene);
+            serializer.Deserialize(filepath);
+        }
+    }
+    void EditorLayer::SaveSceneAs()
+    {
+        std::string filepath = FileDialogs::SaveFile("SoLin Scene()(*.yaml)\0 *.yaml\0");
+        // 如果文件路径不为空就做序列化存储
+        if (!filepath.empty()) {
+            SceneSerializer deserializer(m_ActiveScene);
+            deserializer.Serialize(filepath);
+        }
     }
 }

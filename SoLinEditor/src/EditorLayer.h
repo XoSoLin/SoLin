@@ -21,7 +21,15 @@ namespace SoLin {
 	    virtual void OnEvent(Event& event)override;
 
     public:
+        // @brief 获取ImGui视口尺寸
         glm::vec2 GetImGuiViewportSize() { return m_ViewportSize; };
+
+        // @brief 新建场景 选项回调
+        void NewScene();
+        // @brief 打开场景 选项回调
+        void OpenScene();
+        // @breif 保存场景为... 选项回调
+        void SaveSceneAs();
     private:
         // Instance 单例
         static EditorLayer* s_Instance;
@@ -49,6 +57,6 @@ namespace SoLin {
 	    glm::vec4 m_SquareColor = { 0.5412f, 0.1686f, 0.8863f, 1.0f };
 
         //Panels
-        SceneHierarchyPanel m_HierarchyPanel;
+        SceneHierarchyPanel m_SceneHierarchyPanel; //场景层次面板
     };
 }

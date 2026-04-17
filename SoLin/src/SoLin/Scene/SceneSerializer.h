@@ -4,6 +4,7 @@
 #include<yaml-cpp/yaml.h>
 
 namespace SoLin {
+    // @brief 场景序列化器
     class SceneSerializer {
     public:
         SceneSerializer(const Ref<Scene>& scene);

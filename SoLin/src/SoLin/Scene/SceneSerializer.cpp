@@ -205,7 +205,7 @@ namespace SoLin {
                 out << YAML::EndMap;
             }
             out << YAML::Key << "Primary" << YAML::Value << cc.Primary;
-            out << YAML::Key << "Fixed Aspect Ratio" << YAML::Value << cc.FixedAspectRatio;
+            out << YAML::Key << "FixedAspectRatio" << YAML::Value << cc.FixedAspectRatio;
 
             out << YAML::EndMap;
         }
@@ -251,7 +251,7 @@ namespace SoLin {
             // Unlike Camera, Primary is a separate key-value mapping, 
             // while Camera is a map that requires further access.
             cc.Primary = cameraComponent["Primary"].as<bool>();
-            cc.FixedAspectRatio = cameraComponent["Fixed Aspect Ratio"].as<bool>();
+            cc.FixedAspectRatio = cameraComponent["FixedAspectRatio"].as<bool>();
         }
 
         // 精灵组件数据
