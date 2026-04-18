@@ -1,6 +1,7 @@
 #pragma once
 #include"SoLin/Renderer/Camera.h"
 #include "OrthoGraphicCamera.h"
+#include "SoLin/Renderer/EditorCamera.h"
 
 #include "Texture.h"
 #include "SubTexture2D.h"
@@ -22,6 +23,7 @@ namespace SoLin {
         static void BeginScene(const Camera& camera,const glm::mat4& viewMatrix);
 		//@brief 开始布景
 		static void BeginScene(const OrthoGraphicCamera& camera);
+        static void BeginScene(const EditorCamera& camera);
 		//@brief 结束布景
 		static void EndScene();
 

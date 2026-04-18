@@ -36,6 +36,8 @@ namespace SoLin {
         m_TexShelter.push_back(m_resource.getTexture("assets/textures/shelter_w.png"));
 
         m_ActiveScene = CreateRef<Scene>();
+        m_EditorCamera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
+
         m_SquareEntity = m_ActiveScene->CreateEntity("Square");
         m_SquareEntity.AddComponent<SpriteComponent>(m_SquareColor);
         m_BlueSquare = m_ActiveScene->CreateEntity("BlueSquare");
@@ -48,12 +50,6 @@ namespace SoLin {
         auto& firstController = m_CameraEntity.AddComponent<CameraComponent>();
         firstController.Primary = true;
         m_CameraEntity.AddComponent<NativeScriptComponent>().Bind<ScriptCameraController>();			//添加本机脚本
-
-        // 创建普通相机实体，传入视口矩阵
-        m_SecondCamera = m_ActiveScene->CreateEntity("Clip-Camera");
-        auto& secondController = m_SecondCamera.AddComponent<CameraComponent>();
-        secondController.Primary = false;
-        m_SecondCamera.AddComponent<NativeScriptComponent>().Bind<ScriptCameraController>();			//添加本机脚本
 
         m_SceneHierarchyPanel.SetContext(m_ActiveScene);
     }
@@ -75,10 +71,13 @@ namespace SoLin {
             m_CameraController.ReSize(m_ViewportSize.x, m_ViewportSize.y);
 
             m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+
+            m_EditorCamera.SetViewportSize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
         }
         //Update
         if(m_ViewportFocused)
             m_CameraController.OnUpdate(ts);
+        m_EditorCamera.OnUpdate(ts);
         //Render
         {
             SL_PROFILE_SCOPE("RenderCommand Prep");
@@ -104,19 +103,10 @@ namespace SoLin {
             Renderer2D::DrawQuad({ 0.0f,0.0f,0.1f }, { 1.0f,1.0f }, m_TexShelter[i], 1.0f, {1.0,1.0,1.0,1.0});
             Renderer2D::EndScene();*/
 
-            //Renderer2D::BeginScene(m_CameraController.GetCamera());
-            /*for (float y = -5.0f; y < 5.0f; y += 0.5f)
-            {
-                for (float x = -5.0f; x < 5.0f; x += 0.5f)
-                {
-                    glm::vec4 color = { 0.0f ,(x + 5.0f) / 10.0f, (y + 5.0f) / 10.0f, 0.7f };
-                    Renderer2D::DrawQuad({ x,y }, { 0.45f, 0.45f }, color);
-                }
-            }*/
 
-            m_ActiveScene->OnUpdate(ts);
-            m_ActiveScene->OnScript(ts);
-            //Renderer2D::EndScene();
+            //m_ActiveScene->OnUpdate(ts);
+            //m_ActiveScene->OnScript(ts);  // 更新本机脚本
+            m_ActiveScene->OnUpdateEditor(ts, m_EditorCamera);
 #endif
             m_Framebuffer->UnBind();
         }
@@ -265,12 +255,18 @@ namespace SoLin {
 
             // Get camera projection matrix & camera view matrix & transform matrix
             Entity cameraEntity = m_ActiveScene->GetPrimaryCamera();
+#if 0       // 以场景相机方式获取
             // Camera Projection
             const auto& camera = cameraEntity.GetComponent<CameraComponent>().Camera;
             const auto& cameraProjection = camera.GetProjection();
             // Camera View
             auto& cameraTransform = cameraEntity.GetComponent<TransformComponent>().GetTransform();
             glm::mat4 cameraView = glm::inverse(cameraTransform);
+#endif
+#if 1       // 直接从编辑器相机获取(暂时测试)
+            const glm::mat4& cameraProjection = m_EditorCamera.GetProjection();
+            const glm::mat4& cameraView = m_EditorCamera.GetViewMatrix();
+#endif
             // Transform
             auto& tc = selectedEntity.GetComponent<TransformComponent>();
             glm::mat4 transform = tc.GetTransform();
@@ -315,6 +311,7 @@ namespace SoLin {
     void EditorLayer::OnEvent(SoLin::Event& event)
     {
         m_CameraController.OnEvent(event);
+        m_EditorCamera.OnEvent(event);
 
         EventDispatcher dispatcher(event);
         dispatcher.Dispatch<KeyPressedEvent>(SOLIN_BIND_EVENT_FN(EditorLayer::OnKeyPressed));

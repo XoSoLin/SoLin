@@ -3,6 +3,8 @@
 #include "SoLin.h"
 #include"Panels/SceneHierarchyPanel.h"
 
+#include"SoLin/Renderer/EditorCamera.h"
+
 namespace SoLin {
 
     // @brief 编辑器 层
@@ -57,6 +59,7 @@ namespace SoLin {
 
 	    glm::vec4 m_SquareColor = { 0.5412f, 0.1686f, 0.8863f, 1.0f };
 
+        EditorCamera m_EditorCamera;    // 编辑器相机
         //Panels
         SceneHierarchyPanel m_SceneHierarchyPanel; //场景层次面板
 

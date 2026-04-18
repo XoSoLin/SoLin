@@ -1,6 +1,7 @@
 #pragma once
 #include"entt.hpp"
 #include"SoLin/Core/Timestep.h"
+#include"SoLin/Renderer/EditorCamera.h"
 
 namespace SoLin {
 
@@ -12,6 +13,9 @@ namespace SoLin {
         ~Scene();
 
         void OnUpdate(Timestep ts);
+        // @brief 更新编辑器
+        void OnUpdateEditor(Timestep ts, EditorCamera camera);
+        // @brief 更新脚本
         void OnScript(Timestep ts);
 
         // @brief 视口变换尺寸回调
