@@ -21,6 +21,7 @@ IncludeDir["glm"] = "SoLin/vendor/glm"
 IncludeDir["stb_image"] = "SoLin/vendor/stb_image"
 IncludeDir["entt"] = "SoLin/vendor/entt/include"
 IncludeDir["yaml_cpp"] = "SoLin/vendor/yaml-cpp/include"
+IncludeDir["ImGuizmo"] = "SoLin/vendor/ImGuizmo"
 
 group "Dependencies"
 --[[包含Nut/Nut/vendor/GLFW中的premake文件并合并到这里]]
@@ -54,7 +55,9 @@ project "SoLin"				--项目
 		"%{prj.name}/vendor/stb_image/**.h",
 		"%{prj.name}/vendor/stb_image/**.cpp",
 		"%{prj.name}/vendor/glm/glm/**.hpp",
-		"%{prj.name}/vendor/glm/glm/**.inl"
+		"%{prj.name}/vendor/glm/glm/**.inl",
+        "%{prj.name}/vendor/ImGuizmo/ImGuizmo.h",
+        "%{prj.name}/vendor/ImGuizmo/ImGuizmo.cpp"
 	}
 
 	defines{
@@ -72,7 +75,8 @@ project "SoLin"				--项目
 		"%{IncludeDir.stb_image}",
 		"%{IncludeDir.glm}",
         "%{IncludeDir.entt}",
-        "%{IncludeDir.yaml_cpp}"
+        "%{IncludeDir.yaml_cpp}",
+        "%{IncludeDir.ImGuizmo}"
 	}
 
 	links{                           --为SoLin项目(.dll)链接文件
@@ -82,6 +86,9 @@ project "SoLin"				--项目
         "yaml",                     --子lua脚本中的项目名叫yaml
         "opengl32.lib"
     }
+
+    filter "files:SoLin/vendor/ImGuizmo/**.cpp"     -- 此处不使用预编译头
+    flags {"NoPCH"}
 
 	filter "system:windows"
 		systemversion "latest"		--最高版本
@@ -199,7 +206,8 @@ project "SoLinEditor"
 		"SoLin/vendor",
 		"%{IncludeDir.glm}",
         "%{IncludeDir.entt}",
-        "%{IncludeDir.yaml_cpp}"
+        "%{IncludeDir.yaml_cpp}",
+        "%{IncludeDir.ImGuizmo}"
 	}
 
 	links{

@@ -13,3 +13,6 @@
 [submodule "SoLin/vendor/yaml-cpp"]
 	path = SoLin/vendor/yaml-cpp
 	url = https://github.com/XoSoLin/yaml_cpp.git
+[submodule "SoLin/vendor/ImGuizmo"]
+	path = SoLin/vendor/ImGuizmo
+	url = https://github.com/XoSoLin/ImGuizmo.git
