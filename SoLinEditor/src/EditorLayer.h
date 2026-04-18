@@ -59,5 +59,8 @@ namespace SoLin {
 
         //Panels
         SceneHierarchyPanel m_SceneHierarchyPanel; //场景层次面板
+
+        // Gizmo
+        int m_GizmoType = -1;       // Gizmo标志
     };
 }

@@ -106,6 +106,17 @@ namespace SoLin {
         }
     }
 
+    Entity Scene::GetPrimaryCamera()
+    {
+        auto view = m_Registry.view<CameraComponent>();
+        for (auto entity : view) {
+            const auto& cc = m_Registry.get<CameraComponent>(entity);
+            if (cc.Primary == true)
+                return Entity{ entity,this };
+        }
+        return {};
+    }
+
     Entity Scene::CreateEntity(const std::string& name)
     {
         Entity entity = { m_Registry.create(),this };

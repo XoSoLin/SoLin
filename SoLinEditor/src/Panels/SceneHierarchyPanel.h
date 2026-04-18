@@ -18,6 +18,9 @@ namespace SoLin {
 
         // @brief 渲染ImGui
         void OnImGuiRender();
+
+        // @brief 获取选择的实体
+        Entity GetSelectedEntity() const { return m_SelectionContext; }
     private:
         // @brief 画实体结点
         void DrawEntityNode(Entity& entity);

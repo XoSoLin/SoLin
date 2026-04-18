@@ -8,6 +8,9 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include<imgui/imgui.h>
+#include<ImGuizmo.h>
+
+#include"SoLin/Math/Math.h"
 
 namespace SoLin {
 
@@ -248,6 +251,59 @@ namespace SoLin {
         ImTextureID textureID = m_Framebuffer->GetColorAttachmentRendererID();
         ImGui::Image(textureID, ImVec2{ m_ViewportSize.x,m_ViewportSize.y }, ImVec2{ 0,1 }, ImVec2{ 1,0 });
 
+        // Gizmos
+        Entity selectedEntity = m_SceneHierarchyPanel.GetSelectedEntity();
+        if (selectedEntity && m_GizmoType != -1)
+        {
+            // 设置ImGuizmo的工作环境
+            ImGuizmo::SetOrthographic(false);           // 使用透视相机（不是正交）
+            ImGuizmo::SetDrawlist();                    // 使用当前ImGui的绘制列表
+            ImGuizmo::SetRect(
+                ImGui::GetWindowPos().x, ImGui::GetWindowPos().y,
+                (float)ImGui::GetWindowWidth(), (float)ImGui::GetWindowHeight()
+            );
+
+            // Get camera projection matrix & camera view matrix & transform matrix
+            Entity cameraEntity = m_ActiveScene->GetPrimaryCamera();
+            // Camera Projection
+            const auto& camera = cameraEntity.GetComponent<CameraComponent>().Camera;
+            const auto& cameraProjection = camera.GetProjection();
+            // Camera View
+            auto& cameraTransform = cameraEntity.GetComponent<TransformComponent>().GetTransform();
+            glm::mat4 cameraView = glm::inverse(cameraTransform);
+            // Transform
+            auto& tc = selectedEntity.GetComponent<TransformComponent>();
+            glm::mat4 transform = tc.GetTransform();
+
+            // Snapping     设置吸附
+            float snapValue = 0.5f;
+            bool snap = Input::IsKeyPressed(SL_KEY_LEFT_CONTROL);
+            if (m_GizmoType == ImGuizmo::OPERATION::ROTATE)
+                snap = 10.0f;
+            float snapValues[3] = { snapValue, snapValue, snapValue };
+
+            // Manipulate   显示并操作Gizmo
+            ImGuizmo::Manipulate(
+                glm::value_ptr(cameraView),             // 视图矩阵
+                glm::value_ptr(cameraProjection),       // 投影矩阵
+                ImGuizmo::OPERATION(m_GizmoType),       // 操作类型：T R S
+                ImGuizmo::LOCAL,                        // 本地坐标（相对于物体自身）
+                glm::value_ptr(transform),              // 输入输出的变换矩阵
+                nullptr,                                // 可选：delta矩阵
+                snap ? snapValues : nullptr);           // 吸附值（如果启用）
+
+            // 用户正在拖拽Gizmo
+            if (ImGuizmo::IsUsing())
+            {
+                glm::vec3 translation, rotation, scale;
+                Math::DecomposeTransform(transform, translation, rotation, scale);
+                glm::vec3 deltaRotation = rotation - tc.Rotation;
+                tc.Translation = translation;
+                tc.Rotation += deltaRotation;
+                tc.Scale = scale;
+            }
+        }
+
         ImGui::PopStyleVar();
         ImGui::End();//Viewport
 
@@ -272,6 +328,7 @@ namespace SoLin {
         bool ctrl = Input::IsKeyPressed(SL_KEY_LEFT_CONTROL) || Input::IsKeyPressed(SL_KEY_RIGHT_CONTROL);
         bool shift = Input::IsKeyPressed(SL_KEY_LEFT_SHIFT) || Input::IsKeyPressed(SL_KEY_RIGHT_SHIFT);
         switch (event.GetKeyCode()) {
+        // Dialog 操作
         case SL_KEY_N:
             if (ctrl)
                 NewScene();
@@ -284,7 +341,22 @@ namespace SoLin {
             if (ctrl)
                 SaveSceneAs();
             break;
+
+        // Gizmo 操作
+        case SL_KEY_Q:
+            m_GizmoType = -1;
+            break;
+        case SL_KEY_W:
+            m_GizmoType = ImGuizmo::OPERATION::TRANSLATE;
+            break;
+        case SL_KEY_E:
+            m_GizmoType = ImGuizmo::OPERATION::ROTATE;
+            break;
+        case SL_KEY_R:
+            m_GizmoType = ImGuizmo::OPERATION::SCALE;
+            break;
         }
+
     }
 
     void EditorLayer::NewScene()

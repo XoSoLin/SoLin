@@ -16,6 +16,8 @@ namespace SoLin {
 
         // @brief 视口变换尺寸回调
         void OnViewportResize(uint32_t width, uint32_t height);
+        // @brief 获取主相机
+        Entity GetPrimaryCamera();
 
         // @brief 创建实体
         Entity CreateEntity(const std::string& name = "");
