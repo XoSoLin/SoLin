@@ -30,7 +30,7 @@ namespace SoLin {
         m_Framebuffer = FrameBuffer::Create(
             { 1280,720,1,{
                 FrameBufferAttachmentFormat::RGBA8,
-                FrameBufferAttachmentFormat::RGBA8,
+                FrameBufferAttachmentFormat::RED_INTEGER,
                 FrameBufferAttachmentFormat::Depth}
             });
 
@@ -112,6 +112,26 @@ namespace SoLin {
             //m_ActiveScene->OnUpdate(ts);
             //m_ActiveScene->OnScript(ts);  // 更新本机脚本
             m_ActiveScene->OnUpdateEditor(ts, m_EditorCamera);
+
+            // Read Pixels from attachment
+            // 获取视口尺寸
+            glm::vec2 viewportSize = m_ViewportBounds[1] - m_ViewportBounds[0];
+            // 获取鼠标位置
+            auto [mX, mY] = ImGui::GetMousePos();
+            mX -= m_ViewportBounds[0].x;
+            mY -= m_ViewportBounds[0].y;
+            // imgui是从左上为起始的，需要进行垂直方向的颠倒，所以要取反的
+            mY = viewportSize.y - mY;
+
+            int mouseX = (int)mX;
+            int mouseY = (int)mY;
+            if (mouseX >= 0 && mouseY >= 0 && mouseX < (int)viewportSize.x && mouseY < (int)viewportSize.y)
+            {
+                int pixelData = m_Framebuffer->ReadPixel(1, mouseX, mouseY);
+                SL_CORE_WARN("Mouse: {0},{1}", mouseX, mouseY);
+                // 放在物体上就会显示50，其他视口位置就会显示一个随机数
+                SL_CORE_WARN("Pixel data: {0}", pixelData);
+            }
 #endif
             m_Framebuffer->UnBind();
         }
@@ -233,6 +253,9 @@ namespace SoLin {
 
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
         ImGui::Begin("Viewport");
+        // 用于获取 ImGui 中下一个 UI 元素将要放置的位置
+        // 也就是整个Imgui窗口的左上角到Viewport左上角的偏移。
+        auto viewportOffset = ImGui::GetCursorPos();
 
         m_ViewportFocused = ImGui::IsWindowFocused();   // 更新聚焦标志
         m_ViewportHovered = ImGui::IsWindowHovered();   // 更新悬浮标志
@@ -243,9 +266,18 @@ namespace SoLin {
         ImVec2 panelSize = ImGui::GetContentRegionAvail();  //获取面板大小
         m_ViewportSize = { panelSize.x, panelSize.y };
 
-        // 获取帧缓冲区的颜色附件1进行测试,此时应该画出红色
-        ImTextureID textureID = m_Framebuffer->GetColorAttachmentRendererID(1);
+        ImTextureID textureID = m_Framebuffer->GetColorAttachmentRendererID(0);
         ImGui::Image(textureID, ImVec2{ m_ViewportSize.x,m_ViewportSize.y }, ImVec2{ 0,1 }, ImVec2{ 1,0 });
+
+        // 确认边界值
+        ImVec2 windowSize = ImGui::GetWindowSize(); // 获取整个 ImGui 窗口的总大小
+        ImVec2 minBound = ImGui::GetWindowPos();    // 获取整个 ImGui 窗口左上角在显示器上的坐标
+        minBound.x += viewportOffset.x;
+        minBound.y += viewportOffset.y;
+        ImVec2 maxBound = { minBound.x + m_ViewportSize.x, minBound.y + m_ViewportSize.y };
+        // 存储边界值
+        m_ViewportBounds[0] = { minBound.x, minBound.y };
+        m_ViewportBounds[1] = { maxBound.x, maxBound.y };
 
         // Gizmos
         Entity selectedEntity = m_SceneHierarchyPanel.GetSelectedEntity();

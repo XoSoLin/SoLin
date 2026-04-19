@@ -171,6 +171,9 @@ namespace SoLin {
                 case FrameBufferAttachmentFormat::RGBA8:
                     Utils::AttachColorTexture(m_ColorAttachmentIDs[i], m_Specification.Samples, GL_RGBA8,GL_RGBA, m_Specification.Width, m_Specification.Height, i);
                     break;
+                case FrameBufferAttachmentFormat::RED_INTEGER:
+                    Utils::AttachColorTexture(m_ColorAttachmentIDs[i], m_Specification.Samples, GL_R32I, GL_RED_INTEGER, m_Specification.Width, m_Specification.Height, i);
+                    break;
                 }
             }
         }
@@ -228,5 +231,20 @@ namespace SoLin {
 
         // 更新数据后要重新创建
         ReCreate();
+    }
+    int OpenGLFrameBuffer::ReadPixel(uint32_t attachmentIndex, int x, int y)
+    {
+        // 确保要读取的附件索引小于总数
+        SL_CORE_ASSERT((attachmentIndex < m_ColorAttachmentIDs.size()), "Attachment index is beyond the scope of Attachments which we set");
+
+        // 告诉 OpenGL 接下来从哪个颜色附件读取像素
+        glReadBuffer(GL_COLOR_ATTACHMENT0 + attachmentIndex);
+
+        // 从当前绑定的帧缓冲区读取一个像素
+        // GL_RED_INTEGER 指红色通道
+        int pixelData;
+        glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, &pixelData);
+
+        return pixelData;
     }
 }

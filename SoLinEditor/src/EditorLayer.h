@@ -63,6 +63,9 @@ namespace SoLin {
         //Panels
         SceneHierarchyPanel m_SceneHierarchyPanel; //场景层次面板
 
+        // Bounds
+        glm::vec2 m_ViewportBounds[2];  // 视口边界
+
         // Gizmo
         int m_GizmoType = -1;       // Gizmo标志
     };
