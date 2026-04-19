@@ -281,7 +281,7 @@ namespace SoLin {
             float snapValue = 0.5f;
             bool snap = Input::IsKeyPressed(SL_KEY_LEFT_CONTROL);
             if (m_GizmoType == ImGuizmo::OPERATION::ROTATE)
-                snap = 10.0f;
+                snapValue = 10.0f;
             float snapValues[3] = { snapValue, snapValue, snapValue };
 
             // Manipulate   显示并操作Gizmo
