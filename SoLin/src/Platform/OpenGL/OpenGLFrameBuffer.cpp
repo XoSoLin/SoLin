@@ -25,6 +25,16 @@ namespace SoLin::Utils
         return false;
     }
 
+    // @brief SoLin附件内部格式转换为OpenGL
+    static GLenum SoLinTexFormatToGL(SoLin::FrameBufferAttachmentFormat format){
+        switch (format) {
+        case SoLin::FrameBufferAttachmentFormat::RGBA8:
+            return GL_RGBA8;
+        case SoLin::FrameBufferAttachmentFormat::RED_INTEGER:
+            return GL_RED_INTEGER;
+        }
+    }
+
     // @brief 创建纹理接口
     // @param multisampled 多重采样标志
     // @param count 创建个数
@@ -247,4 +257,13 @@ namespace SoLin {
 
         return pixelData;
     }
+
+    void OpenGLFrameBuffer::ClearAttachment(uint32_t attachmentIndex, int value)
+    {
+        SL_CORE_ASSERT((attachmentIndex < m_ColorAttachmentIDs.size()), "Make sure that attachment_index you typed is in the scope of Attachments which we set");
+
+        auto& spec = m_ColorAttachmentSpecifications[attachmentIndex];
+        glClearTexImage(m_ColorAttachmentIDs[attachmentIndex], 0, GL_RED_INTEGER, GL_INT, &value);
+    }
+
 }

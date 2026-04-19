@@ -51,6 +51,10 @@ namespace SoLin {
         // @param attachmentIndex   附件索引
         // @param x,y   要读取的像素坐标
         virtual int ReadPixel(uint32_t attachmentIndex, int x, int y) = 0;
+        // @brief 清理对应附件
+        // @param attachmentIndex 附件索引
+        // @param value 覆盖值
+        virtual void ClearAttachment(uint32_t attachmentIndex, int value) = 0;
 
         // @brief 获取附加色彩的渲染ID
         // @param Index 颜色附件索引

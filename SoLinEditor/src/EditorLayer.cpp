@@ -90,6 +90,9 @@ namespace SoLin {
             m_Framebuffer->Bind();
             SoLin::RendererCommand::SetClearColor({ 0.1f,0.1f,0.1f,1 });
             SoLin::RendererCommand::Clear();
+
+            // Clear entity ID to -1
+            m_Framebuffer->ClearAttachment(1, -1);
         }
 
         {
