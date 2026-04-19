@@ -47,7 +47,7 @@ namespace SoLin {
             for (auto entity : view) {
                 auto [transform, color] = view.get<TransformComponent, SpriteComponent>(entity);
 
-                Renderer2D::DrawQuad(transform.GetTransform(), color);
+                Renderer2D::DrawQuad(transform.GetTransform(), color,(int)entity);
             }
 
             Renderer2D::EndScene();
@@ -62,7 +62,7 @@ namespace SoLin {
         for (auto entity : group) {
             auto [transform, color] = group.get<TransformComponent, SpriteComponent>(entity);
 
-            Renderer2D::DrawQuad(transform.GetTransform(), color.Color);
+            Renderer2D::DrawQuad(transform.GetTransform(), color.Color,(int)entity);
         }
 
         Renderer2D::EndScene();

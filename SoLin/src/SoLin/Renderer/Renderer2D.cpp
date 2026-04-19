@@ -19,6 +19,8 @@ namespace SoLin {
 
         float TexIndex;
         float TilingFactor;
+
+        int EntityID;
     };
 
 	//@brief 2D渲染存储
@@ -67,7 +69,8 @@ namespace SoLin {
             {ShaderDataType::Float4,"a_Color"},
 			{ShaderDataType::Float2,"a_TexCoord"},
             {ShaderDataType::Float, "a_TexIndex"},
-            {ShaderDataType::Float, "a_TilingFactor"}
+            {ShaderDataType::Float, "a_TilingFactor"},
+            {ShaderDataType::Int,"a_EntityID"}
 		};
 		s_Data.QuadVB->SetLayout(squareLayout);
 
@@ -213,7 +216,8 @@ namespace SoLin {
         const glm::vec4& color,
         const float& textureIndex,
         const float& tilingFactor,
-        const glm::vec2* texcoords
+        const glm::vec2* texcoords,
+        const int entityID
     )
     {
         constexpr size_t quadVertexCount = 4;
@@ -224,6 +228,7 @@ namespace SoLin {
             s_Data.QuadVBHind->TexCoord = texcoords[i];
             s_Data.QuadVBHind->TexIndex = textureIndex;
             s_Data.QuadVBHind->TilingFactor = tilingFactor;
+            s_Data.QuadVBHind->EntityID = entityID;
             s_Data.QuadVBHind++;
         }
 
@@ -250,7 +255,7 @@ namespace SoLin {
         }
     }
 
-    void Renderer2D::DrawQuad(const glm::mat4 transform, const glm::vec4 color)
+    void Renderer2D::DrawQuad(const glm::mat4 transform, const glm::vec4 color, const int& entityID)
     {
         SL_PROFILE_FUNCTION();
         if (s_Data.QuadIndexCount >= s_Data.MaxIndices) {
@@ -261,10 +266,10 @@ namespace SoLin {
         constexpr float textureIndex = 0.0f;									
         constexpr float tilingFactor = 1.0f;									
 
-        QuadTransportGLSL(transform, color, textureIndex, tilingFactor, texCoords);
+        QuadTransportGLSL(transform, color, textureIndex, tilingFactor, texCoords, entityID);
     }
 
-    void Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor)
+    void Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor, const int& entityID)
     {
         SL_PROFILE_FUNCTION();
         if (s_Data.QuadIndexCount >= s_Data.MaxIndices) {
@@ -275,11 +280,11 @@ namespace SoLin {
         constexpr glm::vec2 texCoords[4] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
 
         QuadGetTextureIndex(texture, textureIndex);
-        QuadTransportGLSL(transform, tintColor, textureIndex, tilingFactor, texCoords);
+        QuadTransportGLSL(transform, tintColor, textureIndex, tilingFactor, texCoords, entityID);
 
     }
 
-    void Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<SubTexture2D>& subtexture, float tilingFactor, const glm::vec4& tintColor)
+    void Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<SubTexture2D>& subtexture, float tilingFactor, const glm::vec4& tintColor, const int& entityID)
     {
         SL_PROFILE_FUNCTION();
         if (s_Data.QuadIndexCount >= s_Data.MaxIndices) {
@@ -293,7 +298,7 @@ namespace SoLin {
         float textureIndex = 0.0f;
 
         QuadGetTextureIndex(texture, textureIndex);
-        QuadTransportGLSL(transform, tintColor, textureIndex, tilingFactor, subTexCoords);
+        QuadTransportGLSL(transform, tintColor, textureIndex, tilingFactor, subTexCoords, entityID);
     }
 
     void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color)

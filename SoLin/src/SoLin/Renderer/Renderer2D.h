@@ -32,7 +32,7 @@ namespace SoLin {
 
     private:
         //@brief 将GLSL的必要数据传输给CPU上的缓冲区，后续一起更新至GPU
-        static void QuadTransportGLSL(const glm::mat4& transform, const glm::vec4& color, const float& textureIndex, const float& tilingFactor,const glm::vec2* texcoords);
+        static void QuadTransportGLSL(const glm::mat4& transform, const glm::vec4& color, const float& textureIndex, const float& tilingFactor,const glm::vec2* texcoords, const int entityID = -1);
         //@brief 寻找纹理索引
         static void QuadGetTextureIndex(const Ref<Texture2D>& texture,float& index);
 
@@ -42,19 +42,19 @@ namespace SoLin {
         //@brief 画四边形
         //@param transform 变换矩阵
         //@param color 颜色
-        static void DrawQuad(const glm::mat4 transform, const glm::vec4 color);
+        static void DrawQuad(const glm::mat4 transform, const glm::vec4 color, const int& entityID = -1);
         //@brief 画纹理四边形
         //@param transform 变换矩阵
         //@param texture 纹理
         //@param tilingFactor 填充因子
         //@param tintColor 色调
-        static void DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
+        static void DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f), const int& entityID = -1);
         //@brief 画子纹理四边形
         //@param transform 变换矩阵
         //@param subtexture 子纹理
         //@param tilingFactor 填充因子
         //@param tintColor 色调
-        static void DrawQuad(const glm::mat4& transform, const Ref<SubTexture2D>& subtexture, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
+        static void DrawQuad(const glm::mat4& transform, const Ref<SubTexture2D>& subtexture, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f), const int& entityID = -1);
 
 		//@brief 画四边形
 		//@param position 位置
