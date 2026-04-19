@@ -2,12 +2,34 @@
 
 namespace SoLin {
 
+    // @breif 缓冲区 附件格式
+    enum class FrameBufferAttachmentFormat {
+        None = 0,
+        // @brief 颜色 附件
+        RGBA8,
+        // @brief 24位深度 8位模板 附件
+        DEPTH24STENCIL8,
+        // @brief 默认
+        Depth = DEPTH24STENCIL8
+    };
+
+    // @brief 缓冲区附件规范 容器
+    struct FrameBufferAttachmentsSpecification {
+        FrameBufferAttachmentsSpecification() = default;
+        FrameBufferAttachmentsSpecification(std::initializer_list<FrameBufferAttachmentFormat> attachments)
+            :Attachments(attachments){ }
+
+        std::vector<FrameBufferAttachmentFormat> Attachments;
+    };
+
     // @brief 帧缓冲区必要数据
     struct FrameBufferSpecification
     {
         uint32_t Width;             // 宽像素
         uint32_t Height;            // 高像素
-        uint32_t Samples = 1;
+        uint32_t Samples = 1;       // 采样次数
+
+        FrameBufferAttachmentsSpecification Attachments;// 帧缓冲区各个附件的规范
     };
 
     // @brief 帧缓冲区
@@ -24,7 +46,8 @@ namespace SoLin {
         virtual void ReSize(uint32_t width, uint32_t height) = 0;
 
         // @brief 获取附加色彩的渲染ID
-        virtual uint32_t GetColorAttachmentRendererID()const = 0;
+        // @param Index 颜色附件索引
+        virtual uint32_t GetColorAttachmentRendererID(uint32_t index = 0)const = 0;
         // @brief 获取帧缓冲区必要数据
         virtual const FrameBufferSpecification& GetSpecification() const = 0;
     };

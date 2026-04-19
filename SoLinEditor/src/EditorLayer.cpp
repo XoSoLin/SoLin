@@ -27,7 +27,12 @@ namespace SoLin {
     {
         SL_PROFILE_FUNCTION();
 
-        m_Framebuffer = FrameBuffer::Create({ 1280,720 });
+        m_Framebuffer = FrameBuffer::Create(
+            { 1280,720,1,{
+                FrameBufferAttachmentFormat::RGBA8,
+                FrameBufferAttachmentFormat::RGBA8,
+                FrameBufferAttachmentFormat::Depth}
+            });
 
         m_Texture = SoLin::Texture2D::Create(SLPATH("assets/textures/千夏02.png"));
         m_TexShelter.push_back(m_resource.getTexture("assets/textures/shelter_m.png"));
@@ -238,7 +243,8 @@ namespace SoLin {
         ImVec2 panelSize = ImGui::GetContentRegionAvail();  //获取面板大小
         m_ViewportSize = { panelSize.x, panelSize.y };
 
-        ImTextureID textureID = m_Framebuffer->GetColorAttachmentRendererID();
+        // 获取帧缓冲区的颜色附件1进行测试,此时应该画出红色
+        ImTextureID textureID = m_Framebuffer->GetColorAttachmentRendererID(1);
         ImGui::Image(textureID, ImVec2{ m_ViewportSize.x,m_ViewportSize.y }, ImVec2{ 0,1 }, ImVec2{ 1,0 });
 
         // Gizmos

@@ -18,14 +18,22 @@ namespace SoLin {
         virtual void UnBind() override;
 
         virtual void ReSize(uint32_t width,uint32_t height) override;
-        virtual uint32_t GetColorAttachmentRendererID()const override { return m_ColorAttachment; }
+        virtual uint32_t GetColorAttachmentRendererID(uint32_t index = 0)const override
+        {
+            SL_CORE_ASSERT((index < m_ColorAttachmentIDs.size()),"Index should be less than the number of all Color attachments");
+            return m_ColorAttachmentIDs[index];
+        }
         virtual const FrameBufferSpecification& GetSpecification()const override { return m_Specification; }
 
     private:
         uint32_t m_RendererID = 0;                          // 该帧缓冲区类的ID
 
-        uint32_t m_ColorAttachment = 0;                     // 颜色附件的纹理ID
-        uint32_t m_BufferAttachment = 0;                    // 附件的渲染缓冲区ID
-        FrameBufferSpecification m_Specification;           // 帧缓冲区规范
+        FrameBufferSpecification m_Specification;           // 帧缓冲区规范数据
+
+        std::vector<FrameBufferAttachmentFormat> m_ColorAttachmentSpecifications;// 颜色附件的规范列表
+        FrameBufferAttachmentFormat m_BufferAttachmentSpecification;// 深度、模板 附件规范
+
+        std::vector<uint32_t> m_ColorAttachmentIDs;         // 颜色附件的纹理ID列表
+        uint32_t m_BufferAttachmentID = 0;                  // 附件的渲染缓冲区ID
     };
 }
