@@ -245,6 +245,7 @@ namespace SoLin {
         }
 
         m_SceneHierarchyPanel.OnImGuiRender();
+        m_ContentBrowserPanel.OnImGuiRender();
 
         ImGui::Begin("Stats");
         auto stats = Renderer2D::GetStats();
@@ -261,7 +262,7 @@ namespace SoLin {
         ImGui::Text("Hovered Entity: %s", name.c_str());
         // 使用中实体信息
         std::string name2 = "None";
-        if (m_UsingEntity)
+        if (m_UsingEntity && m_UsingEntity.HasComponent<TagComponent>())
             name2 = m_UsingEntity.GetComponent<TagComponent>().Tag;
         ImGui::Text("Entity in use: %s", name2.c_str());
 

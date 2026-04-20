@@ -2,6 +2,7 @@
 
 #include "SoLin.h"
 #include"Panels/SceneHierarchyPanel.h"
+#include"Panels/ContentBrowserPanels.h"
 
 #include"SoLin/Renderer/EditorCamera.h"
 
@@ -65,7 +66,8 @@ namespace SoLin {
 
         EditorCamera m_EditorCamera;    // 编辑器相机
         //Panels
-        SceneHierarchyPanel m_SceneHierarchyPanel; //场景层次面板
+        SceneHierarchyPanel m_SceneHierarchyPanel; // 场景层次面板
+        ContentBrowserPanel m_ContentBrowserPanel; // 内容浏览器面板
 
         // Bounds
         glm::vec2 m_ViewportBounds[2];  // 视口边界
