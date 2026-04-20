@@ -8,7 +8,7 @@ namespace SoLin {
     static float padding = 16.0f;       // 间隔大小
     static float thumbnailSize = 128.0f;// 缩略图尺寸
     // 资源内容的根目录
-    static const std::filesystem::path s_AssetPath = "assets";
+    extern const std::filesystem::path s_AssetPath = "assets";
 
     ContentBrowserPanel::ContentBrowserPanel()
         :m_CurrentDirectory(s_AssetPath)
@@ -52,8 +52,22 @@ namespace SoLin {
             auto relativePath = std::filesystem::relative(path, s_AssetPath);   // 记录目录项相对于 assets/ 的相对路径
             std::string& filenameString = relativePath.filename().string();     // 获得相对路径的文件名
 
+            ImGui::PushID(filenameString.c_str());
+            // 将按钮的普通状态颜色设置为完全透明的黑色（即完全透明）
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
+
             Ref<Texture> icon = (directoryEntry.is_directory() ? m_FolderIcon : m_FileIcon);
             ImGui::ImageButton(filenameString.c_str(), (ImTextureID)icon->GetRendererID(), {thumbnailSize, thumbnailSize}, {0, 1}, {1, 0});
+
+            if (ImGui::BeginDragDropSource()) {
+                // 设置拖拽源
+                const wchar_t* itemPath = relativePath.c_str();
+                // 用于设置拖拽数据     类型标识符               数据指针    数据大小
+                ImGui::SetDragDropPayload("CONTENT_BROWSER_ITEM", itemPath, (wcslen(itemPath) + 1) * sizeof(wchar_t));
+                ImGui::EndDragDropSource();
+            }
+            ImGui::PopStyleColor();
+
             if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
                 // 如果是目录
                 if (directoryEntry.is_directory())
@@ -64,6 +78,8 @@ namespace SoLin {
             }
             ImGui::TextWrapped(filenameString.c_str());										// 附加文本（可自动折叠）
             ImGui::NextColumn();
+
+            ImGui::PopID();
         }
         ImGui::Columns(1);
 

@@ -33,6 +33,7 @@ namespace SoLin {
         void NewScene();
         // @brief 打开场景 选项回调
         void OpenScene();
+        void OpenScene(const std::filesystem::path& path);
         // @breif 保存场景为... 选项回调
         void SaveSceneAs();
     private:
