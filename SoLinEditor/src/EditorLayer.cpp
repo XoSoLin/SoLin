@@ -131,9 +131,12 @@ namespace SoLin {
             if (mouseX >= 0 && mouseY >= 0 && mouseX < (int)viewportSize.x && mouseY < (int)viewportSize.y)
             {
                 int pixelData = m_Framebuffer->ReadPixel(1, mouseX, mouseY);
-                SL_CORE_WARN("Mouse: {0},{1}", mouseX, mouseY);
-                // 放在物体上就会显示50，其他视口位置就会显示一个随机数
                 SL_CORE_WARN("Pixel data: {0}", pixelData);
+                // 更新悬浮处实体
+                if (pixelData != -1 && m_HoveredEntity != Entity((entt::entity)pixelData, m_ActiveScene.get()))
+                    m_HoveredEntity = Entity((entt::entity)pixelData, m_ActiveScene.get());
+                else if (pixelData == -1 && m_HoveredEntity != Entity())
+                    m_HoveredEntity = Entity();
             }
 #endif
             m_Framebuffer->UnBind();
@@ -251,6 +254,16 @@ namespace SoLin {
         ImGui::Text("Vertices: %d", stats.GetVertexCount());
         ImGui::Text("Indices: %d", stats.GetIndexCount());
 
+        // 悬浮处实体信息
+        std::string name = "None";
+        if (m_HoveredEntity)
+            name = m_HoveredEntity.GetComponent<TagComponent>().Tag;
+        ImGui::Text("Hovered Entity: %s", name.c_str());
+        // 使用中实体信息
+        std::string name2 = "None";
+        if (m_UsingEntity)
+            name2 = m_UsingEntity.GetComponent<TagComponent>().Tag;
+        ImGui::Text("Entity in use: %s", name2.c_str());
 
         ImGui::End();//Test
 
@@ -356,6 +369,7 @@ namespace SoLin {
 
         EventDispatcher dispatcher(event);
         dispatcher.Dispatch<KeyPressedEvent>(SOLIN_BIND_EVENT_FN(EditorLayer::OnKeyPressed));
+        dispatcher.Dispatch<MouseButtonPressedEvent>(SOLIN_BIND_EVENT_FN(EditorLayer::OnMouseButtonPressed));
     }
 
     bool EditorLayer::OnKeyPressed(KeyPressedEvent& event)
@@ -395,6 +409,19 @@ namespace SoLin {
             break;
         }
 
+    }
+
+    bool EditorLayer::OnMouseButtonPressed(MouseButtonPressedEvent& event)
+    {
+        if (Input::IsMouseButtonPressed(SL_MOUSE_BUTTON_LEFT))
+        {
+            if (m_ViewportHovered && !ImGuizmo::IsOver() && !Input::IsKeyPressed(SL_KEY_LEFT_ALT))
+            {
+                m_SceneHierarchyPanel.SetSelectedEntity(m_HoveredEntity);
+                m_UsingEntity = m_HoveredEntity;
+            }
+        }
+        return false;
     }
 
     void EditorLayer::NewScene()

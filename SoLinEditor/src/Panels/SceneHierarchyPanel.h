@@ -20,7 +20,9 @@ namespace SoLin {
         void OnImGuiRender();
 
         // @brief 获取选择的实体
-        Entity GetSelectedEntity() const { return m_SelectionContext; }
+        Entity GetSelectedEntity() const { return m_SelectionContext; }\
+        // @brief 设置选择的实体
+        void SetSelectedEntity(Entity entity) { m_SelectionContext = entity; }
     private:
         // @brief 画实体结点
         void DrawEntityNode(Entity& entity);

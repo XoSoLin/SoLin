@@ -23,6 +23,7 @@ namespace SoLin {
 	    virtual void OnEvent(Event& event)override;
 
         bool OnKeyPressed(KeyPressedEvent& event);
+        bool OnMouseButtonPressed(MouseButtonPressedEvent& event);
     public:
         // @brief 获取ImGui视口尺寸
         glm::vec2 GetImGuiViewportSize() { return m_ViewportSize; };
@@ -46,6 +47,9 @@ namespace SoLin {
         Ref<Scene> m_ActiveScene;
         Entity m_SquareEntity;
         Entity m_BlueSquare, m_RedSquare;
+
+        Entity m_HoveredEntity; // 鼠标悬浮位置实体
+        Entity m_UsingEntity;// 使用中的实体
 
         Entity m_CameraEntity, m_SecondCamera;// 相机实体
 
