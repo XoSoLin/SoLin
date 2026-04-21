@@ -218,6 +218,17 @@ namespace SoLin {
             auto& color = entity.GetComponent<SpriteComponent>().Color;
             out << YAML::Key << "Color" << YAML::Value << color;
 
+            auto& texture = entity.GetComponent<SpriteComponent>().Texture;
+            if (texture) {
+                out << YAML::Key << "Texture" << YAML::Value << texture->GetPath().string();
+            }
+            else {
+                out << YAML::Key << "Texture" << YAML::Value << "null";
+            }
+
+            auto& tilingFactor = entity.GetComponent<SpriteComponent>().TilingFactor;
+            out << YAML::Key << "TilingFactor" << YAML::Value << tilingFactor;
+
             out << YAML::EndMap;
         }
 
@@ -259,6 +270,10 @@ namespace SoLin {
         if (spriteComponent) {
             auto& sc = entity.AddComponent<SpriteComponent>();
             sc.Color = spriteComponent["Color"].as<glm::vec4>();
+            auto path = spriteComponent["Texture"].as<std::string>();
+            if(path != "null")
+                sc.Texture = Texture2D::Create(path);
+            sc.TilingFactor = spriteComponent["TilingFactor"].as<float>();
         }
     }
 

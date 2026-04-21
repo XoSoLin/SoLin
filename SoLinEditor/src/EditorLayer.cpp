@@ -29,6 +29,7 @@ namespace SoLin {
     {
         SL_PROFILE_FUNCTION();
 
+        // 设置编辑器层 视口 缓冲区
         m_Framebuffer = FrameBuffer::Create(
             { 1280,720,1,{
                 FrameBufferAttachmentFormat::RGBA8,
@@ -42,22 +43,21 @@ namespace SoLin {
         m_TexShelter.push_back(m_resource.getTexture("assets/textures/shelter_e.png"));
         m_TexShelter.push_back(m_resource.getTexture("assets/textures/shelter_w.png"));
 
+        // 创建场景 与 编辑器相机
         m_ActiveScene = CreateRef<Scene>();
         m_EditorCamera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
 
-        m_SquareEntity = m_ActiveScene->CreateEntity("Square");
-        m_SquareEntity.AddComponent<SpriteComponent>(m_SquareColor);
-        m_BlueSquare = m_ActiveScene->CreateEntity("BlueSquare");
-        m_BlueSquare.AddComponent<SpriteComponent>(glm::vec4{ 0.0f, 1.0f, 1.0f, 1.0f });
-        m_RedSquare = m_ActiveScene->CreateEntity("RedSquare");
-        m_RedSquare.AddComponent<SpriteComponent>(glm::vec4{ 1.0f, 0.0f, 1.0f, 1.0f });
 
+        // 场景演示
+        // 创建一个白方块示例
+        m_ActiveScene->CreateEntity("Square").AddComponent<SpriteComponent>();
         // 创建主相机实体，传入视口矩阵
         m_CameraEntity = m_ActiveScene->CreateEntity("Main-Camera");
         auto& firstController = m_CameraEntity.AddComponent<CameraComponent>();
         firstController.Primary = true;
         m_CameraEntity.AddComponent<NativeScriptComponent>().Bind<ScriptCameraController>();			//添加本机脚本
 
+        // 为Panel 设置场景指针
         m_SceneHierarchyPanel.SetContext(m_ActiveScene);
     }
 
@@ -377,9 +377,12 @@ namespace SoLin {
 
     void EditorLayer::OnEvent(SoLin::Event& event)
     {
+        // 场景相机控制器 事件
         m_CameraController.OnEvent(event);
+        // 编辑器相机 事件
         m_EditorCamera.OnEvent(event);
 
+        // 创建事件分发器 并 分发对应事件
         EventDispatcher dispatcher(event);
         dispatcher.Dispatch<KeyPressedEvent>(SOLIN_BIND_EVENT_FN(EditorLayer::OnKeyPressed));
         dispatcher.Dispatch<MouseButtonPressedEvent>(SOLIN_BIND_EVENT_FN(EditorLayer::OnMouseButtonPressed));

@@ -44,26 +44,25 @@ namespace SoLin {
         std::vector<Ref<Texture2D>> m_TexShelter;
         ResourceManager m_resource;
 
+        // 编辑器层 缓冲区
         Ref<SoLin::FrameBuffer> m_Framebuffer;
-
+        // 编辑器层 场景指针
         Ref<Scene> m_ActiveScene;
-        Entity m_SquareEntity;
-        Entity m_BlueSquare, m_RedSquare;
 
-        Entity m_HoveredEntity; // 鼠标悬浮位置实体
-        Entity m_UsingEntity;// 使用中的实体
+        Entity m_HoveredEntity;         // 鼠标悬浮位置实体
+        Entity m_UsingEntity;           // 使用中的实体
 
-        Entity m_CameraEntity, m_SecondCamera;// 相机实体
+        Entity m_CameraEntity;          // 相机实体
 
-        bool m_PrimaryCamera = true;
+        bool m_PrimaryCamera = true;    // 主相机标志
 
         bool m_ViewportFocused = false;     // 视口聚焦标志
         bool m_ViewportHovered = false;     // 鼠标悬浮在视口标志
-        glm::vec2 m_ViewportSize = { 0.0f,0.0f };
+
+        // ViewPort
+        glm::vec2 m_ViewportSize = { 0.0f,0.0f };// 视口尺寸
 
 	    OrthoGraphicCameraController m_CameraController;
-
-	    glm::vec4 m_SquareColor = { 0.5412f, 0.1686f, 0.8863f, 1.0f };
 
         EditorCamera m_EditorCamera;    // 编辑器相机
         //Panels
