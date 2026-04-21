@@ -17,9 +17,9 @@ namespace SoLin {
         );
 
         // @param texture 原纹理指针
-        // @param cellSize 原纹理单元尺寸
-        // @param spritePos 子纹理于原纹理位置
-        // @param spriteSize 子纹理单元尺寸
+        // @param cellSize 原纹理单元尺寸(像素)
+        // @param spritePos 子纹理于原纹理位置(坐标)
+        // @param spriteSize 子纹理单元尺寸(比例坐标)
         static Ref<SubTexture2D> Create(
             const Ref<Texture2D>& texture, const glm::vec2& cellSize,
             const glm::vec2& spritePos, const glm::vec2& spriteSize = {1,1}

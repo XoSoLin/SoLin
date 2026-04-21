@@ -5,6 +5,7 @@
 #include"Panels/ContentBrowserPanels.h"
 
 #include"SoLin/Renderer/EditorCamera.h"
+#include"SoLin/Scene/Animation/Animation.h"
 
 namespace SoLin {
 
@@ -42,6 +43,7 @@ namespace SoLin {
 
 	    Ref<Texture2D> m_Texture;
         std::vector<Ref<Texture2D>> m_TexShelter;
+        Ref<Animation> m_Animation;
         ResourceManager m_resource;
 
         // 编辑器层 缓冲区

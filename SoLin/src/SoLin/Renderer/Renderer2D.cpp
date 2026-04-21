@@ -570,4 +570,11 @@ namespace SoLin {
         else
             DrawQuad(transform, src.Color, entityID);
     }
+    void Renderer2D::PlayAnimation(const glm::mat4& transform, AnimationComponent& anc, const int& entityID,float ts)
+    {
+        if (anc.CurrentAnimation) {
+            anc.AnimationTimer += ts;
+            DrawQuad(transform, anc.CurrentAnimation->getFrame(anc.AnimationTimer).image, 1.0f, { 1.0f, 1.0f, 1.0f, 1.0f }, entityID);
+        }
+    }
 }

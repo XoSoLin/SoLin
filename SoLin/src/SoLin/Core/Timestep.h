@@ -25,6 +25,9 @@ namespace SoLin {
 		//@brief 获取毫秒
 		float GetMilliseconds()const { return m_DeltaTime * 1000.0f; }
 
+        //@brief 获取总计秒
+        float GetTotalSeconds()const { return m_TotalTime; }
+
     public:
         void SetTargetFPS(float fps);
         float GetTargetFPS()const { return m_TargetFPS; }

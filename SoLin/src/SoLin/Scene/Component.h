@@ -7,6 +7,7 @@
 #include"glm/gtx/quaternion.hpp"
 
 #include"SoLin/Renderer/Texture.h"
+#include"SoLin/Scene/Animation/Animation.h"
 #include"SoLin/Scene/SceneCamera.h"
 #include"SoLin/Scene/ScriptableEntity.h"
 
@@ -66,6 +67,24 @@ namespace SoLin {
 
         operator glm::vec4& () { return Color; }
         operator const glm::vec4& ()const { return Color; }
+    };
+
+    // @brief 动画组件
+    struct AnimationComponent {
+        // 动画映射
+        std::unordered_map<std::string, Ref<Animation>> AnimationMap;
+        Ref<Animation> CurrentAnimation;// 当前动画
+
+        float AnimationTimer = 0.0f;    // 动画计时器
+        bool IsPlaying = false;         // 正在播放标志
+        bool IsOne = false;             // 一次性标志
+
+        AnimationComponent() = default;
+        AnimationComponent(const AnimationComponent&) = default;
+        AnimationComponent(Ref<Animation> animation)
+            :CurrentAnimation(animation){
+            AnimationMap[animation->getName()] = animation;
+        }
     };
 
     // @brief 相机组件

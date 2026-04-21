@@ -187,6 +187,9 @@ namespace SoLin {
         //-----------------------------精灵------------------------------------
         static void DrawSprite(const glm::mat4& transform, const SpriteComponent& src, const int& entityID);
 
+        //后续应该会迁移到别处
+        static void PlayAnimation(const glm::mat4& transform, AnimationComponent& anc, const int& entityID,float ts);
+
         struct Statistics {
             uint32_t DrawCalls;
             uint32_t QuadCount;

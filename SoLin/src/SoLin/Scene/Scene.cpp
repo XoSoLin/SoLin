@@ -65,6 +65,14 @@ namespace SoLin {
             Renderer2D::DrawSprite(transform.GetTransform(), sprite,(int)entity);
         }
 
+        auto AniView = m_Registry.view<TransformComponent, AnimationComponent>();
+        for (auto entity : AniView) {
+            auto [transform, animation] = AniView.get<TransformComponent, AnimationComponent>(entity);
+            if (animation.CurrentAnimation) {
+                Renderer2D::PlayAnimation(transform.GetTransform(), animation, (int)entity, ts);
+            }
+        }
+
         Renderer2D::EndScene();
     }
 
@@ -159,6 +167,14 @@ namespace SoLin {
     template<>
     void Scene::OnComponentAdded<SpriteComponent>
         (Entity entity, SpriteComponent& component){}
+    template<>
+    void Scene::OnComponentAdded<AnimationComponent>
+        (Entity entity,AnimationComponent& component)
+    {
+        // 有精灵就移除
+        if (entity.HasComponent<SpriteComponent>())
+            entity.RemoveComponent<SpriteComponent>();
+    }
     template<>
     void Scene::OnComponentAdded<CameraComponent>(Entity entity, CameraComponent& component)
     {

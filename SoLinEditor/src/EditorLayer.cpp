@@ -4,6 +4,8 @@
 #include"SoLin/Scene/SceneSerializer.h"
 #include"SoLin/Utils/PlatformUtils.h"
 
+#include"SoLin/Renderer/SubTexture2D.h"
+
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
@@ -38,10 +40,13 @@ namespace SoLin {
             });
 
         m_Texture = SoLin::Texture2D::Create(SLPATH("assets/textures/千夏02.png"));
-        m_TexShelter.push_back(m_resource.getTexture("assets/textures/shelter_m.png"));
-        m_TexShelter.push_back(m_resource.getTexture("assets/textures/shelter_n.png"));
-        m_TexShelter.push_back(m_resource.getTexture("assets/textures/shelter_e.png"));
-        m_TexShelter.push_back(m_resource.getTexture("assets/textures/shelter_w.png"));
+
+        m_Animation = CreateRef<Animation>();
+        m_Animation->SetName("Shelter");
+        m_Animation->AddFrame(SubTexture2D::Create(m_resource.getTexture("assets/textures/shelter_m.png"), { 900,800 }, { 0,0 }), 1.0f);
+        m_Animation->AddFrame(SubTexture2D::Create(m_resource.getTexture("assets/textures/shelter_n.png"), { 900,800 }, { 0,0 }), 1.0f);
+        m_Animation->AddFrame(SubTexture2D::Create(m_resource.getTexture("assets/textures/shelter_e.png"), { 900,800 }, { 0,0 }), 1.0f);
+        m_Animation->AddFrame(SubTexture2D::Create(m_resource.getTexture("assets/textures/shelter_w.png"), { 900,800 }, { 0,0 }), 1.0f);
 
         // 创建场景 与 编辑器相机
         m_ActiveScene = CreateRef<Scene>();
@@ -50,7 +55,7 @@ namespace SoLin {
 
         // 场景演示
         // 创建一个白方块示例
-        m_ActiveScene->CreateEntity("Square").AddComponent<SpriteComponent>();
+        m_ActiveScene->CreateEntity("Square").AddComponent<AnimationComponent>(m_Animation);
         // 创建主相机实体，传入视口矩阵
         m_CameraEntity = m_ActiveScene->CreateEntity("Main-Camera");
         auto& firstController = m_CameraEntity.AddComponent<CameraComponent>();
@@ -101,18 +106,10 @@ namespace SoLin {
             SL_PROFILE_SCOPE("Renderer2D Draw");
 
 #if 1
-            /*static float temp = 0.0f;
-            temp += ts * 100.0f;
 
             Renderer2D::BeginScene(m_CameraController.GetCamera());
-            Renderer2D::DrawQuad({ 0.0f,0.0f }, { 1.0f, 1.0f }, { 0.8f, 0.2f, 0.3f, 1.0f });
-            Renderer2D::DrawQuad({ 1.0f, -1.0f,-0.2 }, { 0.5f, 1.0f }, m_SquareColor);
-            Renderer2D::DrawRotatedQuad({ -1.0f, 1.0f }, { 1.0f, 1.0f }, glm::radians(temp), { 0.3f, 0.2f, 0.8f, 1.0f });
-            Renderer2D::DrawQuad({ 0.0f,0.0f,-0.1f }, { 2.0f,2.0f }, m_Texture, 10.0f, { 1.0,0.9,0.9,1.0 });
-            int i = int(temp / 100)%3;
-            Renderer2D::DrawQuad({ 0.0f,0.0f,0.1f }, { 1.0f,1.0f }, m_TexShelter[i], 1.0f, {1.0,1.0,1.0,1.0});
-            Renderer2D::EndScene();*/
-
+            Renderer2D::DrawQuad({ 0.0f,1.5f,0.3f }, { 1.0f,1.0f }, m_Animation->getFrame(ts.GetTotalSeconds()).image, 1.0f, {0.8f,1.0f,1.0f,1.0f});
+            Renderer2D::EndScene();
 
             //m_ActiveScene->OnUpdate(ts);
             //m_ActiveScene->OnScript(ts);  // 更新本机脚本
