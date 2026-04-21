@@ -6,6 +6,7 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include"glm/gtx/quaternion.hpp"
 
+#include"SoLin/Renderer/Texture.h"
 #include"SoLin/Scene/SceneCamera.h"
 #include"SoLin/Scene/ScriptableEntity.h"
 
@@ -54,6 +55,8 @@ namespace SoLin {
     //@brief 精灵组件
     struct SpriteComponent {
         glm::vec4 Color{ 1.0f,1.0f,1.0f,1.0f }; // 颜色
+        Ref<Texture2D> Texture; // 纹理
+        float TilingFactor = 1.0f;// 填充因子
 
         SpriteComponent() = default;
         SpriteComponent(const glm::vec4& color)

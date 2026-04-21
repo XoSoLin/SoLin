@@ -6,6 +6,8 @@
 #include "Texture.h"
 #include "SubTexture2D.h"
 
+#include "SoLin/Scene/Component.h"
+
 namespace SoLin {
 
 	//@brief 专用于渲染2D效果的渲染器
@@ -181,6 +183,9 @@ namespace SoLin {
             const glm::vec3& position, const glm::vec2& size, float rotation,
             const Ref<SubTexture2D>& subtexture, float tilingFactor = 1.0f,
             const glm::vec4& tintColor = glm::vec4(1.0f));
+
+        //-----------------------------精灵------------------------------------
+        static void DrawSprite(const glm::mat4& transform, const SpriteComponent& src, const int& entityID);
 
         struct Statistics {
             uint32_t DrawCalls;

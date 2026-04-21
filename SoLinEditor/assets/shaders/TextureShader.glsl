@@ -13,7 +13,7 @@ uniform mat4 u_ViewProjection;
 
 out vec4 v_Color;
 out vec2 v_TexCoord;
-out float v_TexIndex;
+out flat float v_TexIndex;// 不禁止插值有时会导致批渲染纹理乱显示
 out float v_TilingFactor;
 out flat int v_EntityID;
 
@@ -36,7 +36,7 @@ layout(location = 1) out int color2;
 
 in vec4 v_Color;
 in vec2 v_TexCoord;
-in float v_TexIndex;
+in flat float v_TexIndex;
 in float v_TilingFactor;
 in flat int v_EntityID;
 // 此处的flat用于防止插值,需要420及以上版本

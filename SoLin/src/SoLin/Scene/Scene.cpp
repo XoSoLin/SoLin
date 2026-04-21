@@ -45,9 +45,9 @@ namespace SoLin {
             auto view = m_Registry.view<TransformComponent, SpriteComponent>();
 
             for (auto entity : view) {
-                auto [transform, color] = view.get<TransformComponent, SpriteComponent>(entity);
+                auto [transform, sprite] = view.get<TransformComponent, SpriteComponent>(entity);
 
-                Renderer2D::DrawQuad(transform.GetTransform(), color,(int)entity);
+                Renderer2D::DrawSprite(transform.GetTransform(), sprite,(int)entity);
             }
 
             Renderer2D::EndScene();
@@ -60,9 +60,9 @@ namespace SoLin {
 
         auto& group = m_Registry.group<TransformComponent>(entt::get<SpriteComponent>);	// 在所有含有 TransformComponent 的实体中搜集含有 sprite 的实体，group 返回一个类似注册表的实体集合
         for (auto entity : group) {
-            auto [transform, color] = group.get<TransformComponent, SpriteComponent>(entity);
+            auto [transform, sprite] = group.get<TransformComponent, SpriteComponent>(entity);
 
-            Renderer2D::DrawQuad(transform.GetTransform(), color.Color,(int)entity);
+            Renderer2D::DrawSprite(transform.GetTransform(), sprite,(int)entity);
         }
 
         Renderer2D::EndScene();

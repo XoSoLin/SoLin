@@ -8,6 +8,9 @@
 #include <glm/gtc/type_ptr.hpp>
 
 namespace SoLin {
+
+    extern const std::filesystem::path s_AssetPath;
+
     SceneHierarchyPanel::SceneHierarchyPanel(const Ref<Scene>& scene)
     {
         SetContext(scene);
@@ -218,7 +221,37 @@ namespace SoLin {
 
 //------------------------------SpriteComponent--------------------------------
         DrawComponent<SpriteComponent>("Sprite Renderer", entity, [](auto& sc) {
+
+            // 颜色控件
             ImGui::ColorEdit4("Color", glm::value_ptr(sc.Color));
+
+            // 纹理控件
+            ImGui::Text("Place texture here:");
+
+            // 有纹理时的布局
+            if (sc.Texture) {
+                // 平铺因子滑块
+                ImGui::DragFloat("Tiling Factor", &sc.TilingFactor, 0.1f, 0.0f, 100.0f);
+                // 纹理按钮
+                if (ImGui::ImageButton("Texture", (ImTextureID)sc.Texture->GetRendererID(), ImVec2(80.0f, 80.0f), { 0,1 }, { 1, 0 })) {
+                    sc.Color = { 1,1,1,1.0f };
+                }
+            }
+            // 无纹理时的布局
+            else {
+                ImGui::Button("Texture", ImVec2(80.0f, 80.0f));
+            }
+            // 拖拽纹理数据响应
+            if (ImGui::BeginDragDropTarget())
+            {
+                if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM")) {
+                    const wchar_t* path = (const wchar_t*)payload->Data;
+                    std::filesystem::path texturePath = std::filesystem::path(s_AssetPath) / path;
+                    sc.Texture = Texture2D::Create(texturePath.string());
+                }
+                ImGui::EndDragDropTarget();
+            }
+
         });
         
 
