@@ -116,4 +116,42 @@ namespace SoLin {
         }
 
     };
+
+    //--------------------------Physics------------------------------------
+
+    // @brief 刚体2D组件
+    struct Rigidbody2DComponent {
+
+        // @brief 类型
+        enum class BodyType{
+            Static = 0,     // 静止
+            Dynamic,        // 动态
+            Kinematic       // 运动
+        };
+        BodyType Type = BodyType::Static;   // 默认静止
+        bool FixedRotation = false;         // 固定旋转
+
+        void* Body = nullptr;
+
+        Rigidbody2DComponent() = default;
+        Rigidbody2DComponent(const Rigidbody2DComponent&) = default;
+
+    };
+
+    // 2D碰撞盒组件
+    struct BoxCollider2DComponent {
+        glm::vec2 Offset = { 0.0f, 0.0f };					// 重心偏移量
+        glm::vec2 Size = { 0.5f, 0.5f };					// 碰撞体积
+
+        float Density = 1.0f;								// 密度
+        float Friction = 0.5f;								// 摩擦力
+        float Restitution = 0.0f;							// 恢复
+        float RestitutionThreshold = 0.5f;					// 恢复阈值
+
+        void* RuntimeFixture = nullptr;						// 运行时的配件、运行时附件
+
+        BoxCollider2DComponent() = default;
+        BoxCollider2DComponent(const BoxCollider2DComponent&) = default;
+    };
+
 }
