@@ -129,14 +129,32 @@ namespace SoLin {
                     // AddComponentMenu 弹出框
                     if (ImGui::BeginPopup("AddComponentMenu")) {
 
-                        if (ImGui::MenuItem("CameraComponent")) {
-                            m_SelectionContext.AddComponent<CameraComponent>();
-                            ImGui::CloseCurrentPopup();
+                        // 没有对应的组件时，才可以添加
+                        if (!entity.HasComponent<CameraComponent>()) {
+                            if (ImGui::MenuItem("CameraComponent")) {
+                                m_SelectionContext.AddComponent<CameraComponent>();
+                                ImGui::CloseCurrentPopup();
+                            }
                         }
-                        if (ImGui::MenuItem("SpriteComponent")) {
-                            m_SelectionContext.AddComponent<SpriteComponent>();
-                            ImGui::CloseCurrentPopup();
+                        if (!entity.HasComponent<SpriteComponent>()) {
+                            if (ImGui::MenuItem("SpriteComponent")) {
+                                m_SelectionContext.AddComponent<SpriteComponent>();
+                                ImGui::CloseCurrentPopup();
+                            }
                         }
+                        if (!entity.HasComponent<Rigidbody2DComponent>()) {
+                            if (ImGui::MenuItem("Rigidbody2DComponent")) {
+                                m_SelectionContext.AddComponent<Rigidbody2DComponent>();
+                                ImGui::CloseCurrentPopup();
+                            }
+                        }
+                        if (!entity.HasComponent<BoxCollider2DComponent>()) {
+                            if (ImGui::MenuItem("BoxCollider2DComponent")) {
+                                m_SelectionContext.AddComponent<BoxCollider2DComponent>();
+                                ImGui::CloseCurrentPopup();
+                            }
+                        }
+
                         ImGui::EndPopup(); //AddComponentMenu
                     }
                 }
@@ -253,7 +271,52 @@ namespace SoLin {
             }
 
         });
-        
+
+//------------------------------Rigidbody2DComponent--------------------------------
+
+        DrawComponent<Rigidbody2DComponent>("Rigidbody2D",entity,[](auto& component)
+        {
+            // 类型的枚举获取
+            const char* bodyTypeStrings[] = { "Static", "Dynamic", "Kinematic" };
+            const char* currentBodyTypeString = bodyTypeStrings[(int)component.Type];
+
+            // 创建下拉框           标签       当前选中项
+            if (ImGui::BeginCombo("Body Type", currentBodyTypeString))
+            {
+                for (int i = 0; i < 2; i++)
+                {
+                    bool isSelected = (currentBodyTypeString == bodyTypeStrings[i]);
+                    // 创建可选项
+                    if (ImGui::Selectable(bodyTypeStrings[i], isSelected))
+                    {
+                        // 选择后逻辑
+                        currentBodyTypeString = bodyTypeStrings[i];
+                        component.Type = (Rigidbody2DComponent::BodyType)i;
+                    }
+                    // 为选择的设置默认焦点
+                    if (isSelected)
+                        ImGui::SetItemDefaultFocus();
+                }
+                ImGui::EndCombo();// Body Type
+            }
+
+            // 勾选框管理bool数据
+            ImGui::Checkbox("Fixed Rotation", &component.FixedRotation);
+        });
+
+//------------------------------BoxCollider2DComponent--------------------------------
+
+        DrawComponent<BoxCollider2DComponent>("Transform", entity, [](auto& component)
+        {
+            ImGui::DragFloat2("Offset", glm::value_ptr(component.Offset));
+            ImGui::DragFloat2("Size", glm::value_ptr(component.Size));
+            ImGui::DragFloat("Density", &component.Density, 0.01f, 0.0f, 1.0f);
+            ImGui::DragFloat("Friction", &component.Friction, 0.01f, 0.0f, 1.0f);
+            ImGui::DragFloat("Restitution", &component.Restitution, 0.01f, 0.0f, 1.0f);
+            ImGui::DragFloat("Restitution Threshold", &component.RestitutionThreshold, 0.01f, 0.0f);
+        });
+
+//------------------------------End--------------------------------
 
     }
 
