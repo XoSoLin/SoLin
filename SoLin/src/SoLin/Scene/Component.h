@@ -1,17 +1,29 @@
 #pragma once
 
+#include"SoLin/Core/UUID.h"
+#include"SoLin/Renderer/Texture.h"
+#include"SoLin/Scene/SceneCamera.h"
+#include"SoLin/Scene/Animation/Animation.h"
+#include"SoLin/Scene/ScriptableEntity.h"
+
+
 #include"glm/glm.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include"glm/gtx/quaternion.hpp"
 
-#include"SoLin/Renderer/Texture.h"
-#include"SoLin/Scene/Animation/Animation.h"
-#include"SoLin/Scene/SceneCamera.h"
-#include"SoLin/Scene/ScriptableEntity.h"
 
 namespace SoLin {
+
+    struct IDComponent {
+        UUID ID;
+
+        IDComponent() = default;
+        IDComponent(const UUID& id)
+            :ID(id){ }
+        IDComponent(const IDComponent&) = default;
+    };
 
     //@brief 标志组件
     struct TagComponent {
@@ -96,6 +108,8 @@ namespace SoLin {
         CameraComponent() = default;
         CameraComponent(const CameraComponent&) = default;
     };
+
+    //---------------------------------------Script------------------------------------
 
     // @brief 原生脚本组件
     // @brief 本质上存储一个其他实体

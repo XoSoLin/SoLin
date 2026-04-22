@@ -1,6 +1,6 @@
 Scene: Untitled
 Entities:
-  - Entity: 410
+  - Entity: 7103927429259638707
     TagComponent:
       Tag: vva
     TransformComponent:
@@ -11,7 +11,7 @@ Entities:
       Color: [0.22993109, 0.443038, 0.27309197, 1]
       Texture: assets\textures\Checkerboard.png
       TilingFactor: 1
-  - Entity: 410
+  - Entity: 18286690217687698536
     TagComponent:
       Tag: Clip-Camera
     TransformComponent:
@@ -29,7 +29,7 @@ Entities:
         OrthographicFar: 1
       Primary: false
       FixedAspectRatio: false
-  - Entity: 410
+  - Entity: 10788188497111245362
     TagComponent:
       Tag: Main-Camera
     TransformComponent:
@@ -47,7 +47,7 @@ Entities:
         OrthographicFar: 1
       Primary: true
       FixedAspectRatio: false
-  - Entity: 410
+  - Entity: 668153937696817292
     TagComponent:
       Tag: RedSquare
     TransformComponent:
@@ -68,11 +68,11 @@ Entities:
       Friction: 0.5
       Restitution: 0
       RestitutionThreshold: 0.5
-  - Entity: 410
+  - Entity: 12182308218179572607
     TagComponent:
       Tag: BlueSquare
     TransformComponent:
-      Translation: [3.3000455, -0.6850005, 0]
+      Translation: [3.3000455, 2.2002535, 0]
       Rotation: [0, 0, 3.275545e-08]
       Scale: [1, 1, 1]
     SpriteComponent:
@@ -89,7 +89,7 @@ Entities:
       Friction: 0.5
       Restitution: 0
       RestitutionThreshold: 0.5
-  - Entity: 410
+  - Entity: 9976039761299962471
     TagComponent:
       Tag: Square
     TransformComponent:

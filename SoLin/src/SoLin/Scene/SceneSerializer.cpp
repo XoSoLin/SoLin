@@ -199,7 +199,7 @@ namespace SoLin {
                     name = tc["Tag"].as<std::string>();
 
                 SL_CORE_TRACE("Deserialized entity with ID = {0}, name = {1}", uuid, name);
-                Entity& deserializedEntity = m_Scene->CreateEntity(name);
+                Entity& deserializedEntity = m_Scene->CreateEntityWithUUID(uuid,name);
 
                 DeserializeEntity(entity, deserializedEntity);
             }
@@ -215,8 +215,10 @@ namespace SoLin {
 
     void SceneSerializer::SerializeEntity(YAML::Emitter& out, Entity& entity)
     {
+        SL_CORE_ASSERT(entity.HasComponent<IDComponent>(), "Entity component do not have a universal uniform ID.");
+
         out << YAML::BeginMap; // Entity
-        out << YAML::Key << "Entity" << YAML::Value << "410";          // TODO: Entity ID goes here
+        out << YAML::Key << "Entity" << YAML::Value << entity.GetComponent<IDComponent>().ID;
 
         if (entity.HasComponent<TagComponent>())
         {

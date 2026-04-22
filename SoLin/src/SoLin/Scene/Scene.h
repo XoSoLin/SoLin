@@ -1,6 +1,7 @@
 #pragma once
 #include"entt.hpp"
 #include"SoLin/Core/Timestep.h"
+#include"SoLin/Core/UUID.h"
 #include"SoLin/Renderer/EditorCamera.h"
 
 class b2World;
@@ -32,6 +33,8 @@ namespace SoLin {
 
         // @brief 创建实体
         Entity CreateEntity(const std::string& name = "");
+        // @brief 利用UUID创建实体
+        Entity CreateEntityWithUUID(UUID id, const std::string& name = "");
         // @brief 移除实体
         void DestoryEntity(Entity& entity);
 

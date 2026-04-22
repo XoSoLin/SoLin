@@ -1,6 +1,6 @@
 Scene: Untitled
 Entities:
-  - Entity: 410
+  - Entity: 16033118130388715156
     TagComponent:
       Tag: qianXia
     TransformComponent:
@@ -11,7 +11,7 @@ Entities:
       Color: [1, 1, 1, 1]
       Texture: assets\textures\千夏02.png
       TilingFactor: 1
-  - Entity: 410
+  - Entity: 1963669118133532312
     TagComponent:
       Tag: Top
     TransformComponent:
@@ -22,7 +22,7 @@ Entities:
       Color: [0.87644786, 0, 0.8347128, 1]
       Texture: "null"
       TilingFactor: 1
-  - Entity: 410
+  - Entity: 9185661360839317149
     TagComponent:
       Tag: Camera
     TransformComponent:
@@ -40,7 +40,7 @@ Entities:
         OrthographicFar: 1
       Primary: true
       FixedAspectRatio: false
-  - Entity: 410
+  - Entity: 2828372100340941006
     TagComponent:
       Tag: Right
     TransformComponent:
@@ -51,7 +51,7 @@ Entities:
       Color: [0.54842025, 0, 0.5868726, 1]
       Texture: "null"
       TilingFactor: 1
-  - Entity: 410
+  - Entity: 10382745775934862465
     TagComponent:
       Tag: Left
     TransformComponent:

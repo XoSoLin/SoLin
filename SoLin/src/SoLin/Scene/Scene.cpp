@@ -240,12 +240,19 @@ namespace SoLin {
 
     Entity Scene::CreateEntity(const std::string& name)
     {
+        return CreateEntityWithUUID(UUID(), name);
+    }
+
+    Entity Scene::CreateEntityWithUUID(UUID id, const std::string& name)
+    {
         Entity entity = { m_Registry.create(),this };
+        entity.AddComponent<IDComponent>(id);
         entity.AddComponent<TransformComponent>(glm::vec3{ 0.0f });
         auto& tag = entity.AddComponent<TagComponent>();
         tag.Tag = name.empty() ? "Unnamed Entity" : name;
         return entity;
     }
+
     void Scene::DestoryEntity(Entity& entity)
     {
         // 重载过Entity的类型转换，因此可以将其直接当作entt::entity使用
@@ -257,6 +264,9 @@ namespace SoLin {
         // 没被特化就是不存在，进行静态断言
         static_assert(false);
     }
+    template<>
+    void Scene::OnComponentAdded<IDComponent>
+        (Entity entity,IDComponent& component){}
     template<>
     void Scene::OnComponentAdded<TagComponent>
         (Entity entity,TagComponent& component){}
