@@ -86,10 +86,6 @@ namespace SoLin {
 
             m_EditorCamera.SetViewportSize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
         }
-        //Update
-        if(m_ViewportFocused)
-            m_CameraController.OnUpdate(ts);
-        m_EditorCamera.OnUpdate(ts);
         //Render
         {
             SL_PROFILE_SCOPE("RenderCommand Prep");
@@ -105,15 +101,23 @@ namespace SoLin {
         {
             SL_PROFILE_SCOPE("Renderer2D Draw");
 
-#if 1
 
-            Renderer2D::BeginScene(m_CameraController.GetCamera());
-            Renderer2D::DrawQuad({ 0.0f,1.5f,0.3f }, { 1.0f,1.0f }, m_Animation->getFrame(ts.GetTotalSeconds()).image, 1.0f, {0.8f,1.0f,1.0f,1.0f});
-            Renderer2D::EndScene();
+            //Renderer2D::BeginScene(m_CameraController.GetCamera());
+            //Renderer2D::DrawQuad({ 0.0f,1.5f,0.3f }, { 1.0f,1.0f }, m_Animation->getFrame(ts.GetTotalSeconds()).image, 1.0f, {0.8f,1.0f,1.0f,1.0f});
+            //Renderer2D::EndScene();
 
+            switch (m_ToolbarPanel.GetSceneState()) {
+            case SceneState::Edit:
+                if (m_ViewportFocused)
+                    m_CameraController.OnUpdate(ts);
+                m_EditorCamera.OnUpdate(ts);
+                m_ActiveScene->OnUpdateEditor(ts, m_EditorCamera);
+                //m_ActiveScene->OnScript(ts);  // 更新本机脚本
+                break;
+            case SceneState::Play:
+                m_ActiveScene->OnUpdate(ts);
+            }
             //m_ActiveScene->OnUpdate(ts);
-            //m_ActiveScene->OnScript(ts);  // 更新本机脚本
-            m_ActiveScene->OnUpdateEditor(ts, m_EditorCamera);
 
             // Read Pixels from attachment
             // 获取视口尺寸
@@ -137,7 +141,6 @@ namespace SoLin {
                 else if (pixelData == -1 && m_HoveredEntity != Entity())
                     m_HoveredEntity = Entity();
             }
-#endif
             m_Framebuffer->UnBind();
         }
     }
@@ -245,6 +248,7 @@ namespace SoLin {
 
         m_SceneHierarchyPanel.OnImGuiRender();
         m_ContentBrowserPanel.OnImGuiRender();
+        m_ToolbarPanel.OnImGuiRenderer();
 
         ImGui::Begin("Stats");
         auto stats = Renderer2D::GetStats();
@@ -458,6 +462,10 @@ namespace SoLin {
     }
     void EditorLayer::OpenScene(const std::filesystem::path& path)
     {
+        // 打开场景时要重新设置成 编辑模式
+        if (m_ToolbarPanel.GetSceneState() != SceneState::Edit)
+            m_ToolbarPanel.SetSceneState(SceneState::Edit);
+
         m_ActiveScene = CreateRef<Scene>();
         m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
         m_SceneHierarchyPanel.SetContext(m_ActiveScene);

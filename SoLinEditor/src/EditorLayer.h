@@ -3,6 +3,7 @@
 #include "SoLin.h"
 #include"Panels/SceneHierarchyPanel.h"
 #include"Panels/ContentBrowserPanels.h"
+#include"Panels/ToolbarPanel.h"
 
 #include"SoLin/Renderer/EditorCamera.h"
 #include"SoLin/Scene/Animation/Animation.h"
@@ -70,6 +71,7 @@ namespace SoLin {
         //Panels
         SceneHierarchyPanel m_SceneHierarchyPanel; // 场景层次面板
         ContentBrowserPanel m_ContentBrowserPanel; // 内容浏览器面板
+        ToolbarPanel m_ToolbarPanel;                // 工具栏面板
 
         // Bounds
         glm::vec2 m_ViewportBounds[2];  // 视口边界
