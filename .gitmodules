@@ -16,3 +16,6 @@
 [submodule "SoLin/vendor/ImGuizmo"]
 	path = SoLin/vendor/ImGuizmo
 	url = https://github.com/XoSoLin/ImGuizmo.git
+[submodule "SoLin/vendor/Box2D"]
+	path = SoLin/vendor/Box2D
+	url = https://github.com/XoSoLin/Box2D.git

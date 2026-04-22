@@ -22,6 +22,7 @@ IncludeDir["stb_image"] = "SoLin/vendor/stb_image"
 IncludeDir["entt"] = "SoLin/vendor/entt/include"
 IncludeDir["yaml_cpp"] = "SoLin/vendor/yaml-cpp/include"
 IncludeDir["ImGuizmo"] = "SoLin/vendor/ImGuizmo"
+IncludeDir["Box2D"] = "SoLin/vendor/Box2D/include"
 
 group "Dependencies"
 --[[包含Nut/Nut/vendor/GLFW中的premake文件并合并到这里]]
@@ -29,6 +30,7 @@ include "SoLin/vendor/GLFW"
 include "SoLin/vendor/GLad"
 include "SoLin/vendor/imgui"
 include "SoLin/vendor/yaml-cpp"
+include "SoLin/vendor/Box2D"
 --[[
 --    XXXX
 --]]
@@ -76,7 +78,8 @@ project "SoLin"				--项目
 		"%{IncludeDir.glm}",
         "%{IncludeDir.entt}",
         "%{IncludeDir.yaml_cpp}",
-        "%{IncludeDir.ImGuizmo}"
+        "%{IncludeDir.ImGuizmo}",
+        "%{IncludeDir.Box2D}"
 	}
 
 	links{                           --为SoLin项目(.dll)链接文件
@@ -84,6 +87,7 @@ project "SoLin"				--项目
 		"GLad",
 		"ImGui",
         "yaml",                     --子lua脚本中的项目名叫yaml
+        "Box2D",
         "opengl32.lib"
     }
 
