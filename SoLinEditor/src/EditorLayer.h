@@ -78,5 +78,8 @@ namespace SoLin {
 
         // Gizmo
         int m_GizmoType = -1;       // Gizmo标志
+
+    private:
+        friend class ToolbarPanel;
     };
 }

@@ -3,6 +3,8 @@
 #include"SoLin/Core/Timestep.h"
 #include"SoLin/Renderer/EditorCamera.h"
 
+class b2World;
+
 namespace SoLin {
 
     class Entity;
@@ -17,6 +19,11 @@ namespace SoLin {
         void OnUpdateEditor(Timestep ts, EditorCamera camera);
         // @brief 更新脚本
         void OnScript(Timestep ts);
+
+        // @brief 运行 开始
+        void OnRuntimeStart();
+        // @brief 运行 停止
+        void OnRuntimeStop();
 
         // @brief 视口变换尺寸回调
         void OnViewportResize(uint32_t width, uint32_t height);
@@ -38,6 +45,8 @@ namespace SoLin {
 
     private:
         entt::registry m_Registry;
+
+        b2World* m_PhysicsWorld = nullptr;  // Box2D世界指针
 
         uint32_t m_ViewportWidth, m_ViewportHeight;
 

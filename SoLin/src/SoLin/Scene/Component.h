@@ -131,7 +131,7 @@ namespace SoLin {
         BodyType Type = BodyType::Static;   // 默认静止
         bool FixedRotation = false;         // 固定旋转
 
-        void* Body = nullptr;
+        void* RuntimeBody = nullptr;
 
         Rigidbody2DComponent() = default;
         Rigidbody2DComponent(const Rigidbody2DComponent&) = default;

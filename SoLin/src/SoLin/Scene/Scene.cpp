@@ -8,7 +8,29 @@
 
 #include"glm/glm.hpp"
 
+// Box2D
+#include"box2d/b2_world.h"
+#include"box2d/b2_body.h"
+#include"box2d/b2_polygon_shape.h"
+#include"box2d/b2_fixture.h"
+
 namespace SoLin {
+
+    // @brief 将组件的BodyType转换成Box2D对应类型
+    static b2BodyType Rigidbody2DTypeToBox2DBody(Rigidbody2DComponent::BodyType bodyType)
+    {
+        switch (bodyType)
+        {
+        case Rigidbody2DComponent::BodyType::Static:
+            return b2_staticBody;
+        case Rigidbody2DComponent::BodyType::Dynamic:
+            return b2_dynamicBody;
+        case Rigidbody2DComponent::BodyType::Kinematic:
+            return b2_kinematicBody;
+        }
+        SL_CORE_ASSERT(false, "Unknown body type");
+        return b2_staticBody;   // 默认返回 静止体
+    }
 
     Scene::Scene() {
     
@@ -20,6 +42,35 @@ namespace SoLin {
 
     void Scene::OnUpdate(Timestep ts)
     {
+        // Box2D准备
+        {
+            const int velocityIterations = 6;   // 速度求解迭代速度
+            const int positionIterations = 2;   // 位置求解迭代速度
+            // 设置步长
+            m_PhysicsWorld->Step(ts, velocityIterations, positionIterations);
+
+            auto view = m_Registry.view<Rigidbody2DComponent>();
+            for (auto e : view) {
+                // 获取对应实体 来获取需要的组件
+                Entity entity = { e,this };
+                auto& tc = entity.GetComponent<TransformComponent>();
+                auto& rb2c = entity.GetComponent<Rigidbody2DComponent>();
+
+                // 获取Box2D刚体 来获取计算后的数据
+                b2Body* body = (b2Body*)rb2c.RuntimeBody;
+                b2Vec2 position = body->GetPosition();
+                float angle = body->GetAngle();
+
+                // 将需要修改的数据应用
+                tc.Translation.x = position.x;
+                tc.Translation.y = position.y;
+                tc.Rotation.z = angle;
+            }
+        }
+
+
+        // 渲染2D对象
+
         Camera* mainCamera = nullptr;
         glm::mat4 mainTransform;
 
@@ -113,6 +164,54 @@ namespace SoLin {
                 if (cc.Primary)
                     nsc.Instance->OnUpdate(ts);
             });
+    }
+
+    void Scene::OnRuntimeStart()
+    {
+        // 创建物理模拟
+        m_PhysicsWorld = new b2World({ 0.0f, -9.8f });
+
+        // 为拥有刚体组件的实体创建 b2Body
+        auto view = m_Registry.view<Rigidbody2DComponent>();
+        for (auto e : view)
+        {
+            Entity entity = { e, this };								
+            auto& tc = entity.GetComponent<TransformComponent>();
+            auto& rb2c = entity.GetComponent<Rigidbody2DComponent>();
+
+            b2BodyDef bodyDef;
+            bodyDef.type = Rigidbody2DTypeToBox2DBody(rb2c.Type);
+            bodyDef.position.Set(tc.Translation.x, tc.Translation.y);
+            bodyDef.angle = tc.Rotation.z;
+            b2Body* body = m_PhysicsWorld->CreateBody(&bodyDef);
+
+            body->SetFixedRotation(rb2c.FixedRotation);
+            rb2c.RuntimeBody = body;
+
+            // 添加碰撞体
+            if (entity.HasComponent<BoxCollider2DComponent>())
+            {
+                auto& bc2c = entity.GetComponent<BoxCollider2DComponent>();
+
+                b2PolygonShape boxShape;
+                boxShape.SetAsBox(bc2c.Size.x, bc2c.Size.y);
+
+                b2FixtureDef fixtureDef;
+                fixtureDef.shape = &boxShape;
+                fixtureDef.density = bc2c.Density;
+                fixtureDef.friction = bc2c.Friction;
+                fixtureDef.restitution = bc2c.Restitution;
+                fixtureDef.restitutionThreshold = bc2c.RestitutionThreshold;
+
+                body->CreateFixture(&fixtureDef);
+            }
+        }
+    }
+
+    void Scene::OnRuntimeStop()
+    {
+        delete m_PhysicsWorld;
+        m_PhysicsWorld = nullptr;
     }
 
     void Scene::OnViewportResize(uint32_t width, uint32_t height)
