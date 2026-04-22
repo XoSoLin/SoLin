@@ -50,7 +50,8 @@ namespace SoLin {
         // 编辑器层 缓冲区
         Ref<SoLin::FrameBuffer> m_Framebuffer;
         // 编辑器层 场景指针
-        Ref<Scene> m_ActiveScene;
+        Ref<Scene> m_ActiveScene;       // 激活场景  编辑时 就是编辑时场景; 运行时 是复制而来的全新场景
+        Ref<Scene> m_EditorScene;       // 编辑时场景
 
         Entity m_HoveredEntity;         // 鼠标悬浮位置实体
         Entity m_UsingEntity;           // 使用中的实体

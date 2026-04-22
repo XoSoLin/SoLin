@@ -47,14 +47,32 @@ namespace SoLin {
         ImGui::PopStyleColor(3);
         ImGui::End();
     }
+
     void ToolbarPanel::OnScenePlay()
     {
+        // 从编辑器层获取必要的 指针
+        Ref<Scene>& activeScene = EditorLayer::Get().m_ActiveScene;
+        Ref<Scene>& editorScene = EditorLayer::Get().m_EditorScene;
+        SceneHierarchyPanel& sceneHierarchyPanel = EditorLayer::Get().m_SceneHierarchyPanel;
+
+        // 状态更新并 复制原场景 作为 激活场景
         m_SceneState = SceneState::Play;
-        EditorLayer::Get().m_ActiveScene->OnRuntimeStart();
+        activeScene = Scene::Copy(editorScene);
+        activeScene->OnRuntimeStart();
+        sceneHierarchyPanel.SetContext(activeScene);
     }
+
     void ToolbarPanel::OnSceneStop()
     {
+        // 从编辑器层获取必要的 指针
+        Ref<Scene>& activeScene = EditorLayer::Get().m_ActiveScene;
+        Ref<Scene>& editorScene = EditorLayer::Get().m_EditorScene;
+        SceneHierarchyPanel& sceneHierarchyPanel = EditorLayer::Get().m_SceneHierarchyPanel;
+
+        // 状态更新并 舍弃激活场景 使激活场景指向编辑器场景
         m_SceneState = SceneState::Edit;
-        EditorLayer::Get().m_ActiveScene->OnRuntimeStop();
+        activeScene->OnRuntimeStop();   // 要先执行 暂停时可能会影响一些指针(未来可能会有未定义风险 目前没有)
+        activeScene = editorScene;
+        sceneHierarchyPanel.SetContext(activeScene);
     }
 }

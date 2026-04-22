@@ -26,22 +26,25 @@ namespace SoLin {
     {
         // 场景层级结构---------------------------------------------------------
         ImGui::Begin("Scene Hierarchy");
-        m_Context->m_Registry.view<entt::entity>().each(
-            [&](auto entityID) {
-                Entity entity{ entityID,m_Context.get() };
-                // 对场景中每一个实体进行树状结点绘制
-                DrawEntityNode(entity);
-            }
-        );
-        if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
-            m_SelectionContext = {};
+        // 场景指针不为空才画
+        if(m_Context){
+            m_Context->m_Registry.view<entt::entity>().each(
+                [&](auto entityID) {
+                    Entity entity{ entityID,m_Context.get() };
+                    // 对场景中每一个实体进行树状结点绘制
+                    DrawEntityNode(entity);
+                }
+            );
+            if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
+                m_SelectionContext = {};
 
-        // 右击出现窗口菜单
-        if (ImGui::BeginPopupContextWindow(0, 1 | ImGuiPopupFlags_NoOpenOverItems)) {
-            // 创建空实体
-            if (ImGui::MenuItem("Create Empty Entity"))
-                m_Context->CreateEntity("Empty Entity");
-            ImGui::EndPopup();
+            // 右击出现窗口菜单
+            if (ImGui::BeginPopupContextWindow(0, 1 | ImGuiPopupFlags_NoOpenOverItems)) {
+                // 创建空实体
+                if (ImGui::MenuItem("Create Empty Entity"))
+                    m_Context->CreateEntity("Empty Entity");
+                ImGui::EndPopup();
+            }
         }
 
         ImGui::End();//Scene Hierarchy 场景层级结构
@@ -306,7 +309,7 @@ namespace SoLin {
 
 //------------------------------BoxCollider2DComponent--------------------------------
 
-        DrawComponent<BoxCollider2DComponent>("Transform", entity, [](auto& component)
+        DrawComponent<BoxCollider2DComponent>("BoxCollider2D", entity, [](auto& component)
         {
             ImGui::DragFloat2("Offset", glm::value_ptr(component.Offset));
             ImGui::DragFloat2("Size", glm::value_ptr(component.Size));

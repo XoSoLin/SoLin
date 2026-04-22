@@ -15,6 +15,9 @@ namespace SoLin {
         Scene();
         ~Scene();
 
+        // @brief 复制场景
+        static Ref<Scene> Copy(Ref<Scene> other);
+
         void OnUpdate(Timestep ts);
         // @brief 更新编辑器
         void OnUpdateEditor(Timestep ts, EditorCamera camera);

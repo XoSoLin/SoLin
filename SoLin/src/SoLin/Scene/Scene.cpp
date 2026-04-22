@@ -40,6 +40,63 @@ namespace SoLin {
 
     }
 
+    template<typename Component>
+    static void CopyComponentForNewScene(
+        entt::registry& dst, entt::registry& src,
+        const std::unordered_map<UUID, entt::entity>& enttMap)
+    {
+        // 获取原场景中所有拥有该组件的 实体
+        auto view = src.view<Component>();
+        for(auto e:view)
+        {
+            // 获取原场景中 实体的ID
+            UUID uuid = src.get<IDComponent>(e).ID;
+            SL_CORE_ASSERT((enttMap.find(uuid) != enttMap.end()), "Unable to find an entity in dst with an ID that matches the src entity ID(Occurs in Scene copy)");
+            // 利用ID找到新场景中相应的 实体
+            entt::entity dstEntity = enttMap.at(uuid);
+
+            // 从原场景实体获取 所需组件
+            auto& component = src.get<Component>(e);
+            // 将组件复制到目标实体（存在则替换，不存在则添加）
+            dst.emplace_or_replace<Component>(dstEntity, component);
+        }
+    }
+
+    Ref<Scene> Scene::Copy(Ref<Scene> other)
+    {
+        // 创建新场景 获取新旧场景的注册表
+        Ref<Scene> newScene = CreateRef<Scene>();
+        auto& dstRegistry = newScene->m_Registry;
+        auto& srcRegistry = other->m_Registry;
+
+        newScene->m_ViewportHeight = other->m_ViewportHeight;
+        newScene->m_ViewportWidth = other->m_ViewportWidth;
+
+        std::unordered_map<UUID, entt::entity> dstEntityMap;
+
+        // 获取原场景中所有实体
+        auto& view = srcRegistry.view<IDComponent>();
+        for (auto e : view) {
+            // 利用原实体 创建 新实体
+            UUID uuid = srcRegistry.get<IDComponent>(e).ID;
+            const auto& name = srcRegistry.get<TagComponent>(e).Tag;
+            Entity newEntity = newScene->CreateEntityWithUUID(uuid, name);
+
+            // 通过UUID 建立映射
+            dstEntityMap[uuid] = (entt::entity)newEntity;
+        }
+
+        // 利用映射添加组件
+        CopyComponentForNewScene<TransformComponent>(dstRegistry, srcRegistry, dstEntityMap);
+        CopyComponentForNewScene<CameraComponent>(dstRegistry, srcRegistry, dstEntityMap);
+        CopyComponentForNewScene<SpriteComponent>(dstRegistry, srcRegistry, dstEntityMap);
+        CopyComponentForNewScene<NativeScriptComponent>(dstRegistry, srcRegistry, dstEntityMap);
+        CopyComponentForNewScene<Rigidbody2DComponent>(dstRegistry, srcRegistry, dstEntityMap);
+        CopyComponentForNewScene<BoxCollider2DComponent>(dstRegistry, srcRegistry, dstEntityMap);
+
+        return newScene;
+    }
+
     void Scene::OnUpdate(Timestep ts)
     {
         // Box2D准备

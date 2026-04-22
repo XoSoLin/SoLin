@@ -50,6 +50,7 @@ namespace SoLin {
 
         // 创建场景 与 编辑器相机
         m_ActiveScene = CreateRef<Scene>();
+        m_EditorScene = m_ActiveScene;// 附加该层 初始化时保持统一 (即默认为编辑状态)
         m_EditorCamera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
 
 
@@ -452,12 +453,7 @@ namespace SoLin {
         std::string filepath = FileDialogs::OpenFile("SoLin Scene(*.yaml)\0 *.yaml\0All Files (*.*)\0*.*\0\0");
         // 如果文件路径不为空就新创建场景再做反序列化读取数据
         if (!filepath.empty()) {
-            m_ActiveScene = CreateRef<Scene>();
-            m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
-            m_SceneHierarchyPanel.SetContext(m_ActiveScene);
-
-            SceneSerializer serializer(m_ActiveScene);
-            serializer.Deserialize(filepath);
+            OpenScene(filepath);
         }
     }
     void EditorLayer::OpenScene(const std::filesystem::path& path)
@@ -466,12 +462,22 @@ namespace SoLin {
         if (m_ToolbarPanel.GetSceneState() != SceneState::Edit)
             m_ToolbarPanel.SetSceneState(SceneState::Edit);
 
-        m_ActiveScene = CreateRef<Scene>();
-        m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
-        m_SceneHierarchyPanel.SetContext(m_ActiveScene);
 
-        SceneSerializer serializer(m_ActiveScene);
-        serializer.Deserialize(path.string());
+        // 创建新场景
+        Ref<Scene> newScene = CreateRef<Scene>();
+        // 新场景创建序列化器
+        SceneSerializer serializer(newScene);
+        // 进行反序列化 成功则打开，否则无影响
+        if (serializer.Deserialize(path.string()))
+        {
+            // 编辑时场景 指向新打开的场景
+            m_EditorScene = newScene;
+            m_EditorScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+
+            // 调整激活场景与层次面板
+            m_ActiveScene = m_EditorScene;
+            m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+        }
     }
     void EditorLayer::SaveSceneAs()
     {
