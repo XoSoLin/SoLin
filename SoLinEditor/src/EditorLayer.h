@@ -41,6 +41,8 @@ namespace SoLin {
         void OpenScene(const std::filesystem::path& path);
         // @brief 保存场景为... 选项回调
         void SaveSceneAs();
+        // @brief 保存场景 选项回调
+        void SaveScene();
     private:
         // @brief 置空 存放原场景信息的实体指针(更换新场景后使用 否则有未定义行为风险)
         void ReSrcScenePtr();
@@ -85,6 +87,9 @@ namespace SoLin {
 
         // Gizmo
         int m_GizmoType = -1;       // Gizmo标志
+
+        // Path
+        std::filesystem::path m_ScenePath;
 
     private:
         friend class ToolbarPanel;

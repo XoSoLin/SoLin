@@ -135,7 +135,7 @@ namespace SoLin {
             if (mouseX >= 0 && mouseY >= 0 && mouseX < (int)viewportSize.x && mouseY < (int)viewportSize.y)
             {
                 int pixelData = m_Framebuffer->ReadPixel(1, mouseX, mouseY);
-                SL_CORE_WARN("Pixel data: {0}", pixelData);
+                //SL_CORE_WARN("Pixel data: {0}", pixelData);
                 // 更新悬浮处实体
                 if (pixelData != -1 && m_HoveredEntity != Entity((entt::entity)pixelData, m_ActiveScene.get()))
                     m_HoveredEntity = Entity((entt::entity)pixelData, m_ActiveScene.get());
@@ -230,7 +230,9 @@ namespace SoLin {
                 if (ImGui::MenuItem("Flag: PassthruCentralNode", "", (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode) != 0, opt_fullscreen)) { dockspace_flags ^= ImGuiDockNodeFlags_PassthruCentralNode; }*/
                 if (ImGui::MenuItem("New","Ctrl + N"))
                     NewScene();
-                if (ImGui::MenuItem("Save AS ...", "Ctrl + S"))
+                if (ImGui::MenuItem("Save", "Ctrl + S"))
+                    SaveScene();
+                if (ImGui::MenuItem("Save AS ...", "Ctrl + Shift + S"))
                     SaveSceneAs();
                 if (ImGui::MenuItem("Open ...","Ctrl + O"))
                     OpenScene();
@@ -265,6 +267,7 @@ namespace SoLin {
             name = m_HoveredEntity.GetComponent<TagComponent>().Tag;
         ImGui::Text("Hovered Entity: %s", name.c_str());
         // 使用中实体信息
+        m_UsingEntity = m_SceneHierarchyPanel.GetSelectedEntity();  // 更新
         std::string name2 = "None";
         if (m_UsingEntity && m_UsingEntity.HasComponent<TagComponent>())
             name2 = m_UsingEntity.GetComponent<TagComponent>().Tag;
@@ -381,8 +384,11 @@ namespace SoLin {
     {
         // 场景相机控制器 事件
         m_CameraController.OnEvent(event);
-        // 编辑器相机 事件
-        m_EditorCamera.OnEvent(event);
+
+        if (m_ToolbarPanel.GetSceneState() == SceneState::Edit) {
+            // 编辑器相机 事件
+            m_EditorCamera.OnEvent(event);
+        }
 
         // 创建事件分发器 并 分发对应事件
         EventDispatcher dispatcher(event);
@@ -408,8 +414,12 @@ namespace SoLin {
                 OpenScene();
             break;
         case SL_KEY_S:
-            if (ctrl)
-                SaveSceneAs();
+            if (ctrl) {
+                if (shift)
+                    SaveSceneAs();
+                else
+                    SaveScene();
+            }
             break;
 
         // Scene 命令
@@ -442,7 +452,6 @@ namespace SoLin {
             if (m_ViewportHovered && !ImGuizmo::IsOver() && !Input::IsKeyPressed(SL_KEY_LEFT_ALT))
             {
                 m_SceneHierarchyPanel.SetSelectedEntity(m_HoveredEntity);
-                m_UsingEntity = m_HoveredEntity;
             }
         }
         return false;
@@ -465,6 +474,8 @@ namespace SoLin {
         m_ActiveScene = CreateRef<Scene>();
         m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
         m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+
+        m_ScenePath = std::filesystem::path();
     }
     void EditorLayer::OpenScene()
     {
@@ -495,8 +506,10 @@ namespace SoLin {
             // 调整激活场景与层次面板
             m_ActiveScene = m_EditorScene;
             m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+            m_ScenePath = path;
+
             // 测试 注释之后 在选中实体的情况下打开别的场景 会发生访问已释放的资源问题
-            ReSrcScenePtr();
+            ReSrcScenePtr(); // 目前已在对应位置做检查，目前没用了
         }
     }
     void EditorLayer::SaveSceneAs()
@@ -504,8 +517,21 @@ namespace SoLin {
         std::string filepath = FileDialogs::SaveFile("SoLin Scene()(*.yaml)\0 *.yaml\0");
         // 如果文件路径不为空就做序列化存储
         if (!filepath.empty()) {
-            SceneSerializer deserializer(m_ActiveScene);
-            deserializer.Serialize(filepath);
+            SceneSerializer serializer(m_ActiveScene);
+            serializer.Serialize(filepath);
+
+            m_ScenePath = filepath;
+        }
+    }
+
+    void EditorLayer::SaveScene()
+    {
+        if (!m_ScenePath.empty()) {
+            SceneSerializer serializer(m_ActiveScene);
+            serializer.Serialize(m_ScenePath.string());
+        }
+        else {
+            SaveSceneAs();
         }
     }
 
