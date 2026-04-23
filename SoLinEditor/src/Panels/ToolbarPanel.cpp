@@ -46,6 +46,13 @@ namespace SoLin {
         ImGui::PopStyleVar(2);
         ImGui::PopStyleColor(3);
         ImGui::End();
+
+        if (m_ShowPop)
+        {
+            ImGui::OpenPopup("Info Popup");
+            // 在场景指针为空时 点击运行 来显示弹出窗口
+            ImGuiInfoWindow("Please load scene first!");
+        }
     }
 
     void ToolbarPanel::OnScenePlay()
@@ -55,11 +62,17 @@ namespace SoLin {
         Ref<Scene>& editorScene = EditorLayer::Get().m_EditorScene;
         SceneHierarchyPanel& sceneHierarchyPanel = EditorLayer::Get().m_SceneHierarchyPanel;
 
-        // 状态更新并 复制原场景 作为 激活场景
-        m_SceneState = SceneState::Play;
-        activeScene = Scene::Copy(editorScene);
-        activeScene->OnRuntimeStart();
-        sceneHierarchyPanel.SetContext(activeScene);
+        if (editorScene != nullptr) {
+            // 状态更新并 复制原场景 作为 激活场景
+            m_SceneState = SceneState::Play;
+            activeScene = Scene::Copy(editorScene);
+            activeScene->OnRuntimeStart();
+            sceneHierarchyPanel.SetContext(activeScene);
+        }
+        else {
+            SL_CORE_CRITICAL("There is no active scene to used(should load scene first)!");
+            m_ShowPop = true;
+        }
     }
 
     void ToolbarPanel::OnSceneStop()
@@ -74,5 +87,30 @@ namespace SoLin {
         activeScene->OnRuntimeStop();   // 要先执行 暂停时可能会影响一些指针(未来可能会有未定义风险 目前没有)
         activeScene = editorScene;
         sceneHierarchyPanel.SetContext(activeScene);
+    }
+
+    void ToolbarPanel::ImGuiInfoWindow(const std::string& text)
+    {
+        if (ImGui::BeginPopupModal("Info Popup", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize))
+        {
+            ImGui::Text(text.c_str());
+            ImGui::Separator();
+
+            // 设置光标位置使按钮居中
+            float buttonWidth = ImGui::CalcTextSize("OK").x + ImGui::GetStyle().FramePadding.x * 2.0f;
+            float windowWidth = ImGui::GetWindowSize().x;
+            float centerX = (windowWidth - buttonWidth) * 0.5f;
+
+            ImGui::SetCursorPosX(centerX);
+
+            // 添加一个确认按钮
+            if (ImGui::Button("OK"))
+            {
+                ImGui::CloseCurrentPopup();
+                m_ShowPop = false;
+            }
+
+            ImGui::EndPopup();
+        }
     }
 }

@@ -50,7 +50,8 @@ namespace SoLin {
 
         // 创建场景 与 编辑器相机
         m_ActiveScene = CreateRef<Scene>();
-        m_EditorScene = m_ActiveScene;// 附加该层 初始化时保持统一 (即默认为编辑状态)
+        // 运行时会使用编辑时场景做复制源 以此测试本次的修改
+        //m_EditorScene = m_ActiveScene;// 附加该层 初始化时保持统一 (即默认为编辑状态)
         m_EditorCamera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
 
 

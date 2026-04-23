@@ -16,10 +16,15 @@ namespace SoLin{
     private:
         void OnScenePlay();
         void OnSceneStop();
+
+        // @brief 设置信息弹出窗
+        void ImGuiInfoWindow(const std::string& text);
     private:
         SceneState m_SceneState = SceneState::Edit;
 
         Ref<Texture2D> m_PlayIcon;
         Ref<Texture2D> m_StopIcon;
+
+        bool m_ShowPop = false; //信息弹窗 标志
     };
 }
