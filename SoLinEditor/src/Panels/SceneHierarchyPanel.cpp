@@ -286,7 +286,7 @@ namespace SoLin {
             // 创建下拉框           标签       当前选中项
             if (ImGui::BeginCombo("Body Type", currentBodyTypeString))
             {
-                for (int i = 0; i < 2; i++)
+                for (int i = 0; i < 3; i++)
                 {
                     bool isSelected = (currentBodyTypeString == bodyTypeStrings[i]);
                     // 创建可选项

@@ -50,8 +50,7 @@ namespace SoLin {
 
         // 创建场景 与 编辑器相机
         m_ActiveScene = CreateRef<Scene>();
-        // 运行时会使用编辑时场景做复制源 以此测试本次的修改
-        //m_EditorScene = m_ActiveScene;// 附加该层 初始化时保持统一 (即默认为编辑状态)
+        m_EditorScene = m_ActiveScene;// 附加该层 初始化时保持统一 (即默认为编辑状态)
         m_EditorCamera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
 
 
@@ -85,17 +84,16 @@ namespace SoLin {
             m_CameraController.ReSize(m_ViewportSize.x, m_ViewportSize.y);
 
             m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
-
             m_EditorCamera.SetViewportSize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
         }
         //Render
         {
             SL_PROFILE_SCOPE("RenderCommand Prep");
+            // 每帧 渲染前 准备工作
             Renderer2D::ClearStats();// 每次更新前都要将Stats统计数据清零
             m_Framebuffer->Bind();
             SoLin::RendererCommand::SetClearColor({ 0.1f,0.1f,0.1f,1 });
             SoLin::RendererCommand::Clear();
-
             // Clear entity ID to -1
             m_Framebuffer->ClearAttachment(1, -1);
         }
@@ -103,23 +101,25 @@ namespace SoLin {
         {
             SL_PROFILE_SCOPE("Renderer2D Draw");
 
-
+            // 与场景无关的渲染测试
             //Renderer2D::BeginScene(m_CameraController.GetCamera());
             //Renderer2D::DrawQuad({ 0.0f,1.5f,0.3f }, { 1.0f,1.0f }, m_Animation->getFrame(ts.GetTotalSeconds()).image, 1.0f, {0.8f,1.0f,1.0f,1.0f});
             //Renderer2D::EndScene();
 
+            //if (m_ViewportFocused)
+                    //m_CameraController.OnUpdate(ts);
+
+            // 根据运行状态 进行 数据更新
             switch (m_ToolbarPanel.GetSceneState()) {
             case SceneState::Edit:
-                if (m_ViewportFocused)
-                    m_CameraController.OnUpdate(ts);
                 m_EditorCamera.OnUpdate(ts);
                 m_ActiveScene->OnUpdateEditor(ts, m_EditorCamera);
-                //m_ActiveScene->OnScript(ts);  // 更新本机脚本
                 break;
             case SceneState::Play:
                 m_ActiveScene->OnUpdate(ts);
+                m_ActiveScene->OnScript(ts);  // 更新本机脚本
+                break;
             }
-            //m_ActiveScene->OnUpdate(ts);
 
             // Read Pixels from attachment
             // 获取视口尺寸
@@ -143,6 +143,8 @@ namespace SoLin {
                 else if (pixelData == -1 && m_HoveredEntity != Entity())
                     m_HoveredEntity = Entity();
             }
+
+            // 场景渲染完毕 帧缓冲区解绑
             m_Framebuffer->UnBind();
         }
     }
@@ -188,7 +190,7 @@ namespace SoLin {
             //移除窗口内边距，让停靠空间完全填满。
             ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 
-        ImGui::Begin("DockSpace Demo", &dockspaceOpen, window_flags);
+        ImGui::Begin("DockSpace Demo", &dockspaceOpen, window_flags);//---------------------------------------------------------------------------------------------------------------------------------------
 
         if (!opt_padding)
             ImGui::PopStyleVar();   // 弹出ImGuiStyleVar_WindowPadding
@@ -254,7 +256,7 @@ namespace SoLin {
         m_ContentBrowserPanel.OnImGuiRender();
         m_ToolbarPanel.OnImGuiRenderer();
 
-        ImGui::Begin("Stats");
+        ImGui::Begin("RendererInfo");//--------------------------------------------------------------------------------------
         auto stats = Renderer2D::GetStats();
         ImGui::Text("Renderer2D Stats:");
         ImGui::Text("Draw Calls: %d", stats.DrawCalls);
@@ -274,10 +276,10 @@ namespace SoLin {
             name2 = m_UsingEntity.GetComponent<TagComponent>().Tag;
         ImGui::Text("Entity in use: %s", name2.c_str());
 
-        ImGui::End();//Test
+        ImGui::End();//RendererInfo-----------------------------------------------------------------------------------------
 
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-        ImGui::Begin("Viewport");
+        ImGui::Begin("Viewport");//------------------------------------------------------------------------------------------
         // 用于获取 ImGui 中下一个 UI 元素将要放置的位置
         // 也就是整个Imgui窗口的左上角到Viewport左上角的偏移。
         auto viewportOffset = ImGui::GetCursorPos();
@@ -314,9 +316,9 @@ namespace SoLin {
             ImGui::EndDragDropTarget();
         }
 
-        // Gizmos
+        // Gizmos (编辑时才需要 运行时应禁用)
         Entity selectedEntity = m_SceneHierarchyPanel.GetSelectedEntity();
-        if (selectedEntity && m_GizmoType != -1)
+        if (selectedEntity && m_GizmoType != -1 && (m_ToolbarPanel.GetSceneState()!=SceneState::Play))
         {
             // 设置ImGuizmo的工作环境
             ImGuizmo::SetOrthographic(false);           // 使用透视相机（不是正交）
@@ -374,17 +376,17 @@ namespace SoLin {
         }
 
         ImGui::PopStyleVar();
-        ImGui::End();//Viewport
+        ImGui::End();//Viewport--------------------------------------------------------------------------------------------
 
 
-        ImGui::End();//DockSpace Demo
+        ImGui::End();//DockSpace Demo------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     }
 
     void EditorLayer::OnEvent(SoLin::Event& event)
     {
-        // 场景相机控制器 事件
-        m_CameraController.OnEvent(event);
+        // 层相机控制器 事件
+        //m_CameraController.OnEvent(event);
 
         if (m_ToolbarPanel.GetSceneState() == SceneState::Edit) {
             // 编辑器相机 事件

@@ -49,47 +49,50 @@ namespace SoLin {
     private:
         // Instance 单例
         static EditorLayer* s_Instance;
+        // 资源
+        ResourceManager m_resource;
 
+        // 默认演示场景所需
 	    Ref<Texture2D> m_Texture;
         std::vector<Ref<Texture2D>> m_TexShelter;
         Ref<Animation> m_Animation;
-        ResourceManager m_resource;
+        Entity m_CameraEntity;          // 相机实体
 
         // 编辑器层 缓冲区
         Ref<SoLin::FrameBuffer> m_Framebuffer;
         // 编辑器层 场景指针
         Ref<Scene> m_ActiveScene;       // 激活场景  编辑时 就是编辑时场景; 运行时 是复制而来的全新场景
         Ref<Scene> m_EditorScene;       // 编辑时场景
-
+        // 实体信息
         Entity m_HoveredEntity;         // 鼠标悬浮位置实体
         Entity m_UsingEntity;           // 使用中的实体
 
-        Entity m_CameraEntity;          // 相机实体
 
+        // Bool标志
         bool m_PrimaryCamera = true;    // 主相机标志
-
         bool m_ViewportFocused = false;     // 视口聚焦标志
         bool m_ViewportHovered = false;     // 鼠标悬浮在视口标志
 
         // ViewPort
         glm::vec2 m_ViewportSize = { 0.0f,0.0f };// 视口尺寸
+        EditorCamera m_EditorCamera;    // 编辑器相机
 
+        // 层相机控制器 目前似乎没啥用了
 	    OrthoGraphicCameraController m_CameraController;
 
-        EditorCamera m_EditorCamera;    // 编辑器相机
         //Panels
-        SceneHierarchyPanel m_SceneHierarchyPanel; // 场景层次面板
-        ContentBrowserPanel m_ContentBrowserPanel; // 内容浏览器面板
+        SceneHierarchyPanel m_SceneHierarchyPanel;  // 场景层次面板
+        ContentBrowserPanel m_ContentBrowserPanel;  // 内容浏览器面板
         ToolbarPanel m_ToolbarPanel;                // 工具栏面板
 
         // Bounds
         glm::vec2 m_ViewportBounds[2];  // 视口边界
 
         // Gizmo
-        int m_GizmoType = -1;       // Gizmo标志
+        int m_GizmoType = -1;       // Gizmo状态标志
 
         // Path
-        std::filesystem::path m_ScenePath;
+        std::filesystem::path m_ScenePath;  // 编辑中的场景路径
 
     private:
         friend class ToolbarPanel;

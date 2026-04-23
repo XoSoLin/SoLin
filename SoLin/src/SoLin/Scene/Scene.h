@@ -18,10 +18,11 @@ namespace SoLin {
         // @brief 复制场景
         static Ref<Scene> Copy(Ref<Scene> other);
 
+        // @brief 运行时更新
         void OnUpdate(Timestep ts);
-        // @brief 更新编辑器
+        // @brief 编辑时更新
         void OnUpdateEditor(Timestep ts, EditorCamera camera);
-        // @brief 更新脚本
+        // @brief 更新脚本(运行时)
         void OnScript(Timestep ts);
 
         // @brief 运行 开始
