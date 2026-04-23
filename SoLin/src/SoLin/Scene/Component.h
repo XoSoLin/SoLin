@@ -168,4 +168,37 @@ namespace SoLin {
         BoxCollider2DComponent(const BoxCollider2DComponent&) = default;
     };
 
+
+    //----------------------------game-------------------------------------------
+    struct VelocityComponent {
+        glm::vec3 Velocity = { 0.0f,0.0f,0.0f };
+        glm::vec3 MaxVelocity = { 1.0f,2.0f,1.0f };
+        float Force = 10.0f;
+
+        VelocityComponent() = default;
+        VelocityComponent(const glm::vec3& velocity)
+            :MaxVelocity(velocity) {
+        }
+        VelocityComponent(const glm::vec2& velocity)
+            :MaxVelocity({velocity.x,velocity.y,0.0f}) {
+        }
+        VelocityComponent(const VelocityComponent&) = default;
+
+        operator glm::vec3& () { return Velocity; }
+        operator const glm::vec3& ()const { return Velocity; }
+        operator glm::vec2& () { return glm::vec2(Velocity.x ,Velocity.y); }
+        operator const glm::vec2& ()const { return { Velocity.x ,Velocity.y }; }
+    };
+
+    // 标志组件 不需要参与 序列化与复制
+    struct MoveComponent {
+        enum class Mode {
+            Left,
+            Right,
+            Up,
+            Down
+        };
+        Mode mode = Mode::Down;
+    };
+
 }

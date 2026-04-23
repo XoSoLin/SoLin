@@ -55,7 +55,7 @@ namespace SoLin {
         // 默认演示场景所需
 	    Ref<Texture2D> m_Texture;
         std::vector<Ref<Texture2D>> m_TexShelter;
-        Ref<Animation> m_Animation;
+        Ref<Animation> m_Animation,m_Animation2;
         Entity m_CameraEntity;          // 相机实体
 
         // 编辑器层 缓冲区

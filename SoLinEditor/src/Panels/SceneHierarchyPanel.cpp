@@ -157,6 +157,12 @@ namespace SoLin {
                                 ImGui::CloseCurrentPopup();
                             }
                         }
+                        if (!entity.HasComponent<VelocityComponent>()) {
+                            if (ImGui::MenuItem("VelocityComponent")) {
+                                m_SelectionContext.AddComponent<VelocityComponent>();
+                                ImGui::CloseCurrentPopup();
+                            }
+                        }
 
                         ImGui::EndPopup(); //AddComponentMenu
                     }
@@ -317,6 +323,16 @@ namespace SoLin {
             ImGui::DragFloat("Friction", &component.Friction, 0.01f, 0.0f, 1.0f);
             ImGui::DragFloat("Restitution", &component.Restitution, 0.01f, 0.0f, 1.0f);
             ImGui::DragFloat("Restitution Threshold", &component.RestitutionThreshold, 0.01f, 0.0f);
+        });
+
+
+//------------------------------VelocityComponent--------------------------------
+
+        DrawComponent<VelocityComponent>("VelocityComponent", entity, [](auto& component)
+        {
+            ImGui::DragFloat3("Velocity", glm::value_ptr(component.Velocity));
+            ImGui::DragFloat3("MaxVelocity", glm::value_ptr(component.MaxVelocity));
+            ImGui::DragFloat("Force", &component.Force, 0.1f, 0.0f, 100.0f);
         });
 
 //------------------------------End--------------------------------

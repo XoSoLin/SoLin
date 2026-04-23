@@ -48,6 +48,21 @@ namespace SoLin {
         m_Animation->AddFrame(SubTexture2D::Create(m_resource.getTexture("assets/textures/shelter_e.png"), { 900,800 }, { 0,0 }), 1.0f);
         m_Animation->AddFrame(SubTexture2D::Create(m_resource.getTexture("assets/textures/shelter_w.png"), { 900,800 }, { 0,0 }), 1.0f);
 
+        m_Animation2 = CreateRef<Animation>();
+        m_Animation2->SetName("Su");
+        m_Animation2->AddFrame(SubTexture2D::Create(m_resource.getTexture("assets/textures/su.png"), { 66,66 }, { 0,10 }), 0.1f);
+        m_Animation2->AddFrame(SubTexture2D::Create(m_resource.getTexture("assets/textures/su.png"), { 66,66 }, { 1,10 }), 0.1f);
+        m_Animation2->AddFrame(SubTexture2D::Create(m_resource.getTexture("assets/textures/su.png"), { 66,66 }, { 2,10 }), 0.1f);
+        m_Animation2->AddFrame(SubTexture2D::Create(m_resource.getTexture("assets/textures/su.png"), { 66,66 }, { 3,10 }), 0.1f);
+        m_Animation2->AddFrame(SubTexture2D::Create(m_resource.getTexture("assets/textures/su.png"), { 66,66 }, { 4,10 }), 0.1f);
+        m_Animation2->AddFrame(SubTexture2D::Create(m_resource.getTexture("assets/textures/su.png"), { 66,66 }, { 5,10 }), 0.1f);
+        m_Animation2->AddFrame(SubTexture2D::Create(m_resource.getTexture("assets/textures/su.png"), { 66,66 }, { 6,10 }), 0.1f);
+        m_Animation2->AddFrame(SubTexture2D::Create(m_resource.getTexture("assets/textures/su.png"), { 66,66 }, { 7,10 }), 0.1f);
+        m_Animation2->AddFrame(SubTexture2D::Create(m_resource.getTexture("assets/textures/su.png"), { 66,66 }, { 8,10 }), 0.1f);
+        m_Animation2->AddFrame(SubTexture2D::Create(m_resource.getTexture("assets/textures/su.png"), { 66,66 }, { 9,10 }), 0.1f);
+        m_Animation2->AddFrame(SubTexture2D::Create(m_resource.getTexture("assets/textures/su.png"), { 66,66 }, { 10,10 }), 0.1f);
+        m_Animation2->AddFrame(SubTexture2D::Create(m_resource.getTexture("assets/textures/su.png"), { 66,66 }, { 11,10 }), 0.1f);
+
         // 创建场景 与 编辑器相机
         m_ActiveScene = CreateRef<Scene>();
         m_EditorScene = m_ActiveScene;// 附加该层 初始化时保持统一 (即默认为编辑状态)
@@ -56,7 +71,7 @@ namespace SoLin {
 
         // 场景演示
         // 创建一个白方块示例
-        m_ActiveScene->CreateEntity("Square").AddComponent<AnimationComponent>(m_Animation);
+        m_ActiveScene->CreateEntity("Square").AddComponent<AnimationComponent>(m_Animation2);
         // 创建主相机实体，传入视口矩阵
         m_CameraEntity = m_ActiveScene->CreateEntity("Main-Camera");
         auto& firstController = m_CameraEntity.AddComponent<CameraComponent>();

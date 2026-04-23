@@ -50,6 +50,18 @@ namespace SoLin {
             translation.y += speed * ts;
         if (Input::IsKeyPressed(SL_KEY_S))
             translation.y -= speed * ts;
+
+        if (HasComponent<VelocityComponent>()) {
+
+            if (Input::IsKeyPressed(SL_KEY_A))
+                AddComponent<MoveComponent>(MoveComponent::Mode::Left);
+            if (Input::IsKeyPressed(SL_KEY_D))
+                AddComponent<MoveComponent>(MoveComponent::Mode::Right);
+            if (Input::IsKeyPressed(SL_KEY_W))
+                AddComponent<MoveComponent>(MoveComponent::Mode::Up);
+            if (Input::IsKeyPressed(SL_KEY_S))
+                AddComponent<MoveComponent>(MoveComponent::Mode::Down);
+        }
     }
 
 

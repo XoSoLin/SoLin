@@ -14,6 +14,17 @@ namespace SoLin {
         T& GetComponent() {
             return m_ScriptableEntity.GetComponent<T>();
         }
+        // @brief 判断持有 模板类型 组件
+        template<typename T>
+        bool HasComponent() {
+            return m_ScriptableEntity.HasComponent<T>();
+        }
+        // @brief 添加 模板类型 组件
+        template<typename T, typename... Args>
+        T& AddComponent(Args&&... args) {
+            return m_ScriptableEntity.AddOrReplaceComponent<T>(std::forward<Args>(args)...);
+        }
+        
     private:
         friend class Scene;
         Entity m_ScriptableEntity;

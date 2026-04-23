@@ -104,6 +104,7 @@ namespace SoLin {
         CopyComponentForNewScene<NativeScriptComponent>(dstRegistry, srcRegistry, dstEntityMap);
         CopyComponentForNewScene<Rigidbody2DComponent>(dstRegistry, srcRegistry, dstEntityMap);
         CopyComponentForNewScene<BoxCollider2DComponent>(dstRegistry, srcRegistry, dstEntityMap);
+        CopyComponentForNewScene<VelocityComponent>(dstRegistry, srcRegistry, dstEntityMap);
 
         return newScene;
     }
@@ -128,6 +129,39 @@ namespace SoLin {
                 b2Body* body = (b2Body*)rb2c.RuntimeBody;
                 b2Vec2 position = body->GetPosition();
                 float angle = body->GetAngle();
+
+                // 有速度组件就记录
+                if (entity.HasComponent<VelocityComponent>()) {
+                    auto& vc = entity.GetComponent<VelocityComponent>();
+
+                    // 如果有移动组件 就加力
+                    if (entity.HasComponent<MoveComponent>()) {
+                        auto& move = entity.GetComponent<MoveComponent>();
+                        switch (move.mode) {
+                        case MoveComponent::Mode::Left:
+                            if (body->GetLinearVelocity().x < vc.MaxVelocity.x)
+                                body->ApplyForceToCenter({ -vc.Force,0.0f }, true);
+                            break;
+                        case MoveComponent::Mode::Right:
+                            if (body->GetLinearVelocity().x > -vc.MaxVelocity.x)
+                                body->ApplyForceToCenter({ vc.Force,0.0f }, true);
+                            break;
+                        case MoveComponent::Mode::Up:
+                            if (body->GetLinearVelocity().y < vc.MaxVelocity.y)
+                                body->ApplyForceToCenter({ 0.0f ,vc.Force*4}, true);
+                            break;
+                        case MoveComponent::Mode::Down:
+                            if (body->GetLinearVelocity().y > -vc.MaxVelocity.y)
+                                body->ApplyForceToCenter({ 0.0f ,-vc.Force }, true);
+                            break;
+                        }
+                        // 该帧加完力就移除该组件
+                        entity.RemoveComponent<MoveComponent>();
+                    }
+
+                    vc.Velocity.x = body->GetLinearVelocity().x;
+                    vc.Velocity.y = body->GetLinearVelocity().y;
+                }
 
                 // 将需要修改的数据应用
                 tc.Translation.x = position.x;
@@ -339,6 +373,7 @@ namespace SoLin {
         CopyComponentIfExists<NativeScriptComponent>(newEntity, srcEntity);
         CopyComponentIfExists<Rigidbody2DComponent>(newEntity, srcEntity);
         CopyComponentIfExists<BoxCollider2DComponent>(newEntity, srcEntity);
+        CopyComponentIfExists<VelocityComponent>(newEntity, srcEntity);
     }
 
     template<typename T>
@@ -382,5 +417,13 @@ namespace SoLin {
     template<>
     void Scene::OnComponentAdded<BoxCollider2DComponent>
         (Entity entity, BoxCollider2DComponent& component) {
+    }
+    template<>
+    void Scene::OnComponentAdded<VelocityComponent>
+        (Entity entity, VelocityComponent& component) {
+    }
+    template<>
+    void Scene::OnComponentAdded<MoveComponent>
+        (Entity entity, MoveComponent& component) {
     }
 }
