@@ -31,13 +31,19 @@ namespace SoLin {
         // @brief 获取ImGui视口尺寸
         glm::vec2 GetImGuiViewportSize() { return m_ViewportSize; };
 
+        // @brief 复制实体 场景操作
+        void OnDuplicateEntity();
+
         // @brief 新建场景 选项回调
         void NewScene();
         // @brief 打开场景 选项回调
         void OpenScene();
         void OpenScene(const std::filesystem::path& path);
-        // @breif 保存场景为... 选项回调
+        // @brief 保存场景为... 选项回调
         void SaveSceneAs();
+    private:
+        // @brief 置空 存放原场景信息的实体指针(更换新场景后使用 否则有未定义行为风险)
+        //void ReSrcScenePtr();
     private:
         // Instance 单例
         static EditorLayer* s_Instance;

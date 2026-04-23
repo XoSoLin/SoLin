@@ -412,6 +412,12 @@ namespace SoLin {
                 SaveSceneAs();
             break;
 
+        // Scene 命令
+        case SL_KEY_D:
+            if (ctrl)
+                OnDuplicateEntity();
+            break;
+
         // Gizmo 操作
         case SL_KEY_Q:
             m_GizmoType = -1;
@@ -440,6 +446,18 @@ namespace SoLin {
             }
         }
         return false;
+    }
+
+    void EditorLayer::OnDuplicateEntity()
+    {
+        // 编辑时 才可执行
+        if (m_ToolbarPanel.GetSceneState() != SceneState::Edit)
+            return;
+
+        // 从层次面板获取当前选中的实体 存在则复制 
+        auto selectedEntity = m_SceneHierarchyPanel.GetSelectedEntity();
+        if (selectedEntity)
+            m_ActiveScene->DuplicateEntity(selectedEntity);
     }
 
     void EditorLayer::NewScene()
@@ -477,6 +495,8 @@ namespace SoLin {
             // 调整激活场景与层次面板
             m_ActiveScene = m_EditorScene;
             m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+            // 测试 注释之后 在选中实体的情况下打开别的场景 会发生访问已释放的资源问题
+            //ReSrcScenePtr();
         }
     }
     void EditorLayer::SaveSceneAs()
@@ -488,4 +508,10 @@ namespace SoLin {
             deserializer.Serialize(filepath);
         }
     }
+
+    /*void EditorLayer::ReSrcScenePtr()
+    {
+        m_UsingEntity = { entt::null,m_ActiveScene.get()};
+    }*/
+
 }

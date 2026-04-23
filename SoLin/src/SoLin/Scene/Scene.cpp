@@ -40,6 +40,17 @@ namespace SoLin {
 
     }
 
+    // @brief 若存在 复制原实体的对应组件
+    template<typename Component>
+    static void CopyComponentIfExists(Entity dstEntity, Entity srcEntity)
+    {
+        if (srcEntity.HasComponent<Component>())
+        {
+            dstEntity.AddOrReplaceComponent<Component>(srcEntity.GetComponent<Component>());
+        }
+    }
+
+    // @brief 为新场景复制就场景组件
     template<typename Component>
     static void CopyComponentForNewScene(
         entt::registry& dst, entt::registry& src,
@@ -314,6 +325,20 @@ namespace SoLin {
     {
         // 重载过Entity的类型转换，因此可以将其直接当作entt::entity使用
         m_Registry.destroy(entity);
+    }
+
+    void Scene::DuplicateEntity(Entity& srcEntity)
+    {
+        std::string name = srcEntity.GetComponent<TagComponent>().Tag;
+        Entity newEntity = CreateEntity(name);
+
+        // 复制各个组件
+        CopyComponentIfExists<TransformComponent>(newEntity, srcEntity);
+        CopyComponentIfExists<CameraComponent>(newEntity, srcEntity);
+        CopyComponentIfExists<SpriteComponent>(newEntity, srcEntity);
+        CopyComponentIfExists<NativeScriptComponent>(newEntity, srcEntity);
+        CopyComponentIfExists<Rigidbody2DComponent>(newEntity, srcEntity);
+        CopyComponentIfExists<BoxCollider2DComponent>(newEntity, srcEntity);
     }
 
     template<typename T>

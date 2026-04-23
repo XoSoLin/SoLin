@@ -40,6 +40,8 @@ namespace SoLin {
         Entity CreateEntityWithUUID(UUID id, const std::string& name = "");
         // @brief 移除实体
         void DestoryEntity(Entity& entity);
+        // @brief 复制实体
+        void DuplicateEntity(Entity& srcEntity);
 
         // @brief 返回注册表
         entt::registry& Reg() { return m_Registry; }
