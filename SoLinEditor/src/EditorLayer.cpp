@@ -496,7 +496,7 @@ namespace SoLin {
             m_ActiveScene = m_EditorScene;
             m_SceneHierarchyPanel.SetContext(m_ActiveScene);
             // 测试 注释之后 在选中实体的情况下打开别的场景 会发生访问已释放的资源问题
-            //ReSrcScenePtr();
+            ReSrcScenePtr();
         }
     }
     void EditorLayer::SaveSceneAs()
@@ -509,9 +509,9 @@ namespace SoLin {
         }
     }
 
-    /*void EditorLayer::ReSrcScenePtr()
+    void EditorLayer::ReSrcScenePtr()
     {
         m_UsingEntity = { entt::null,m_ActiveScene.get()};
-    }*/
+    }
 
 }

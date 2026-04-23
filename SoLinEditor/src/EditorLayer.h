@@ -43,7 +43,7 @@ namespace SoLin {
         void SaveSceneAs();
     private:
         // @brief 置空 存放原场景信息的实体指针(更换新场景后使用 否则有未定义行为风险)
-        //void ReSrcScenePtr();
+        void ReSrcScenePtr();
     private:
         // Instance 单例
         static EditorLayer* s_Instance;
