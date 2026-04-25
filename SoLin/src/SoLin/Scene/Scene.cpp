@@ -105,6 +105,8 @@ namespace SoLin {
         CopyComponentForNewScene<Rigidbody2DComponent>(dstRegistry, srcRegistry, dstEntityMap);
         CopyComponentForNewScene<BoxCollider2DComponent>(dstRegistry, srcRegistry, dstEntityMap);
         CopyComponentForNewScene<VelocityComponent>(dstRegistry, srcRegistry, dstEntityMap);
+        CopyComponentForNewScene<PlayerComponent>(dstRegistry, srcRegistry, dstEntityMap);
+        CopyComponentForNewScene<CameraControllerComponent>(dstRegistry, srcRegistry, dstEntityMap);
 
         return newScene;
     }
@@ -134,30 +136,37 @@ namespace SoLin {
                 if (entity.HasComponent<VelocityComponent>()) {
                     auto& vc = entity.GetComponent<VelocityComponent>();
 
-                    // 如果有移动组件 就加力
-                    if (entity.HasComponent<MoveComponent>()) {
-                        auto& move = entity.GetComponent<MoveComponent>();
-                        switch (move.mode) {
-                        case MoveComponent::Mode::Left:
-                            if (body->GetLinearVelocity().x < vc.MaxVelocity.x)
-                                body->ApplyForceToCenter({ -vc.Force,0.0f }, true);
-                            break;
-                        case MoveComponent::Mode::Right:
-                            if (body->GetLinearVelocity().x > -vc.MaxVelocity.x)
-                                body->ApplyForceToCenter({ vc.Force,0.0f }, true);
-                            break;
-                        case MoveComponent::Mode::Up:
-                            if (body->GetLinearVelocity().y < vc.MaxVelocity.y)
-                                body->ApplyForceToCenter({ 0.0f ,vc.Force*4}, true);
-                            break;
-                        case MoveComponent::Mode::Down:
-                            if (body->GetLinearVelocity().y > -vc.MaxVelocity.y)
-                                body->ApplyForceToCenter({ 0.0f ,-vc.Force }, true);
-                            break;
-                        }
-                        // 该帧加完力就移除该组件
-                        entity.RemoveComponent<MoveComponent>();
-                    }
+                    //// 如果有移动组件 就加力
+                    //if (entity.HasComponent<MoveComponent>()) {
+                    //    auto& move = entity.GetComponent<MoveComponent>();
+                    //    // 获取水平方向的目标速度值
+                    //    float targetSpeed = vc.MaxVelocity.x;
+                    //    float froceY = 0;
+                    //    // 计算目标水平方向速度
+                    //    float VelocityX = 0;
+                    //    switch (move.mode) {
+                    //    case MoveComponent::Mode::Left:
+                    //        VelocityX = -targetSpeed;
+                    //        break;
+                    //    case MoveComponent::Mode::Right:
+                    //        VelocityX = targetSpeed;
+                    //        break;
+                    //    case MoveComponent::Mode::Up:
+                    //        froceY = body->GetMass() * (vc.MaxVelocity.y/ts);
+                    //        break;
+                    //    }
+                    //    // 获取当前水平方向速度
+                    //    float currentVelocityX = body->GetLinearVelocity().x;
+                    //    // 计算当前速度误差(距离目标还差多少)
+                    //    float velError = VelocityX - currentVelocityX;
+                    //    // 根据误差计算力 f = m*a = m *(dtV/dtT)
+                    //    float froceX = body->GetMass() * (velError / ts);
+                    //    // 将力添加到物体
+                    //    body->ApplyForceToCenter({ froceX,froceY }, true);
+
+                    //    // 该帧加完力就移除该组件
+                    //    entity.RemoveComponent<MoveComponent>();
+                    //}
 
                     vc.Velocity.x = body->GetLinearVelocity().x;
                     vc.Velocity.y = body->GetLinearVelocity().y;
@@ -240,11 +249,11 @@ namespace SoLin {
         // 所以说这将更新所有包含脚本组件的实体，而且每一个实体的 transform 改变的数值相同，这导致每一个实体都会受键盘影响而移动，尽管此时只有一个实体被显示出来。
         // --------------------------------------------------------------------------------------------------------------------------------------------------------
 
-        // 更新脚本
+        // 更新相机控制器 脚本
         m_Registry.view<NativeScriptComponent,CameraComponent>().each
         (
             [=](auto entity, auto& nsc,auto& cc) {
-                // nsc => NativeScriptController, cc => CameraController
+                // nsc => NativeScriptController, cc => CameraComponent
 
                 bool cameraPrimary;
                 // 获取主相机标志
@@ -266,6 +275,26 @@ namespace SoLin {
                 if (cc.Primary)
                     nsc.Instance->OnUpdate(ts);
             });
+
+        // 更新玩家控制器 脚本
+        m_Registry.view<NativeScriptComponent, PlayerComponent>().each
+        (
+            [=](auto entity, auto& nsc, auto& pc) {
+                // nsc => NativeScriptController, pc => PlayerComponent
+
+                // 还未实例化的话进行实例化
+                if (!nsc.Instance) {
+                    nsc.Instance = nsc.InstantiateScript();
+
+                    // Entity类型本质上是我们对entt::entity的封装，
+                    // 其依赖Scene中的注册表，this便是将Scene指针传入
+                    nsc.Instance->m_ScriptableEntity = Entity{ entity,this };
+
+                    nsc.Instance->OnCreate();
+                }
+                nsc.Instance->OnUpdate(ts);
+            });
+
     }
 
     void Scene::OnRuntimeStart()
@@ -421,6 +450,18 @@ namespace SoLin {
     template<>
     void Scene::OnComponentAdded<VelocityComponent>
         (Entity entity, VelocityComponent& component) {
+    }
+    template<>
+    void Scene::OnComponentAdded<PlayerComponent>
+        (Entity entity, PlayerComponent& component) {
+        // 为其添加玩家控制器
+        entity.AddComponent<NativeScriptComponent>().Bind<ScriptPlayerController>();
+    }
+    template<>
+    void Scene::OnComponentAdded<CameraControllerComponent>
+        (Entity entity, CameraControllerComponent& component) {
+        // 为其添加相机控制器
+        entity.AddComponent<NativeScriptComponent>().Bind<ScriptCameraController>();
     }
     template<>
     void Scene::OnComponentAdded<MoveComponent>

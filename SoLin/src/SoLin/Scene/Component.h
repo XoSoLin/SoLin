@@ -172,8 +172,8 @@ namespace SoLin {
     //----------------------------game-------------------------------------------
     struct VelocityComponent {
         glm::vec3 Velocity = { 0.0f,0.0f,0.0f };
-        glm::vec3 MaxVelocity = { 1.0f,2.0f,1.0f };
-        float Force = 10.0f;
+        // 目前 x代表水平最大速度，y代表水平起跳瞬时速度
+        glm::vec3 MaxVelocity = { 4.0f,2.0f,0.0f };
 
         VelocityComponent() = default;
         VelocityComponent(const glm::vec3& velocity)
@@ -189,6 +189,31 @@ namespace SoLin {
         operator glm::vec2& () { return glm::vec2(Velocity.x ,Velocity.y); }
         operator const glm::vec2& ()const { return { Velocity.x ,Velocity.y }; }
     };
+
+    // @brief 玩家组件
+    struct PlayerComponent {
+        enum class Mode {
+            Move,
+            Jump,
+            Attack,
+            Fill,
+            Hind
+        };
+        Mode mode = Mode::Move;
+        PlayerComponent() = default;
+        PlayerComponent(const PlayerComponent&) = default;
+    };
+
+    // @brief 相机控制组件
+    struct CameraControllerComponent {
+        enum class Mode {
+            Move
+        };
+        Mode mode = Mode::Move;
+        CameraControllerComponent() = default;
+        CameraControllerComponent(const CameraControllerComponent&) = default;
+    };
+
 
     // 标志组件 不需要参与 序列化与复制
     struct MoveComponent {

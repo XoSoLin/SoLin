@@ -24,7 +24,12 @@ namespace SoLin {
         T& AddComponent(Args&&... args) {
             return m_ScriptableEntity.AddOrReplaceComponent<T>(std::forward<Args>(args)...);
         }
-        
+        // @brief 移除 模板类型 组件
+        template<typename T>
+        void RemoveComponent() {
+            m_ScriptableEntity.RemoveComponent<T>();
+        }
+
     private:
         friend class Scene;
         Entity m_ScriptableEntity;
@@ -36,6 +41,14 @@ namespace SoLin {
 
     //@brief 相机控制器脚本
     class ScriptCameraController :public ScriptableEntity {
+    public:
+        virtual void OnCreate() override;
+        virtual void OnDestroy()override;
+        virtual void OnUpdate(Timestep ts)override;
+    };
+
+    // @brief 玩家控制器脚本
+    class ScriptPlayerController :public ScriptableEntity {
     public:
         virtual void OnCreate() override;
         virtual void OnDestroy()override;

@@ -332,7 +332,7 @@ namespace SoLin {
         {
             ImGui::DragFloat3("Velocity", glm::value_ptr(component.Velocity));
             ImGui::DragFloat3("MaxVelocity", glm::value_ptr(component.MaxVelocity));
-            ImGui::DragFloat("Force", &component.Force, 0.1f, 0.0f, 100.0f);
+            //ImGui::DragFloat("Force", &component.Force, 0.1f, 0.0f, 100.0f);
         });
 
 //------------------------------End--------------------------------

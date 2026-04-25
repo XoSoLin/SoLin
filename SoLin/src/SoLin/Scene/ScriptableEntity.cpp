@@ -6,6 +6,9 @@
 #include "SoLin/Core/KeyCodes.h"
 #include "SoLin/Core/Input.h"
 
+// Box2D
+#include"box2d/b2_body.h"
+
 namespace SoLin {
     void ScriptableEntity::OnCreate()
     {
@@ -51,18 +54,71 @@ namespace SoLin {
         if (Input::IsKeyPressed(SL_KEY_S))
             translation.y -= speed * ts;
 
-        if (HasComponent<VelocityComponent>()) {
 
-            if (Input::IsKeyPressed(SL_KEY_A))
-                AddComponent<MoveComponent>(MoveComponent::Mode::Left);
-            if (Input::IsKeyPressed(SL_KEY_D))
-                AddComponent<MoveComponent>(MoveComponent::Mode::Right);
-            if (Input::IsKeyPressed(SL_KEY_W))
-                AddComponent<MoveComponent>(MoveComponent::Mode::Up);
-            if (Input::IsKeyPressed(SL_KEY_S))
-                AddComponent<MoveComponent>(MoveComponent::Mode::Down);
-        }
     }
 
+
+//----------------------------Player------------------------------------------------------
+    void ScriptPlayerController::OnCreate()
+    {
+    }
+
+    void ScriptPlayerController::OnDestroy()
+    {
+    }
+
+    void ScriptPlayerController::OnUpdate(Timestep ts)
+    {
+        auto& tc = GetComponent<TransformComponent>();
+
+        // 如果有2D盒组件就进行物理移动
+        if (HasComponent<Rigidbody2DComponent>()) {
+            auto& rb2c = GetComponent<Rigidbody2DComponent>();
+
+            b2Body* body = (b2Body*)rb2c.RuntimeBody;
+
+            // 有速度组件就可以左右移动
+            if (HasComponent<VelocityComponent>()) {
+                auto& vc = GetComponent<VelocityComponent>();
+
+                // 获取水平方向的目标速度值
+                float targetSpeed = vc.MaxVelocity.x;
+                float froceY = 0;
+                // 计算目标水平方向速度
+                float VelocityX = 0;
+                if (Input::IsKeyPressed(SL_KEY_A))
+                    VelocityX = -targetSpeed;
+                if (Input::IsKeyPressed(SL_KEY_D))
+                    VelocityX = targetSpeed;
+                if (Input::IsKeyPressed(SL_KEY_W))
+                    froceY = body->GetMass() * (vc.MaxVelocity.y / ts);
+                
+                // 获取当前水平方向速度
+                float currentVelocityX = body->GetLinearVelocity().x;
+                // 计算当前速度误差(距离目标还差多少)
+                float velError = VelocityX - currentVelocityX;
+                // 根据误差计算力 f = m*a = m *(dtV/dtT)
+                float froceX = body->GetMass() * (velError / ts);
+                // 将力添加到物体
+                body->ApplyForceToCenter({ froceX,froceY }, true);
+            }
+
+        }
+        // 没有的情况下就直接进行位置移动
+        else {
+            auto& translation = GetComponent<TransformComponent>().Translation;
+            float speed = 5.0f;
+
+            if (Input::IsKeyPressed(SL_KEY_A))
+                translation.x -= speed * ts;
+            if (Input::IsKeyPressed(SL_KEY_D))
+                translation.x += speed * ts;
+            if (Input::IsKeyPressed(SL_KEY_W))
+                translation.y += speed * ts;
+            if (Input::IsKeyPressed(SL_KEY_S))
+                translation.y -= speed * ts;
+        }
+
+    }
 
 }

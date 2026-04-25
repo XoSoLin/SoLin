@@ -321,6 +321,48 @@ namespace SoLin {
             out << YAML::EndMap;
         }
 
+        if (entity.HasComponent<VelocityComponent>())
+        {
+            out << YAML::Key << "VelocityComponent";
+
+            out << YAML::BeginMap;
+
+            auto& vComponent = entity.GetComponent<VelocityComponent>();
+            out << YAML::Key << "Velocity" << YAML::Value << vComponent.Velocity;
+            out << YAML::Key << "MaxVelocity" << YAML::Value << vComponent.MaxVelocity;
+
+            out << YAML::EndMap;
+        }
+
+        // TODO: 完善脚本系统
+        //if (entity.HasComponent<NativeScriptComponent>())
+        //{
+        //    out << YAML::Key << "NativeScriptComponent";
+
+        //    out << YAML::BeginMap;
+
+        //    out << YAML::EndMap;
+        //}
+
+        if (entity.HasComponent<PlayerComponent>())
+        {
+            out << YAML::Key << "PlayerComponent";
+
+            out << YAML::BeginMap;
+
+            out << YAML::EndMap;
+        }
+
+        if (entity.HasComponent<CameraControllerComponent>())
+        {
+            out << YAML::Key << "CameraControllerComponent";
+
+            out << YAML::BeginMap;
+
+            out << YAML::EndMap;
+        }
+
+
         out << YAML::EndMap;
     }
 
@@ -386,6 +428,34 @@ namespace SoLin {
             bc2c.Restitution = boxCollider2DComponent["Restitution"].as<float>();
             bc2c.RestitutionThreshold = boxCollider2DComponent["RestitutionThreshold"].as<float>();
         }
+
+        // 速度
+        auto velocityComponent = data["VelocityComponent"];
+        if (velocityComponent) {
+            auto& vc = entity.AddComponent<VelocityComponent>();
+            vc.Velocity = velocityComponent["Velocity"].as<glm::vec3>();
+            vc.MaxVelocity = velocityComponent["MaxVelocity"].as<glm::vec3>();
+        }
+
+        // 原生脚本
+        //auto nativeScriptComponent = data["NativeScriptComponent"];
+        //if (nativeScriptComponent) {
+        //    auto s = nativeScriptComponent["Script"].as<std::string>();
+        //}
+
+        // 玩家组件
+        auto playerComponent = data["PlayerComponent"];
+        if (playerComponent) {
+            entity.AddComponent<PlayerComponent>();
+        }
+
+        // 相机组件
+        auto cameraControllerComponent = data["CameraControllerComponent"];
+        if (cameraControllerComponent) {
+            entity.AddComponent<CameraControllerComponent>();
+        }
+
+
     }
 
     
