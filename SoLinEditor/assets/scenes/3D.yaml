@@ -22,6 +22,9 @@ Entities:
       Color: [0.87644786, 0, 0.8347128, 1]
       Texture: "null"
       TilingFactor: 1
+    LayerComponent:
+      LayerType: Background
+      On: false
   - Entity: 9185661360839317149
     TagComponent:
       Tag: Camera
@@ -51,6 +54,9 @@ Entities:
       Color: [0.54842025, 0, 0.5868726, 1]
       Texture: "null"
       TilingFactor: 1
+    LayerComponent:
+      LayerType: Background
+      On: false
   - Entity: 10382745775934862465
     TagComponent:
       Tag: Left
@@ -62,3 +68,6 @@ Entities:
       Color: [1, 0, 0.94980717, 1]
       Texture: "null"
       TilingFactor: 1
+    LayerComponent:
+      LayerType: Background
+      On: false

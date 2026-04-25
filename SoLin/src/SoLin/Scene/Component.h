@@ -214,6 +214,16 @@ namespace SoLin {
         CameraControllerComponent(const CameraControllerComponent&) = default;
     };
 
+    struct LayerComponent {
+        enum class Layer {
+            Background = 0, // 背景层
+            Detail,         // 静态背景
+            Collision,      // 前景物块
+            Actors          // 单位
+        };
+        Layer layer = Layer::Background;
+        bool On = true; // 启用的话就不再是3D渲染（因为暂时的速成版本会控制z轴）
+    };
 
     // 标志组件 不需要参与 序列化与复制
     struct MoveComponent {

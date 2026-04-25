@@ -107,6 +107,7 @@ namespace SoLin {
         CopyComponentForNewScene<VelocityComponent>(dstRegistry, srcRegistry, dstEntityMap);
         CopyComponentForNewScene<PlayerComponent>(dstRegistry, srcRegistry, dstEntityMap);
         CopyComponentForNewScene<CameraControllerComponent>(dstRegistry, srcRegistry, dstEntityMap);
+        CopyComponentForNewScene<LayerComponent>(dstRegistry, srcRegistry, dstEntityMap);
 
         return newScene;
     }
@@ -135,38 +136,6 @@ namespace SoLin {
                 // 有速度组件就记录
                 if (entity.HasComponent<VelocityComponent>()) {
                     auto& vc = entity.GetComponent<VelocityComponent>();
-
-                    //// 如果有移动组件 就加力
-                    //if (entity.HasComponent<MoveComponent>()) {
-                    //    auto& move = entity.GetComponent<MoveComponent>();
-                    //    // 获取水平方向的目标速度值
-                    //    float targetSpeed = vc.MaxVelocity.x;
-                    //    float froceY = 0;
-                    //    // 计算目标水平方向速度
-                    //    float VelocityX = 0;
-                    //    switch (move.mode) {
-                    //    case MoveComponent::Mode::Left:
-                    //        VelocityX = -targetSpeed;
-                    //        break;
-                    //    case MoveComponent::Mode::Right:
-                    //        VelocityX = targetSpeed;
-                    //        break;
-                    //    case MoveComponent::Mode::Up:
-                    //        froceY = body->GetMass() * (vc.MaxVelocity.y/ts);
-                    //        break;
-                    //    }
-                    //    // 获取当前水平方向速度
-                    //    float currentVelocityX = body->GetLinearVelocity().x;
-                    //    // 计算当前速度误差(距离目标还差多少)
-                    //    float velError = VelocityX - currentVelocityX;
-                    //    // 根据误差计算力 f = m*a = m *(dtV/dtT)
-                    //    float froceX = body->GetMass() * (velError / ts);
-                    //    // 将力添加到物体
-                    //    body->ApplyForceToCenter({ froceX,froceY }, true);
-
-                    //    // 该帧加完力就移除该组件
-                    //    entity.RemoveComponent<MoveComponent>();
-                    //}
 
                     vc.Velocity.x = body->GetLinearVelocity().x;
                     vc.Velocity.y = body->GetLinearVelocity().y;
@@ -203,13 +172,29 @@ namespace SoLin {
             // 将存有投影矩阵的相机 和 其变换矩阵的逆，也就是视口矩阵，传入布景器
             Renderer2D::BeginScene(*mainCamera, glm::inverse(mainTransform));
 
-            // 在所有含有Transform组件的实体中找含有Sprite组件的实体，返回一个表
-            auto view = m_Registry.view<TransformComponent, SpriteComponent>();
+            //// 在所有含有Transform组件的实体中找含有Sprite组件的实体，返回一个表
+            //auto view = m_Registry.view<TransformComponent, SpriteComponent>();
 
-            for (auto entity : view) {
-                auto [transform, sprite] = view.get<TransformComponent, SpriteComponent>(entity);
+            //for (auto entity : view) {
+            //    auto [transform, sprite] = view.get<TransformComponent, SpriteComponent>(entity);
 
-                Renderer2D::DrawSprite(transform.GetTransform(), sprite,(int)entity);
+            //    Renderer2D::DrawSprite(transform.GetTransform(), sprite,(int)entity);
+            //}
+
+            //粗略写的按层渲染 后修改细节
+            //TODO:
+            for (int i = 0;i < 4;i++) {
+                auto& group = m_Registry.group<TransformComponent, LayerComponent>(entt::get<SpriteComponent>);
+                for (auto entity : group) {
+                    auto& layer = group.get<LayerComponent>(entity);
+                    if (layer.layer == (LayerComponent::Layer)i) {
+                        auto [transform, sprite] = group.get<TransformComponent, SpriteComponent>(entity);
+                        //// 为层级设置z轴
+                        if (layer.On)
+                            transform.Translation.z = 0.01 * i;
+                        Renderer2D::DrawSprite(transform.GetTransform(), sprite, (int)entity);
+                    }
+                }
             }
 
             Renderer2D::EndScene();
@@ -220,12 +205,27 @@ namespace SoLin {
     {
         Renderer2D::BeginScene(camera);
 
-        auto& group = m_Registry.group<TransformComponent>(entt::get<SpriteComponent>);	// 在所有含有 TransformComponent 的实体中搜集含有 sprite 的实体，group 返回一个类似注册表的实体集合
-        for (auto entity : group) {
-            auto [transform, sprite] = group.get<TransformComponent, SpriteComponent>(entity);
-
-            Renderer2D::DrawSprite(transform.GetTransform(), sprite,(int)entity);
+        // 粗略写的按层渲染 后修改细节
+        // TODO:
+        for (int i = 0;i < 4 ;i++) {
+            auto& group = m_Registry.group<TransformComponent, LayerComponent>(entt::get<SpriteComponent>);
+            for (auto entity : group) {
+                auto& layer = group.get<LayerComponent>(entity);
+                if (layer.layer == (LayerComponent::Layer)i) {
+                    auto [transform, sprite] = group.get<TransformComponent, SpriteComponent>(entity);
+                    //// 为层级设置z轴
+                    if(layer.On)
+                        transform.Translation.z = 0.01 * i;
+                    Renderer2D::DrawSprite(transform.GetTransform(), sprite,(int)entity);
+                }
+            }
         }
+        //auto& group = m_Registry.group<TransformComponent>(entt::get<SpriteComponent>);	// 在所有含有 TransformComponent 的实体中搜集含有 sprite 的实体，group 返回一个类似注册表的实体集合
+        //for (auto entity : group) {
+        //    auto [transform, sprite] = group.get<TransformComponent, SpriteComponent>(entity);
+
+        //    Renderer2D::DrawSprite(transform.GetTransform(), sprite,(int)entity);
+        //}
 
         auto AniView = m_Registry.view<TransformComponent, AnimationComponent>();
         for (auto entity : AniView) {
@@ -403,6 +403,9 @@ namespace SoLin {
         CopyComponentIfExists<Rigidbody2DComponent>(newEntity, srcEntity);
         CopyComponentIfExists<BoxCollider2DComponent>(newEntity, srcEntity);
         CopyComponentIfExists<VelocityComponent>(newEntity, srcEntity);
+        CopyComponentIfExists<PlayerComponent>(newEntity, srcEntity);
+        CopyComponentIfExists<CameraControllerComponent>(newEntity, srcEntity);
+        CopyComponentIfExists<LayerComponent>(newEntity, srcEntity);
     }
 
     template<typename T>
@@ -462,6 +465,10 @@ namespace SoLin {
         (Entity entity, CameraControllerComponent& component) {
         // 为其添加相机控制器
         entity.AddComponent<NativeScriptComponent>().Bind<ScriptCameraController>();
+    }
+    template<>
+    void Scene::OnComponentAdded<LayerComponent>
+        (Entity entity, LayerComponent& component) {
     }
     template<>
     void Scene::OnComponentAdded<MoveComponent>

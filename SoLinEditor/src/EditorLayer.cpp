@@ -281,7 +281,7 @@ namespace SoLin {
 
         // 悬浮处实体信息
         std::string name = "None";
-        if (m_HoveredEntity)
+        if (m_HoveredEntity && m_HoveredEntity.HasComponent<TagComponent>())
             name = m_HoveredEntity.GetComponent<TagComponent>().Tag;
         ImGui::Text("Hovered Entity: %s", name.c_str());
         // 使用中实体信息
@@ -555,6 +555,7 @@ namespace SoLin {
 
     void EditorLayer::ReSrcScenePtr()
     {
+        m_HoveredEntity = { entt::null,m_ActiveScene.get() };
         m_UsingEntity = { entt::null,m_ActiveScene.get()};
     }
 

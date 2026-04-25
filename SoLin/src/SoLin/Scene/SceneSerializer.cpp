@@ -138,6 +138,39 @@ namespace SoLin {
         return Rigidbody2DComponent::BodyType::Static;
     }
 
+    static std::string LayerTypeToString(LayerComponent::Layer Layer)
+    {
+        switch (Layer)
+        {
+        case LayerComponent::Layer::Background:
+            return "Background";
+        case LayerComponent::Layer::Detail:
+            return "Detail";
+        case LayerComponent::Layer::Collision:
+            return "Collision";
+        case LayerComponent::Layer::Actors:
+            return "Actors";
+        }
+
+        SL_CORE_ASSERT(false, "Unknown body type");
+        return {};
+    }
+
+    static LayerComponent::Layer StringToLayerType(const std::string& typeString)
+    {
+        if (typeString == "Background")
+            return LayerComponent::Layer::Background;
+        else if (typeString == "Detail")
+            return LayerComponent::Layer::Detail;
+        else if (typeString == "Collision")
+            return LayerComponent::Layer::Collision;
+        else if (typeString == "Actors")
+            return LayerComponent::Layer::Actors;
+
+        SL_CORE_ASSERT(false, "Unknown body type");
+        return LayerComponent::Layer::Background;
+    }
+
 
     void SceneSerializer::Serialize(const std::string& filepath)
     {
@@ -362,6 +395,20 @@ namespace SoLin {
             out << YAML::EndMap;
         }
 
+        if (entity.HasComponent<LayerComponent>())
+        {
+            out << YAML::Key << "LayerComponent";
+
+            out << YAML::BeginMap;
+
+            auto& layerComponent = entity.GetComponent<LayerComponent>();
+            out << YAML::Key << "LayerType" << YAML::Value << LayerTypeToString(layerComponent.layer);
+            out << YAML::Key << "On" << YAML::Value << layerComponent.On;
+
+
+            out << YAML::EndMap;
+        }
+
 
         out << YAML::EndMap;
     }
@@ -443,18 +490,26 @@ namespace SoLin {
         //    auto s = nativeScriptComponent["Script"].as<std::string>();
         //}
 
-        // 玩家组件
+        // 玩家控制标识组件
         auto playerComponent = data["PlayerComponent"];
         if (playerComponent) {
             entity.AddComponent<PlayerComponent>();
         }
 
-        // 相机组件
+        // 相机控制标识组件
         auto cameraControllerComponent = data["CameraControllerComponent"];
         if (cameraControllerComponent) {
             entity.AddComponent<CameraControllerComponent>();
         }
 
+        // 层级标识组件
+        auto layerComponent = data["LayerComponent"];
+        if (layerComponent)
+        {
+            auto& lc = entity.AddComponent<LayerComponent>();
+            lc.layer = StringToLayerType(layerComponent["LayerType"].as<std::string>());
+            lc.On = layerComponent["On"].as<bool>();
+        }
 
     }
 

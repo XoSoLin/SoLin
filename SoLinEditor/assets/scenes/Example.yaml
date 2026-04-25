@@ -4,35 +4,44 @@ Entities:
     TagComponent:
       Tag: Square
     TransformComponent:
-      Translation: [-3, 0, 0]
+      Translation: [0, 0, 0.03]
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
     SpriteComponent:
       Color: [0.5412, 0.1686, 0.8863, 1]
       Texture: assets\textures\千夏02.png
       TilingFactor: 1
+    LayerComponent:
+      LayerType: Actors
+      On: true
   - Entity: 753968430252761617
     TagComponent:
       Tag: BlueSquare
     TransformComponent:
-      Translation: [3.3, 1.3, 0]
+      Translation: [3.3, 1.3, 0.02]
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
     SpriteComponent:
       Color: [0, 1, 1, 1]
       Texture: "null"
       TilingFactor: 1
+    LayerComponent:
+      LayerType: Collision
+      On: true
   - Entity: 13474551785679121717
     TagComponent:
       Tag: RedSquare
     TransformComponent:
-      Translation: [3.6, -1.7, 0]
+      Translation: [3.6, -1.7, 0.01]
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
     SpriteComponent:
       Color: [1, 0, 1, 1]
       Texture: "null"
       TilingFactor: 1
+    LayerComponent:
+      LayerType: Detail
+      On: true
   - Entity: 17786199088040677591
     TagComponent:
       Tag: Main-Camera
@@ -73,10 +82,13 @@ Entities:
     TagComponent:
       Tag: vva
     TransformComponent:
-      Translation: [0, 0, 0]
+      Translation: [-0.49833298, 0, 0]
       Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
+      Scale: [10.8, 5.7, 1]
     SpriteComponent:
       Color: [0.22993109, 0.443038, 0.27309197, 1]
       Texture: assets\textures\Checkerboard.png
       TilingFactor: 1
+    LayerComponent:
+      LayerType: Background
+      On: true

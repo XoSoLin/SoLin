@@ -163,6 +163,12 @@ namespace SoLin {
                                 ImGui::CloseCurrentPopup();
                             }
                         }
+                        if (!entity.HasComponent<LayerComponent>()) {
+                            if (ImGui::MenuItem("LayerComponent")) {
+                                m_SelectionContext.AddComponent<LayerComponent>();
+                                ImGui::CloseCurrentPopup();
+                            }
+                        }
 
                         ImGui::EndPopup(); //AddComponentMenu
                     }
@@ -334,6 +340,40 @@ namespace SoLin {
             ImGui::DragFloat3("MaxVelocity", glm::value_ptr(component.MaxVelocity));
             //ImGui::DragFloat("Force", &component.Force, 0.1f, 0.0f, 100.0f);
         });
+
+
+//------------------------------LayerComponent--------------------------------
+
+        DrawComponent<LayerComponent>("LayerComponent", entity, [](auto& component)
+            {
+                // 类型的枚举获取
+                const char* layerTypeStrings[] = { "Background", "Detail", "Collision","Actors"};
+                const char* currentLayerTypeString = layerTypeStrings[(int)component.layer];
+
+                // 创建下拉框           标签       当前选中项
+                if (ImGui::BeginCombo("Layer Type", currentLayerTypeString))
+                {
+                    for (int i = 0; i < 4; i++)
+                    {
+                        bool isSelected = (currentLayerTypeString == layerTypeStrings[i]);
+                        // 创建可选项
+                        if (ImGui::Selectable(layerTypeStrings[i], isSelected))
+                        {
+                            // 选择后逻辑
+                            currentLayerTypeString = layerTypeStrings[i];
+                            component.layer = (LayerComponent::Layer)i;
+                        }
+                        // 为选择的设置默认焦点
+                        if (isSelected)
+                            ImGui::SetItemDefaultFocus();
+                    }
+                    ImGui::EndCombo();// Body Type
+                }
+
+                // 勾选框管理bool数据
+                ImGui::Checkbox("Layer On", &component.On);
+
+            });
 
 //------------------------------End--------------------------------
 

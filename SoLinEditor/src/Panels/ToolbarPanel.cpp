@@ -85,6 +85,9 @@ namespace SoLin {
         // 状态更新并 舍弃激活场景 使激活场景指向编辑器场景
         m_SceneState = SceneState::Edit;
         activeScene->OnRuntimeStop();   // 要先执行 暂停时可能会影响一些指针(未来可能会有未定义风险 目前没有)
+        // 在选中实体的情况下点击暂停键 会导致循环过程中的指针指向删除的位置，目前简单处理
+        // TODO: 后续看看怎么修改
+        EditorLayer::Get().ReSrcScenePtr();
         activeScene = editorScene;
         sceneHierarchyPanel.SetContext(activeScene);
     }
