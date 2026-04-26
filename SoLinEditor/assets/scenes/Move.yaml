@@ -168,9 +168,9 @@ Entities:
       RestitutionThreshold: 0.5
     VelocityComponent:
       Velocity: [0, 0, 0]
-      MaxVelocity: [4, 2, 1]
+      MaxVelocity: [4, 6, 1]
     PlayerComponent:
-      {}
+      State: Stop
     LayerComponent:
       LayerType: Actors
       On: true

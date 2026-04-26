@@ -109,6 +109,8 @@ namespace SoLin {
 
     }
 
+    //Rigidbody2DComponent-----------------------------------------------------------------------
+
     static std::string Rigidbody2DTypeToString(Rigidbody2DComponent::BodyType typeRigidbody)
     {
         switch (typeRigidbody)
@@ -137,6 +139,8 @@ namespace SoLin {
         SL_CORE_ASSERT(false, "Unknown body type");
         return Rigidbody2DComponent::BodyType::Static;
     }
+
+    //LayerComponent-----------------------------------------------------------------------
 
     static std::string LayerTypeToString(LayerComponent::Layer Layer)
     {
@@ -169,6 +173,45 @@ namespace SoLin {
 
         SL_CORE_ASSERT(false, "Unknown body type");
         return LayerComponent::Layer::Background;
+    }
+
+    //PlayerComponent-----------------------------------------------------------------------
+
+    static std::string StateTypeToString(PlayerComponent::Mode mode)
+    {
+        switch (mode)
+        {
+        case PlayerComponent::Mode::Stop:
+            return "Stop";
+        case PlayerComponent::Mode::Move:
+            return "Move";
+        case PlayerComponent::Mode::Jump:
+            return "Jump";
+        case PlayerComponent::Mode::Attack:
+            return "Attack";
+        case PlayerComponent::Mode::Hover:
+            return "Hover";
+        }
+
+        SL_CORE_ASSERT(false, "Unknown body type");
+        return {};
+    }
+
+    static PlayerComponent::Mode StringToStateType(const std::string& typeString)
+    {
+        if (typeString == "Stop")
+            return PlayerComponent::Mode::Stop;
+        else if (typeString == "Move")
+            return PlayerComponent::Mode::Move;
+        else if (typeString == "Jump")
+            return PlayerComponent::Mode::Jump;
+        else if (typeString == "Attack")
+            return PlayerComponent::Mode::Attack;
+        else if (typeString == "Hover")
+            return PlayerComponent::Mode::Hover;
+
+        SL_CORE_ASSERT(false, "Unknown body type");
+        return PlayerComponent::Mode::Stop;
     }
 
 
@@ -383,6 +426,9 @@ namespace SoLin {
 
             out << YAML::BeginMap;
 
+            auto& playerComponent = entity.GetComponent<PlayerComponent>();
+            out << YAML::Key << "State" << YAML::Value << StateTypeToString(playerComponent.mode);
+
             out << YAML::EndMap;
         }
 
@@ -493,7 +539,8 @@ namespace SoLin {
         // 玩家控制标识组件
         auto playerComponent = data["PlayerComponent"];
         if (playerComponent) {
-            entity.AddComponent<PlayerComponent>();
+            auto& pc = entity.AddComponent<PlayerComponent>();
+            pc.mode = StringToStateType(playerComponent["State"].as<std::string>());
         }
 
         // 相机控制标识组件

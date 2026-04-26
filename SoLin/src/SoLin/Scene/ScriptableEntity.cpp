@@ -70,7 +70,105 @@ namespace SoLin {
     void ScriptPlayerController::OnUpdate(Timestep ts)
     {
         auto& tc = GetComponent<TransformComponent>();
+        auto& playerState = GetComponent<PlayerComponent>().mode;
+        auto& vc = GetComponent<VelocityComponent>();
 
+        auto& rb2c = GetComponent<Rigidbody2DComponent>();
+        b2Body* body = (b2Body*)rb2c.RuntimeBody;
+
+        switch (playerState) {
+
+        case PlayerComponent::Mode::Stop:// 可切换到 移动 跳跃 滞空
+            if (Input::IsKeyPressed(SL_KEY_A) || Input::IsKeyPressed(SL_KEY_D))
+                playerState = PlayerComponent::Mode::Move;
+            if (Input::IsKeyPressed(SL_KEY_W)) {
+                // -起跳操作-
+                float froceY = body->GetMass() * (vc.MaxVelocity.y / ts);
+                // 将力添加到物体瞬时跳起
+                body->ApplyForceToCenter({ 0.0f,froceY }, true);
+
+                playerState = PlayerComponent::Mode::Jump;
+                break;
+            }
+            if (vc.Velocity.y > 0.1 || vc.Velocity.y < -0.1)
+                playerState = PlayerComponent::Mode::Hover;
+            break;
+
+        case PlayerComponent::Mode::Jump:// 可切换到 滞空
+            // 跳跃状态下可以左右移动
+            // -移动操作-
+            {
+                float targetSpeed = vc.MaxVelocity.x;
+                float VelocityX = 0;
+                if (Input::IsKeyPressed(SL_KEY_A))
+                    VelocityX = -targetSpeed;
+                if (Input::IsKeyPressed(SL_KEY_D))
+                    VelocityX = targetSpeed;
+                float currentVelocityX = body->GetLinearVelocity().x;
+                float velError = VelocityX - currentVelocityX;
+                float froceX = body->GetMass() * (velError / ts);
+                // 将力添加到物体
+                body->ApplyForceToCenter({ froceX,0.0f }, true);
+            }
+
+            // -判断滞空操作-
+            if(vc.Velocity.y<=0)
+                playerState = PlayerComponent::Mode::Hover;
+            break;
+
+        case PlayerComponent::Mode::Move:// 可切换到 待机 跳跃 攻击
+            // -移动和起跳操作-
+            {
+                // 获取水平方向的目标速度值
+                float targetSpeed = vc.MaxVelocity.x;
+                float froceY = 0;
+                // 计算目标水平方向速度
+                float VelocityX = 0;
+                if (Input::IsKeyPressed(SL_KEY_A))
+                    VelocityX = -targetSpeed;
+                if (Input::IsKeyPressed(SL_KEY_D))
+                    VelocityX = targetSpeed;
+                if (Input::IsKeyPressed(SL_KEY_W))
+                    froceY = body->GetMass() * (vc.MaxVelocity.y / ts);
+
+                // 获取当前水平方向速度
+                float currentVelocityX = body->GetLinearVelocity().x;
+                // 计算当前速度误差(距离目标还差多少)
+                float velError = VelocityX - currentVelocityX;
+                // 根据误差计算力 f = m*a = m *(dtV/dtT)
+                float froceX = body->GetMass() * (velError / ts);
+                // 将力添加到物体
+                body->ApplyForceToCenter({ froceX,froceY }, true);
+                if (froceY != 0)
+                    playerState = PlayerComponent::Mode::Jump;
+            }
+            break;
+        case PlayerComponent::Mode::Attack:// 可切换到 待机
+            break;
+        case PlayerComponent::Mode::Hover:// 可切换到 待机
+            // -移动操作-
+            {
+                float targetSpeed = vc.MaxVelocity.x;
+                float VelocityX = 0;
+                if (Input::IsKeyPressed(SL_KEY_A))
+                    VelocityX = -targetSpeed;
+                if (Input::IsKeyPressed(SL_KEY_D))
+                    VelocityX = targetSpeed;
+                float currentVelocityX = body->GetLinearVelocity().x;
+                float velError = VelocityX - currentVelocityX;
+                float froceX = body->GetMass() * (velError / ts);
+                // 将力添加到物体
+                body->ApplyForceToCenter({ froceX,0.0f }, true);
+            }
+
+            // -判断着地操作-
+            if (vc.Velocity.y == 0)
+                playerState = PlayerComponent::Mode::Stop;
+            break;
+        }
+
+
+#if 0
         // 如果有2D盒组件就进行物理移动
         if (HasComponent<Rigidbody2DComponent>()) {
             auto& rb2c = GetComponent<Rigidbody2DComponent>();
@@ -118,6 +216,7 @@ namespace SoLin {
             if (Input::IsKeyPressed(SL_KEY_S))
                 translation.y -= speed * ts;
         }
+#endif
 
     }
 

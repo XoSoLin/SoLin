@@ -193,13 +193,13 @@ namespace SoLin {
     // @brief 玩家组件
     struct PlayerComponent {
         enum class Mode {
-            Move,
-            Jump,
-            Attack,
-            Fill,
-            Hind
+            Stop,       // 待机状态
+            Move,       // 移动状态
+            Jump,       // 跳跃状态
+            Attack,     // 攻击状态 
+            Hover       // 滞空状态
         };
-        Mode mode = Mode::Move;
+        Mode mode = Mode::Stop;
         PlayerComponent() = default;
         PlayerComponent(const PlayerComponent&) = default;
     };
