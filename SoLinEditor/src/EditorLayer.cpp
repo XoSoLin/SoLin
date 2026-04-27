@@ -49,7 +49,7 @@ namespace SoLin {
         m_Animation->AddFrame(SubTexture2D::Create(m_resource.getTexture("assets/textures/shelter_w.png"), { 900,800 }, { 0,0 }), 1.0f);
 
         m_Animation2 = CreateRef<Animation>();
-        m_Animation2->SetName("Su");
+        m_Animation2->SetName("Move");
         m_Animation2->AddFrame(SubTexture2D::Create(m_resource.getTexture("assets/textures/su.png"), { 66,66 }, { 0,10 }), 0.1f);
         m_Animation2->AddFrame(SubTexture2D::Create(m_resource.getTexture("assets/textures/su.png"), { 66,66 }, { 1,10 }), 0.1f);
         m_Animation2->AddFrame(SubTexture2D::Create(m_resource.getTexture("assets/textures/su.png"), { 66,66 }, { 2,10 }), 0.1f);

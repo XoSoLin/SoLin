@@ -101,6 +101,7 @@ namespace SoLin {
         CopyComponentForNewScene<TransformComponent>(dstRegistry, srcRegistry, dstEntityMap);
         CopyComponentForNewScene<CameraComponent>(dstRegistry, srcRegistry, dstEntityMap);
         CopyComponentForNewScene<SpriteComponent>(dstRegistry, srcRegistry, dstEntityMap);
+        CopyComponentForNewScene<AnimationComponent>(dstRegistry, srcRegistry, dstEntityMap);
         CopyComponentForNewScene<NativeScriptComponent>(dstRegistry, srcRegistry, dstEntityMap);
         CopyComponentForNewScene<Rigidbody2DComponent>(dstRegistry, srcRegistry, dstEntityMap);
         CopyComponentForNewScene<BoxCollider2DComponent>(dstRegistry, srcRegistry, dstEntityMap);
@@ -194,6 +195,15 @@ namespace SoLin {
                             transform.Translation.z = 0.01 * i;
                         Renderer2D::DrawSprite(transform.GetTransform(), sprite, (int)entity);
                     }
+                }
+            }
+
+            // 动画
+            auto AniView = m_Registry.view<TransformComponent, AnimationComponent>();
+            for (auto entity : AniView) {
+                auto [transform, animation] = AniView.get<TransformComponent, AnimationComponent>(entity);
+                if (animation.CurrentAnimation) {
+                    Renderer2D::PlayAnimation(transform.GetTransform(), animation, (int)entity, ts);
                 }
             }
 
@@ -399,6 +409,7 @@ namespace SoLin {
         CopyComponentIfExists<TransformComponent>(newEntity, srcEntity);
         CopyComponentIfExists<CameraComponent>(newEntity, srcEntity);
         CopyComponentIfExists<SpriteComponent>(newEntity, srcEntity);
+        CopyComponentIfExists<AnimationComponent>(newEntity, srcEntity);
         CopyComponentIfExists<NativeScriptComponent>(newEntity, srcEntity);
         CopyComponentIfExists<Rigidbody2DComponent>(newEntity, srcEntity);
         CopyComponentIfExists<BoxCollider2DComponent>(newEntity, srcEntity);

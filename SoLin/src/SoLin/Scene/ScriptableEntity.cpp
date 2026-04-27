@@ -61,6 +61,49 @@ namespace SoLin {
 //----------------------------Player------------------------------------------------------
     void ScriptPlayerController::OnCreate()
     {
+        auto a = CreateRef<Animation>();
+        a->SetName("Stop");
+        a->AddFrame(SubTexture2D::Create(Texture2D::Create("assets/textures/su.png"), { 66,66 }, { 0,11 }), 0.1f);
+        a->AddFrame(SubTexture2D::Create(Texture2D::Create("assets/textures/su.png"), { 66,66 }, { 1,11 }), 0.1f);
+        a->AddFrame(SubTexture2D::Create(Texture2D::Create("assets/textures/su.png"), { 66,66 }, { 2,11 }), 0.1f);
+        a->AddFrame(SubTexture2D::Create(Texture2D::Create("assets/textures/su.png"), { 66,66 }, { 3,11 }), 0.1f);
+        a->AddFrame(SubTexture2D::Create(Texture2D::Create("assets/textures/su.png"), { 66,66 }, { 4,11 }), 0.1f);
+        a->AddFrame(SubTexture2D::Create(Texture2D::Create("assets/textures/su.png"), { 66,66 }, { 5,11 }), 0.1f);
+        a->AddFrame(SubTexture2D::Create(Texture2D::Create("assets/textures/su.png"), { 66,66 }, { 6,11 }), 0.1f);
+        a->AddFrame(SubTexture2D::Create(Texture2D::Create("assets/textures/su.png"), { 66,66 }, { 7,11 }), 0.1f);
+
+        auto& anC = AddComponent<AnimationComponent>(a);
+
+        auto a1 = CreateRef<Animation>();
+        a1->SetName("Move");
+        a1->AddFrame(SubTexture2D::Create(Texture2D::Create("assets/textures/su.png"), { 66,66 }, { 0,10 }), 0.1f);
+        a1->AddFrame(SubTexture2D::Create(Texture2D::Create("assets/textures/su.png"), { 66,66 }, { 1,10 }), 0.1f);
+        a1->AddFrame(SubTexture2D::Create(Texture2D::Create("assets/textures/su.png"), { 66,66 }, { 2,10 }), 0.1f);
+        a1->AddFrame(SubTexture2D::Create(Texture2D::Create("assets/textures/su.png"), { 66,66 }, { 3,10 }), 0.1f);
+        a1->AddFrame(SubTexture2D::Create(Texture2D::Create("assets/textures/su.png"), { 66,66 }, { 4,10 }), 0.1f);
+        a1->AddFrame(SubTexture2D::Create(Texture2D::Create("assets/textures/su.png"), { 66,66 }, { 5,10 }), 0.1f);
+        a1->AddFrame(SubTexture2D::Create(Texture2D::Create("assets/textures/su.png"), { 66,66 }, { 6,10 }), 0.1f);
+        a1->AddFrame(SubTexture2D::Create(Texture2D::Create("assets/textures/su.png"), { 66,66 }, { 7,10 }), 0.1f);
+        a1->AddFrame(SubTexture2D::Create(Texture2D::Create("assets/textures/su.png"), { 66,66 }, { 8,10 }), 0.1f);
+        a1->AddFrame(SubTexture2D::Create(Texture2D::Create("assets/textures/su.png"), { 66,66 }, { 9,10 }), 0.1f);
+        a1->AddFrame(SubTexture2D::Create(Texture2D::Create("assets/textures/su.png"), { 66,66 }, { 10,10 }), 0.1f);
+        a1->AddFrame(SubTexture2D::Create(Texture2D::Create("assets/textures/su.png"), { 66,66 }, { 11,10 }), 0.1f);
+        anC.AnimationMap[a1->getName()] = a1;
+
+        auto a2 = CreateRef<Animation>();
+        a2->SetName("Jump");
+        a2->AddFrame(SubTexture2D::Create(Texture2D::Create("assets/textures/su.png"), { 66,66 }, { 0,8 }), 0.1f);
+        a2->AddFrame(SubTexture2D::Create(Texture2D::Create("assets/textures/su.png"), { 66,66 }, { 1,8 }), 0.1f);
+        a2->AddFrame(SubTexture2D::Create(Texture2D::Create("assets/textures/su.png"), { 66,66 }, { 2,8 }), 0.1f);
+        a2->AddFrame(SubTexture2D::Create(Texture2D::Create("assets/textures/su.png"), { 66,66 }, { 3,8 }), 0.1f);
+        a2->AddFrame(SubTexture2D::Create(Texture2D::Create("assets/textures/su.png"), { 66,66 }, { 4,8 }), 0.1f);
+        a2->AddFrame(SubTexture2D::Create(Texture2D::Create("assets/textures/su.png"), { 66,66 }, { 5,8 }), 0.1f);
+        anC.AnimationMap[a2->getName()] = a2;
+
+        auto a3 = CreateRef<Animation>();
+        a3->SetName("Hover");
+        a3->AddFrame(SubTexture2D::Create(Texture2D::Create("assets/textures/su.png"), { 66,66 }, { 5,8 }), 0.1f);
+        anC.AnimationMap[a3->getName()] = a3;
     }
 
     void ScriptPlayerController::OnDestroy()
@@ -112,7 +155,7 @@ namespace SoLin {
             }
 
             // -判断滞空操作-
-            if(vc.Velocity.y<=0)
+            if(vc.Velocity.y<0)
                 playerState = PlayerComponent::Mode::Hover;
             break;
 
@@ -141,7 +184,12 @@ namespace SoLin {
                 body->ApplyForceToCenter({ froceX,froceY }, true);
                 if (froceY != 0)
                     playerState = PlayerComponent::Mode::Jump;
+                if (VelocityX == 0)
+                    playerState = PlayerComponent::Mode::Stop;
             }
+            //// -判断待机操作-
+            //if(vc.Velocity.x==0)
+            //    playerState = PlayerComponent::Mode::Stop;
             break;
         case PlayerComponent::Mode::Attack:// 可切换到 待机
             break;
@@ -164,6 +212,25 @@ namespace SoLin {
             // -判断着地操作-
             if (vc.Velocity.y == 0)
                 playerState = PlayerComponent::Mode::Stop;
+            break;
+        }
+
+        auto& ac = GetComponent<AnimationComponent>();
+        switch (playerState) {
+        case PlayerComponent::Mode::Stop:
+            ac.CurrentAnimation = ac.AnimationMap["Stop"];
+            break;
+        case PlayerComponent::Mode::Jump:
+            ac.CurrentAnimation = ac.AnimationMap["Jump"];
+            break;
+        case PlayerComponent::Mode::Move:
+            ac.CurrentAnimation = ac.AnimationMap["Move"];
+            break;
+        case PlayerComponent::Mode::Hover:
+            ac.CurrentAnimation = ac.AnimationMap["Hover"];
+            break;
+        case PlayerComponent::Mode::Attack:
+            ac.CurrentAnimation = ac.AnimationMap["Attack"];
             break;
         }
 
