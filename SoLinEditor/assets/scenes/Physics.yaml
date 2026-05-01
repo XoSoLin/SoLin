@@ -4,7 +4,7 @@ Entities:
     TagComponent:
       Tag: BlueSquare
     TransformComponent:
-      Translation: [0.41772127, 2.2002535, 0]
+      Translation: [3.7648056, 2.0461094, 0]
       Rotation: [0, 0, 3.275545e-08]
       Scale: [1, 1, 1]
     SpriteComponent:
@@ -40,24 +40,24 @@ Entities:
       On: true
   - Entity: 12182308218179572607
     TagComponent:
-      Tag: BlueSquare
+      Tag: Circle
     TransformComponent:
-      Translation: [3.3000455, 2.2002535, 0]
+      Translation: [-1.468883, 2.9640322, 0]
       Rotation: [0, 0, 3.275545e-08]
       Scale: [1, 1, 1]
-    SpriteComponent:
-      Color: [0, 1, 1, 1]
-      Texture: "null"
-      TilingFactor: 1
+    CircleComponent:
+      Color: [0.6124019, 0.98734176, 0.9636113, 1]
+      Thickness: 1
+      Fade: 0.05
     Rigidbody2DComponent:
       BodyType: Dynamic
       FixedRotation: false
-    BoxCollider2DComponent:
+    CircleCollider2DComponent:
       Offset: [0, 0]
-      Size: [0.5, 0.5]
+      Radius: 0.5
       Density: 1
       Friction: 0.5
-      Restitution: 0
+      Restitution: 0.1
       RestitutionThreshold: 0.5
     LayerComponent:
       LayerType: Background
@@ -67,8 +67,8 @@ Entities:
       Tag: RedSquare
     TransformComponent:
       Translation: [3.6, -1.7, 0]
-      Rotation: [0, 0, 0]
-      Scale: [15.2, 1, 1]
+      Rotation: [0, 0, -0.017882098]
+      Scale: [15.200005, 1, 1]
     SpriteComponent:
       Color: [1, 0, 1, 1]
       Texture: "null"

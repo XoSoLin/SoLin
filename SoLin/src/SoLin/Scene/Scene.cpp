@@ -12,6 +12,7 @@
 #include"box2d/b2_world.h"
 #include"box2d/b2_body.h"
 #include"box2d/b2_polygon_shape.h"
+#include"box2d/b2_circle_shape.h"
 #include"box2d/b2_fixture.h"
 
 namespace SoLin {
@@ -106,6 +107,7 @@ namespace SoLin {
         CopyComponentForNewScene<NativeScriptComponent>(dstRegistry, srcRegistry, dstEntityMap);
         CopyComponentForNewScene<Rigidbody2DComponent>(dstRegistry, srcRegistry, dstEntityMap);
         CopyComponentForNewScene<BoxCollider2DComponent>(dstRegistry, srcRegistry, dstEntityMap);
+        CopyComponentForNewScene<CircleCollider2DComponent>(dstRegistry, srcRegistry, dstEntityMap);
         CopyComponentForNewScene<VelocityComponent>(dstRegistry, srcRegistry, dstEntityMap);
         CopyComponentForNewScene<PlayerComponent>(dstRegistry, srcRegistry, dstEntityMap);
         CopyComponentForNewScene<CameraControllerComponent>(dstRegistry, srcRegistry, dstEntityMap);
@@ -349,6 +351,7 @@ namespace SoLin {
             rb2c.RuntimeBody = body;
 
             // 添加碰撞体
+            // Quad
             if (entity.HasComponent<BoxCollider2DComponent>())
             {
                 auto& bc2c = entity.GetComponent<BoxCollider2DComponent>();
@@ -362,6 +365,24 @@ namespace SoLin {
                 fixtureDef.friction = bc2c.Friction;
                 fixtureDef.restitution = bc2c.Restitution;
                 fixtureDef.restitutionThreshold = bc2c.RestitutionThreshold;
+
+                body->CreateFixture(&fixtureDef);
+            }
+            // Circle
+            if (entity.HasComponent<CircleCollider2DComponent>())
+            {
+                auto& cc2c = entity.GetComponent<CircleCollider2DComponent>();
+
+                b2CircleShape circleShape;
+                circleShape.m_p.Set(cc2c.Offset.x, cc2c.Offset.y);
+                circleShape.m_radius = cc2c.Radius;
+
+                b2FixtureDef fixtureDef;
+                fixtureDef.shape = &circleShape;
+                fixtureDef.density = cc2c.Density;
+                fixtureDef.friction = cc2c.Friction;
+                fixtureDef.restitution = cc2c.Restitution;
+                fixtureDef.restitutionThreshold = cc2c.RestitutionThreshold;
 
                 body->CreateFixture(&fixtureDef);
             }
@@ -433,6 +454,7 @@ namespace SoLin {
         CopyComponentIfExists<NativeScriptComponent>(newEntity, srcEntity);
         CopyComponentIfExists<Rigidbody2DComponent>(newEntity, srcEntity);
         CopyComponentIfExists<BoxCollider2DComponent>(newEntity, srcEntity);
+        CopyComponentIfExists<CircleCollider2DComponent>(newEntity, srcEntity);
         CopyComponentIfExists<VelocityComponent>(newEntity, srcEntity);
         CopyComponentIfExists<PlayerComponent>(newEntity, srcEntity);
         CopyComponentIfExists<CameraControllerComponent>(newEntity, srcEntity);
@@ -483,6 +505,10 @@ namespace SoLin {
     template<>
     void Scene::OnComponentAdded<BoxCollider2DComponent>
         (Entity entity, BoxCollider2DComponent& component) {
+    }
+    template<>
+    void Scene::OnComponentAdded<CircleCollider2DComponent>
+        (Entity entity, CircleCollider2DComponent& component) {
     }
     template<>
     void Scene::OnComponentAdded<VelocityComponent>

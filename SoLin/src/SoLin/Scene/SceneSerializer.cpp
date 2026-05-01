@@ -367,6 +367,19 @@ namespace SoLin {
             out << YAML::EndMap;
         }
 
+        if (entity.HasComponent<CircleComponent>())
+        {
+            out << YAML::Key << "CircleComponent";
+            out << YAML::BeginMap;
+
+            auto& circleComponent = entity.GetComponent<CircleComponent>();
+            out << YAML::Key << "Color" << YAML::Value << circleComponent.Color;
+            out << YAML::Key << "Thickness" << YAML::Value << circleComponent.Thickness;
+            out << YAML::Key << "Fade" << YAML::Value << circleComponent.Fade;
+
+            out << YAML::EndMap;
+        }
+
         if (entity.HasComponent<Rigidbody2DComponent>())
         {
             out << YAML::Key << "Rigidbody2DComponent";
@@ -393,6 +406,23 @@ namespace SoLin {
             out << YAML::Key << "Friction" << YAML::Value << bc2dComponent.Friction;
             out << YAML::Key << "Restitution" << YAML::Value << bc2dComponent.Restitution;
             out << YAML::Key << "RestitutionThreshold" << YAML::Value << bc2dComponent.RestitutionThreshold;
+
+            out << YAML::EndMap;
+        }
+
+        if (entity.HasComponent<CircleCollider2DComponent>())
+        {
+            out << YAML::Key << "CircleCollider2DComponent";
+
+            out << YAML::BeginMap;
+
+            auto& cc2dComponent = entity.GetComponent<CircleCollider2DComponent>();
+            out << YAML::Key << "Offset" << YAML::Value << cc2dComponent.Offset;
+            out << YAML::Key << "Radius" << YAML::Value << cc2dComponent.Radius;
+            out << YAML::Key << "Density" << YAML::Value << cc2dComponent.Density;
+            out << YAML::Key << "Friction" << YAML::Value << cc2dComponent.Friction;
+            out << YAML::Key << "Restitution" << YAML::Value << cc2dComponent.Restitution;
+            out << YAML::Key << "RestitutionThreshold" << YAML::Value << cc2dComponent.RestitutionThreshold;
 
             out << YAML::EndMap;
         }
@@ -500,6 +530,16 @@ namespace SoLin {
             sc.TilingFactor = spriteComponent["TilingFactor"].as<float>();
         }
 
+        // 圆形组件
+        auto circleComponent = data["CircleComponent"];
+        if (circleComponent)
+        {
+            auto& circleC = entity.AddComponent<CircleComponent>();
+            circleC.Color = circleComponent["Color"].as<glm::vec4>();
+            circleC.Thickness = circleComponent["Thickness"].as<float>();
+            circleC.Fade = circleComponent["Fade"].as<float>();
+        }
+
         // 2D刚体组件
         auto rigidbody2DComponent = data["Rigidbody2DComponent"];
         if (rigidbody2DComponent)
@@ -520,6 +560,19 @@ namespace SoLin {
             bc2c.Friction = boxCollider2DComponent["Friction"].as<float>();
             bc2c.Restitution = boxCollider2DComponent["Restitution"].as<float>();
             bc2c.RestitutionThreshold = boxCollider2DComponent["RestitutionThreshold"].as<float>();
+        }
+
+        // 2D碰撞球
+        auto circleCollider2DComponent = data["CircleCollider2DComponent"];
+        if (circleCollider2DComponent)
+        {
+            auto& cc2c = entity.AddComponent<CircleCollider2DComponent>();
+            cc2c.Offset = circleCollider2DComponent["Offset"].as<glm::vec2>();
+            cc2c.Radius = circleCollider2DComponent["Radius"].as<float>();
+            cc2c.Density = circleCollider2DComponent["Density"].as<float>();
+            cc2c.Friction = circleCollider2DComponent["Friction"].as<float>();
+            cc2c.Restitution = circleCollider2DComponent["Restitution"].as<float>();
+            cc2c.RestitutionThreshold = circleCollider2DComponent["RestitutionThreshold"].as<float>();
         }
 
         // 速度
