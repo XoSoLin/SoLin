@@ -101,6 +101,7 @@ namespace SoLin {
         CopyComponentForNewScene<TransformComponent>(dstRegistry, srcRegistry, dstEntityMap);
         CopyComponentForNewScene<CameraComponent>(dstRegistry, srcRegistry, dstEntityMap);
         CopyComponentForNewScene<SpriteComponent>(dstRegistry, srcRegistry, dstEntityMap);
+        CopyComponentForNewScene<CircleComponent>(dstRegistry, srcRegistry, dstEntityMap);
         CopyComponentForNewScene<AnimationComponent>(dstRegistry, srcRegistry, dstEntityMap);
         CopyComponentForNewScene<NativeScriptComponent>(dstRegistry, srcRegistry, dstEntityMap);
         CopyComponentForNewScene<Rigidbody2DComponent>(dstRegistry, srcRegistry, dstEntityMap);
@@ -198,6 +199,15 @@ namespace SoLin {
                 }
             }
 
+            // Circle
+            {
+                auto& view = m_Registry.view<TransformComponent, CircleComponent>();
+                for (auto entity : view) {
+                    auto [transform, circle] = view.get<TransformComponent, CircleComponent>(entity);
+                    Renderer2D::DrawCircleSprite(transform.GetTransform(), circle, (int)entity);
+                }
+            }
+
             // 动画
             auto AniView = m_Registry.view<TransformComponent, AnimationComponent>();
             for (auto entity : AniView) {
@@ -236,6 +246,15 @@ namespace SoLin {
 
         //    Renderer2D::DrawSprite(transform.GetTransform(), sprite,(int)entity);
         //}
+
+        // Circle
+        {
+            auto& view = m_Registry.view<TransformComponent, CircleComponent>();
+            for (auto entity : view) {
+                auto [transform, circle] = view.get<TransformComponent, CircleComponent>(entity);
+                Renderer2D::DrawCircleSprite(transform.GetTransform(), circle, (int)entity);
+            }
+        }
 
         auto AniView = m_Registry.view<TransformComponent, AnimationComponent>();
         for (auto entity : AniView) {
@@ -409,6 +428,7 @@ namespace SoLin {
         CopyComponentIfExists<TransformComponent>(newEntity, srcEntity);
         CopyComponentIfExists<CameraComponent>(newEntity, srcEntity);
         CopyComponentIfExists<SpriteComponent>(newEntity, srcEntity);
+        CopyComponentIfExists<CircleComponent>(newEntity, srcEntity);
         CopyComponentIfExists<AnimationComponent>(newEntity, srcEntity);
         CopyComponentIfExists<NativeScriptComponent>(newEntity, srcEntity);
         CopyComponentIfExists<Rigidbody2DComponent>(newEntity, srcEntity);
@@ -436,6 +456,9 @@ namespace SoLin {
     template<>
     void Scene::OnComponentAdded<SpriteComponent>
         (Entity entity, SpriteComponent& component){}
+    template<>
+    void Scene::OnComponentAdded<CircleComponent>
+        (Entity entity, CircleComponent& component) {}
     template<>
     void Scene::OnComponentAdded<AnimationComponent>
         (Entity entity,AnimationComponent& component)

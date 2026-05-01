@@ -184,19 +184,31 @@ namespace SoLin {
             const Ref<SubTexture2D>& subtexture, float tilingFactor = 1.0f,
             const glm::vec4& tintColor = glm::vec4(1.0f));
 
+        // @brief 画圆形
+        //@param transform 变换矩阵
+        //@param color 颜色
+        //@param thickness 厚度
+        //@param fade 
+        //@param entityID 实体ID
+        static void DrawCircle(
+            const glm::mat4& transform, const glm::vec4& color, float thickness = 1.0f,
+            float fade = 0.005f, const int& entityID = -1);
+
         //-----------------------------精灵------------------------------------
         static void DrawSprite(const glm::mat4& transform, const SpriteComponent& src, const int& entityID);
+        // @brief 画圆形精灵
+        static void DrawCircleSprite(const glm::mat4& transform, const CircleComponent& src, const int& entityID);
 
         //后续应该会迁移到别处
         static void PlayAnimation(const glm::mat4& transform, AnimationComponent& anc, const int& entityID,float ts);
 
         struct Statistics {
             uint32_t DrawCalls;
-            uint32_t QuadCount;
+            uint32_t GraphicCount;
 
             // 函数被调用时再计算Vertex或Index，节省性能
-            uint32_t GetVertexCount() { return QuadCount * 4; }
-            uint32_t GetIndexCount() { return QuadCount * 6; }
+            uint32_t GetVertexCount() { return GraphicCount * 4; }
+            uint32_t GetIndexCount() { return GraphicCount * 6; }
         };
 
         static void ClearStats();

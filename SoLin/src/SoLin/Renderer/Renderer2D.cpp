@@ -23,12 +23,25 @@ namespace SoLin {
         int EntityID;
     };
 
+    // @brief 圆形顶点结构
+    struct CircleVertex {
+        glm::vec3 WorldPosition;
+        glm::vec2 LocalPosition;
+        glm::vec4 Color;
+        float Thickness;
+        float Fade;
+
+        int EntityID;
+    };
+
 	//@brief 2D渲染存储
 	struct Renderer2DData {
         static const uint32_t MaxTextureSlots = 32;
         static const uint32_t MaxQuads = 1000;
         static const uint32_t MaxVertices = MaxQuads * 4;
         static const uint32_t MaxIndices = MaxQuads * 6;
+
+        // Quad-----------------------------------------------------
 
 		Ref<VertexArray> QuadVA;		//方形顶点数组指针
         Ref<VertexBuffer> QuadVB;       //方形顶点缓冲区指针
@@ -40,6 +53,18 @@ namespace SoLin {
         QuadVertex* QuadVBBase = nullptr;       //顶点指针起始
         QuadVertex* QuadVBHind = nullptr;       //顶点指针末尾
 
+        // Circle---------------------------------------------------
+
+        Ref<VertexArray> CircleVA;
+        Ref<VertexBuffer> CircleVB;
+        Ref<Shader> CircleShader;
+
+        uint32_t CircleIndexCount = 0;
+        CircleVertex* CircleVBBase = nullptr;
+        CircleVertex* CircleVBHind = nullptr;
+
+        // End-----------------------------------------------------
+
         std::array<Ref<Texture2D>, MaxTextureSlots> Textures;
         //从1开始，0是白色纹理用来扩展纯色渲染
         uint32_t TextureSlotIndex = 1;
@@ -49,6 +74,12 @@ namespace SoLin {
             {  0.5f, -0.5f, 0.0f, 1.0f },
             {  0.5f,  0.5f, 0.0f, 1.0f },
             { -0.5f,  0.5f, 0.0f, 1.0f }
+        };
+        glm::vec4 CircleLocalPosition[4]{
+            { -1.0f, -1.0f, 0.0f, 1.0f },
+            {  1.0f, -1.0f, 0.0f, 1.0f },
+            {  1.0f,  1.0f, 0.0f, 1.0f },
+            { -1.0f,  1.0f, 0.0f, 1.0f }
         };
 
         Renderer2D::Statistics Stats;
@@ -63,6 +94,8 @@ namespace SoLin {
         //-------------VB----------------
         //GPU创建顶点缓冲区(暂无数据)
         s_Data.QuadVB = VertexBuffer::Create(s_Data.MaxVertices * sizeof(QuadVertex));
+
+        s_Data.CircleVB = VertexBuffer::Create(s_Data.MaxVertices * sizeof(CircleVertex));
 		//设置布局后设置
 		BufferLayout squareLayout = {
 			{ShaderDataType::Float3,"a_Position"},
@@ -73,6 +106,16 @@ namespace SoLin {
             {ShaderDataType::Int,"a_EntityID"}
 		};
 		s_Data.QuadVB->SetLayout(squareLayout);
+
+        BufferLayout circleLayout = {
+            {ShaderDataType::Float3, "a_WorldPosition"},
+            {ShaderDataType::Float2, "a_LocalPosition"},
+            {ShaderDataType::Float4, "a_Color"		  },
+            {ShaderDataType::Float,  "a_Thickness"	  },
+            {ShaderDataType::Float,  "a_Fade"		  },
+            {ShaderDataType::Int,    "a_EntityID"	  }
+        };
+        s_Data.CircleVB->SetLayout(circleLayout);
 
 		//-------------IB----------------
         //CPU在堆上设置索引数据
@@ -100,8 +143,14 @@ namespace SoLin {
 		s_Data.QuadVA->AddVertexBuffer(s_Data.QuadVB);
 		s_Data.QuadVA->SetIndexBuffer(s_Data.QuadIB);
 
+        s_Data.CircleVA = VertexArray::Create();
+        s_Data.CircleVA->AddVertexBuffer(s_Data.CircleVB);
+        s_Data.CircleVA->SetIndexBuffer(s_Data.QuadIB);
+
         // CPU在堆上创建VB数据，并保存VB指针初始位置
         s_Data.QuadVBBase = new QuadVertex[s_Data.MaxVertices];
+
+        s_Data.CircleVBBase = new CircleVertex[s_Data.MaxVertices];
 
         // 创建采样器
         int32_t samplers[s_Data.MaxTextureSlots];
@@ -112,6 +161,8 @@ namespace SoLin {
 		s_Data.TextureShader = Shader::Create("assets/shaders/TextureShader.glsl");
 		s_Data.TextureShader->Bind();
 		s_Data.TextureShader->SetIntArray("u_Textures",samplers,s_Data.MaxTextureSlots);
+
+        s_Data.CircleShader = Shader::Create("assets/shaders/Renderer2D_Circle.glsl");
 
         //-----------Texture-------------
 		//创建单像素白色纹理
@@ -126,6 +177,7 @@ namespace SoLin {
         SL_PROFILE_FUNCTION();
 
         delete[] s_Data.QuadVBBase;
+        delete[] s_Data.CircleVBBase;
 	}
 
     void Renderer2D::BeginScene(const Camera& camera, const glm::mat4& viewMatrix)
@@ -136,11 +188,16 @@ namespace SoLin {
 
         s_Data.TextureShader->Bind();
         s_Data.TextureShader->SetMat4("u_ViewProjection", viewProjectionMatrix);
+        s_Data.CircleShader->Bind();
+        s_Data.CircleShader->SetMat4("u_ViewProjection", viewProjectionMatrix);
 
         // 批渲染重置计数和尾指针
         s_Data.QuadIndexCount = 0;
         s_Data.TextureSlotIndex = 1;
         s_Data.QuadVBHind = s_Data.QuadVBBase;
+
+        s_Data.CircleIndexCount = 0;
+        s_Data.CircleVBHind = s_Data.CircleVBBase;
     }
 
     void Renderer2D::BeginScene(const OrthoGraphicCamera& camera)
@@ -149,11 +206,16 @@ namespace SoLin {
 
 		s_Data.TextureShader->Bind();
 		s_Data.TextureShader->SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
+        s_Data.CircleShader->Bind();
+        s_Data.CircleShader->SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
 
         // 批渲染重置计数和尾指针
         s_Data.QuadIndexCount = 0;
         s_Data.TextureSlotIndex = 1;
         s_Data.QuadVBHind = s_Data.QuadVBBase;
+
+        s_Data.CircleIndexCount = 0;
+        s_Data.CircleVBHind = s_Data.CircleVBBase;
 	}
 
     void Renderer2D::BeginScene(const EditorCamera& camera)
@@ -164,20 +226,25 @@ namespace SoLin {
 
         s_Data.TextureShader->Bind();
         s_Data.TextureShader->SetMat4("u_ViewProjection", viewProjectionMatrix);
+        s_Data.CircleShader->Bind();
+        s_Data.CircleShader->SetMat4("u_ViewProjection", viewProjectionMatrix);
 
         // 批渲染重置计数和尾指针
         s_Data.QuadIndexCount = 0;
         s_Data.TextureSlotIndex = 1;
         s_Data.QuadVBHind = s_Data.QuadVBBase;
+
+        s_Data.CircleIndexCount = 0;
+        s_Data.CircleVBHind = s_Data.CircleVBBase;
     }
 
 	void Renderer2D::EndScene()
 	{
         SL_PROFILE_FUNCTION();
 
-        uint32_t dataSize = uint32_t((uint8_t*)s_Data.QuadVBHind - (uint8_t*)s_Data.QuadVBBase);
-        //将堆上的数据更新至GPU的顶点缓冲区
-        s_Data.QuadVB->SetData(s_Data.QuadVBBase, dataSize);
+        //uint32_t dataSize = uint32_t((uint8_t*)s_Data.QuadVBHind - (uint8_t*)s_Data.QuadVBBase);
+        ////将堆上的数据更新至GPU的顶点缓冲区
+        //s_Data.QuadVB->SetData(s_Data.QuadVBBase, dataSize);
 
         // 更新数据之后绘制（刷新）
         Flush();
@@ -187,17 +254,31 @@ namespace SoLin {
     {
         SL_PROFILE_FUNCTION();
 
-        if (s_Data.QuadIndexCount == 0)
-            return;
+        // Quad
+        if (s_Data.QuadIndexCount) {
+            uint32_t dataSize = uint32_t((uint8_t*)s_Data.QuadVBHind - (uint8_t*)s_Data.QuadVBBase);
+            //将堆上的数据更新至GPU的顶点缓冲区
+            s_Data.QuadVB->SetData(s_Data.QuadVBBase, dataSize);
 
-        //绑定纹理
-        for (uint32_t i = 0;i < s_Data.TextureSlotIndex;i++)
-            s_Data.Textures[i]->Bind(i);
+            //绑定纹理
+            for (uint32_t i = 0;i < s_Data.TextureSlotIndex;i++)
+                s_Data.Textures[i]->Bind(i);
 
-        //进行批渲染绘制
-        RendererCommand::DrawIndexed(s_Data.QuadVA, s_Data.QuadIndexCount);
+            s_Data.TextureShader->Bind();
+            //进行批渲染绘制
+            RendererCommand::DrawIndexed(s_Data.QuadVA, s_Data.QuadIndexCount);
+            s_Data.Stats.DrawCalls++;
+        }
 
-        s_Data.Stats.DrawCalls++;
+        // Circle
+        if (s_Data.CircleIndexCount) {
+            uint32_t dataSize = uint32_t((uint8_t*)s_Data.CircleVBHind - (uint8_t*)s_Data.CircleVBBase);
+            s_Data.CircleVB->SetData(s_Data.CircleVBBase, dataSize);
+
+            s_Data.CircleShader->Bind();
+            RendererCommand::DrawIndexed(s_Data.CircleVA, s_Data.CircleIndexCount);
+            s_Data.Stats.DrawCalls++;
+        }
     }
 
     // 如果当前绘制的顶点（或索引）超出了一次批渲染的限制，
@@ -206,9 +287,16 @@ namespace SoLin {
     {
         EndScene();
 
-        s_Data.QuadIndexCount = 0;
-        s_Data.TextureSlotIndex = 1;
-        s_Data.QuadVBHind = s_Data.QuadVBBase;
+        if (s_Data.QuadIndexCount) {
+            s_Data.QuadIndexCount = 0;
+            s_Data.TextureSlotIndex = 1;
+            s_Data.QuadVBHind = s_Data.QuadVBBase;
+        }
+
+        if (s_Data.CircleIndexCount) {
+            s_Data.CircleIndexCount = 0;
+            s_Data.CircleVBHind = s_Data.CircleVBBase;
+        }
     }
 
     void Renderer2D::QuadTransportGLSL(
@@ -233,7 +321,7 @@ namespace SoLin {
         }
 
         s_Data.QuadIndexCount += 6;
-        s_Data.Stats.QuadCount++;
+        s_Data.Stats.GraphicCount++;
     }
 
     void Renderer2D::QuadGetTextureIndex(const Ref<Texture2D>& texture,float& index)
@@ -563,12 +651,40 @@ namespace SoLin {
     {
         return s_Data.Stats;
     }
+
+    void Renderer2D::DrawCircle(const glm::mat4& transform, const glm::vec4& color, float thickness /*= 1.0f*/, float fade /*= 0.005f*/, const int& entityID /*= -1*/)
+    {
+        SL_PROFILE_FUNCTION();
+
+        if (s_Data.CircleIndexCount >= s_Data.MaxIndices) {
+            FlushAndReset();
+        }
+        constexpr size_t cirtcleVertexCount = 4;
+        for(size_t i = 0;i<cirtcleVertexCount;i++)
+        {
+            s_Data.CircleVBHind->WorldPosition = transform * s_Data.QuadVertexPosition[i];
+            s_Data.CircleVBHind->LocalPosition = s_Data.CircleLocalPosition[i];
+            s_Data.CircleVBHind->Color = color;
+            s_Data.CircleVBHind->Thickness = thickness;
+            s_Data.CircleVBHind->Fade = fade;
+            s_Data.CircleVBHind->EntityID = entityID;
+            s_Data.CircleVBHind++;
+        }
+
+        s_Data.CircleIndexCount += 6;
+        s_Data.Stats.GraphicCount++;
+    }
+
     void Renderer2D::DrawSprite(const glm::mat4& transform, const SpriteComponent& src, const int& entityID)
     {
         if (src.Texture)
             DrawQuad(transform, src.Texture, src.TilingFactor, src.Color, entityID);
         else
             DrawQuad(transform, src.Color, entityID);
+    }
+    void Renderer2D::DrawCircleSprite(const glm::mat4& transform, const CircleComponent& src, const int& entityID)
+    {
+        DrawCircle(transform,src.Color,src.Thickness,src.Fade,entityID);
     }
     void Renderer2D::PlayAnimation(const glm::mat4& transform, AnimationComponent& anc, const int& entityID,float ts)
     {

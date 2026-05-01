@@ -61,12 +61,18 @@ namespace SoLin {
 	}
 	void OpenGLRendererAPI::DrawIndexed(const Ref<VertexArray>& vertexArray)
 	{
+        // 绑定VA
+        vertexArray->Bind();
+
 		glDrawElements(GL_TRIANGLES, vertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
 		// 渲染完后解绑当前纹理，避免影响后续纹理渲染
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
     void OpenGLRendererAPI::DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount)
     {
+        // 绑定VA
+        vertexArray->Bind();
+
         glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, nullptr);
         glBindTexture(GL_TEXTURE_2D, 0);
     }

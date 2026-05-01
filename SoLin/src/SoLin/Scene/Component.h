@@ -81,6 +81,22 @@ namespace SoLin {
         operator const glm::vec4& ()const { return Color; }
     };
 
+    //@brief 圆形组件
+    struct CircleComponent {
+        glm::vec4 Color{ 1.0f,1.0f,1.0f,1.0f };
+        float Thickness = 1.0f;
+        float Fade = 0.005f;
+
+        CircleComponent() = default;
+        CircleComponent(const glm::vec4& color)
+            :Color(color) {
+        };
+        CircleComponent(const CircleComponent&) = default;
+
+        operator glm::vec4& () { return Color; }
+        operator const glm::vec4& ()const { return Color; }
+    };
+
     // @brief 动画组件
     struct AnimationComponent {
         // 动画映射
