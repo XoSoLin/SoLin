@@ -8,6 +8,7 @@
 #include"Texture.h"
 #include"RendererCommand.h"
 #include"Platform/OpenGL/OpenGLShader.h"
+#include"SoLin/Renderer/UniformBuffer.h"
 
 namespace SoLin {
 
@@ -83,6 +84,13 @@ namespace SoLin {
         };
 
         Renderer2D::Statistics Stats;
+
+        struct CameraData {
+            glm::mat4 ViewProjection;
+        };
+        CameraData CameraBuffer;
+
+        Ref<UniformBuffer> CameraUniformBuffer;
 	};
 	static Renderer2DData s_Data;	    //2D渲染器数据(批渲染改为栈上分配)
 
@@ -152,17 +160,20 @@ namespace SoLin {
 
         s_Data.CircleVBBase = new CircleVertex[s_Data.MaxVertices];
 
-        // 创建采样器
-        int32_t samplers[s_Data.MaxTextureSlots];
-        for (uint32_t i = 0;i < s_Data.MaxTextureSlots;i++)
-            samplers[i] = i;
+        //// 创建采样器
+        //int32_t samplers[s_Data.MaxTextureSlots];
+        //for (uint32_t i = 0;i < s_Data.MaxTextureSlots;i++)
+        //    samplers[i] = i;
 
         //-----------Shader--------------
 		s_Data.TextureShader = Shader::Create("assets/shaders/TextureShader.glsl");
-		s_Data.TextureShader->Bind();
-		s_Data.TextureShader->SetIntArray("u_Textures",samplers,s_Data.MaxTextureSlots);
+		/*s_Data.TextureShader->Bind();
+		s_Data.TextureShader->SetIntArray("u_Textures",samplers,s_Data.MaxTextureSlots);*/
 
         s_Data.CircleShader = Shader::Create("assets/shaders/Renderer2D_Circle.glsl");
+
+        //-----------UBO-----------------
+        s_Data.CameraUniformBuffer = UniformBuffer::Create(sizeof(Renderer2DData::CameraData), 0);
 
         //-----------Texture-------------
 		//创建单像素白色纹理
@@ -184,12 +195,8 @@ namespace SoLin {
     {
         SL_PROFILE_FUNCTION();
 
-        glm::mat4 viewProjectionMatrix = camera.GetProjection() * viewMatrix;
-
-        s_Data.TextureShader->Bind();
-        s_Data.TextureShader->SetMat4("u_ViewProjection", viewProjectionMatrix);
-        s_Data.CircleShader->Bind();
-        s_Data.CircleShader->SetMat4("u_ViewProjection", viewProjectionMatrix);
+        s_Data.CameraBuffer.ViewProjection = camera.GetProjection() * viewMatrix;
+        s_Data.CameraUniformBuffer->SetData(&s_Data.CameraBuffer, sizeof(Renderer2DData::CameraData));
 
         // 批渲染重置计数和尾指针
         s_Data.QuadIndexCount = 0;
@@ -204,10 +211,8 @@ namespace SoLin {
 	{
         SL_PROFILE_FUNCTION();
 
-		s_Data.TextureShader->Bind();
-		s_Data.TextureShader->SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
-        s_Data.CircleShader->Bind();
-        s_Data.CircleShader->SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
+        s_Data.CameraBuffer.ViewProjection = camera.GetViewProjectionMatrix();
+        s_Data.CameraUniformBuffer->SetData(&s_Data.CameraBuffer, sizeof(Renderer2DData::CameraData));
 
         // 批渲染重置计数和尾指针
         s_Data.QuadIndexCount = 0;
@@ -222,12 +227,8 @@ namespace SoLin {
     {
         SL_PROFILE_FUNCTION();
 
-        glm::mat4 viewProjectionMatrix = camera.GetViewProjection();
-
-        s_Data.TextureShader->Bind();
-        s_Data.TextureShader->SetMat4("u_ViewProjection", viewProjectionMatrix);
-        s_Data.CircleShader->Bind();
-        s_Data.CircleShader->SetMat4("u_ViewProjection", viewProjectionMatrix);
+        s_Data.CameraBuffer.ViewProjection = camera.GetViewProjection();
+        s_Data.CameraUniformBuffer->SetData(&s_Data.CameraBuffer, sizeof(Renderer2DData::CameraData));
 
         // 批渲染重置计数和尾指针
         s_Data.QuadIndexCount = 0;
@@ -241,10 +242,6 @@ namespace SoLin {
 	void Renderer2D::EndScene()
 	{
         SL_PROFILE_FUNCTION();
-
-        //uint32_t dataSize = uint32_t((uint8_t*)s_Data.QuadVBHind - (uint8_t*)s_Data.QuadVBBase);
-        ////将堆上的数据更新至GPU的顶点缓冲区
-        //s_Data.QuadVB->SetData(s_Data.QuadVBBase, dataSize);
 
         // 更新数据之后绘制（刷新）
         Flush();
