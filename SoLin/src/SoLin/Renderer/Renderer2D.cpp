@@ -11,6 +11,13 @@
 #include"SoLin/Renderer/UniformBuffer.h"
 
 namespace SoLin {
+    // @brief 线条顶点结构
+    struct LineVertex {
+        glm::vec3 Position;
+        glm::vec4 Color;
+
+        int EntityID;
+    };
 
     // @brief 四边形顶点结构
     struct QuadVertex {
@@ -41,6 +48,17 @@ namespace SoLin {
         static const uint32_t MaxQuads = 1000;
         static const uint32_t MaxVertices = MaxQuads * 4;
         static const uint32_t MaxIndices = MaxQuads * 6;
+
+        // Line-----------------------------------------------------
+
+        float LineWidth = 4;
+        Ref<VertexArray> LineVA;
+        Ref<VertexBuffer> LineVB;
+        Ref<Shader> LineShader;
+
+        uint32_t LineIndexCount = 0;
+        LineVertex* LineVBBase = nullptr;
+        LineVertex* LineVBHind = nullptr;
 
         // Quad-----------------------------------------------------
 
@@ -101,10 +119,17 @@ namespace SoLin {
 
         //-------------VB----------------
         //GPU创建顶点缓冲区(暂无数据)
+        s_Data.LineVB = VertexBuffer::Create(s_Data.MaxVertices * sizeof(LineVertex));
         s_Data.QuadVB = VertexBuffer::Create(s_Data.MaxVertices * sizeof(QuadVertex));
-
         s_Data.CircleVB = VertexBuffer::Create(s_Data.MaxVertices * sizeof(CircleVertex));
 		//设置布局后设置
+        BufferLayout lineLayout = {
+            {ShaderDataType::Float3,"a_Position"},
+            {ShaderDataType::Float4,"a_Color"},
+            {ShaderDataType::Int,"a_EntityID"}
+        };
+        s_Data.LineVB->SetLayout(lineLayout);
+
 		BufferLayout squareLayout = {
 			{ShaderDataType::Float3,"a_Position"},
             {ShaderDataType::Float4,"a_Color"},
@@ -147,6 +172,9 @@ namespace SoLin {
 
 
         //-------------VA----------------
+        s_Data.LineVA = VertexArray::Create();
+        s_Data.LineVA->AddVertexBuffer(s_Data.LineVB);
+
 		s_Data.QuadVA = VertexArray::Create();
 		s_Data.QuadVA->AddVertexBuffer(s_Data.QuadVB);
 		s_Data.QuadVA->SetIndexBuffer(s_Data.QuadIB);
@@ -156,8 +184,8 @@ namespace SoLin {
         s_Data.CircleVA->SetIndexBuffer(s_Data.QuadIB);
 
         // CPU在堆上创建VB数据，并保存VB指针初始位置
+        s_Data.LineVBBase = new LineVertex[s_Data.MaxVertices];
         s_Data.QuadVBBase = new QuadVertex[s_Data.MaxVertices];
-
         s_Data.CircleVBBase = new CircleVertex[s_Data.MaxVertices];
 
         //// 创建采样器
@@ -166,6 +194,7 @@ namespace SoLin {
         //    samplers[i] = i;
 
         //-----------Shader--------------
+        s_Data.LineShader = Shader::Create("assets/shaders/Renderer2D_Line.glsl");
 		s_Data.TextureShader = Shader::Create("assets/shaders/TextureShader.glsl");
 		/*s_Data.TextureShader->Bind();
 		s_Data.TextureShader->SetIntArray("u_Textures",samplers,s_Data.MaxTextureSlots);*/
@@ -198,13 +227,7 @@ namespace SoLin {
         s_Data.CameraBuffer.ViewProjection = camera.GetProjection() * viewMatrix;
         s_Data.CameraUniformBuffer->SetData(&s_Data.CameraBuffer, sizeof(Renderer2DData::CameraData));
 
-        // 批渲染重置计数和尾指针
-        s_Data.QuadIndexCount = 0;
-        s_Data.TextureSlotIndex = 1;
-        s_Data.QuadVBHind = s_Data.QuadVBBase;
-
-        s_Data.CircleIndexCount = 0;
-        s_Data.CircleVBHind = s_Data.CircleVBBase;
+        StartBatch();
     }
 
     void Renderer2D::BeginScene(const OrthoGraphicCamera& camera)
@@ -214,13 +237,7 @@ namespace SoLin {
         s_Data.CameraBuffer.ViewProjection = camera.GetViewProjectionMatrix();
         s_Data.CameraUniformBuffer->SetData(&s_Data.CameraBuffer, sizeof(Renderer2DData::CameraData));
 
-        // 批渲染重置计数和尾指针
-        s_Data.QuadIndexCount = 0;
-        s_Data.TextureSlotIndex = 1;
-        s_Data.QuadVBHind = s_Data.QuadVBBase;
-
-        s_Data.CircleIndexCount = 0;
-        s_Data.CircleVBHind = s_Data.CircleVBBase;
+        StartBatch();
 	}
 
     void Renderer2D::BeginScene(const EditorCamera& camera)
@@ -230,13 +247,7 @@ namespace SoLin {
         s_Data.CameraBuffer.ViewProjection = camera.GetViewProjection();
         s_Data.CameraUniformBuffer->SetData(&s_Data.CameraBuffer, sizeof(Renderer2DData::CameraData));
 
-        // 批渲染重置计数和尾指针
-        s_Data.QuadIndexCount = 0;
-        s_Data.TextureSlotIndex = 1;
-        s_Data.QuadVBHind = s_Data.QuadVBBase;
-
-        s_Data.CircleIndexCount = 0;
-        s_Data.CircleVBHind = s_Data.CircleVBBase;
+        StartBatch();
     }
 
 	void Renderer2D::EndScene()
@@ -247,9 +258,34 @@ namespace SoLin {
         Flush();
 	}
 
+    void Renderer2D::StartBatch()
+    {
+        // 批渲染重置计数和尾指针
+        s_Data.QuadIndexCount = 0;
+        s_Data.TextureSlotIndex = 1;
+        s_Data.QuadVBHind = s_Data.QuadVBBase;
+
+        s_Data.CircleIndexCount = 0;
+        s_Data.CircleVBHind = s_Data.CircleVBBase;
+
+        s_Data.LineIndexCount = 0;
+        s_Data.LineVBHind = s_Data.LineVBBase;
+    }
+
     void Renderer2D::Flush()
     {
         SL_PROFILE_FUNCTION();
+
+        // Line
+        if (s_Data.LineIndexCount) {
+            uint32_t dataSize = uint32_t((uint8_t*)s_Data.LineVBHind - (uint8_t*)s_Data.LineVBBase);
+            s_Data.LineVB->SetData(s_Data.LineVBBase, dataSize);
+
+            s_Data.LineShader->Bind();
+            RendererCommand::SetLineWidth(s_Data.LineWidth);
+            RendererCommand::DrawLines(s_Data.LineVA, s_Data.LineIndexCount);
+            s_Data.Stats.DrawCalls++;
+        }
 
         // Quad
         if (s_Data.QuadIndexCount) {
@@ -284,16 +320,7 @@ namespace SoLin {
     {
         EndScene();
 
-        if (s_Data.QuadIndexCount) {
-            s_Data.QuadIndexCount = 0;
-            s_Data.TextureSlotIndex = 1;
-            s_Data.QuadVBHind = s_Data.QuadVBBase;
-        }
-
-        if (s_Data.CircleIndexCount) {
-            s_Data.CircleIndexCount = 0;
-            s_Data.CircleVBHind = s_Data.CircleVBBase;
-        }
+        StartBatch();
     }
 
     void Renderer2D::QuadTransportGLSL(
@@ -338,6 +365,51 @@ namespace SoLin {
 
             s_Data.TextureSlotIndex++;
         }
+    }
+
+    void Renderer2D::DrawLine(const glm::vec3& p0, const glm::vec3& p1, const glm::vec4& color, const int& entityID)
+    {
+        SL_PROFILE_FUNCTION();
+        /*if (s_Data.LineIndexCount >= s_Data.MaxIndices)
+        {
+            FlushAndReset();
+        }*/
+        s_Data.LineVBHind->Position = p0;
+        s_Data.LineVBHind->Color = color;
+        s_Data.LineVBHind->EntityID = entityID;
+        s_Data.LineVBHind++;
+
+        s_Data.LineVBHind->Position = p1;
+        s_Data.LineVBHind->Color = color;
+        s_Data.LineVBHind->EntityID = entityID;
+        s_Data.LineVBHind++;
+
+        s_Data.LineIndexCount += 2;
+    }
+
+    void Renderer2D::DrawRect(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color, const int& entityID)
+    {
+        glm::vec3 p0 = { position.x + size.x * 0.5f, position.y + size.y * 0.5f, position.z };
+        glm::vec3 p1 = { position.x + size.x * 0.5f, position.y - size.y * 0.5f, position.z };
+        glm::vec3 p2 = { position.x - size.x * 0.5f, position.y - size.y * 0.5f, position.z };
+        glm::vec3 p3 = { position.x - size.x * 0.5f, position.y + size.y * 0.5f, position.z };
+
+        DrawLine(p0, p1, color, entityID);
+        DrawLine(p1, p2, color, entityID);
+        DrawLine(p2, p3, color, entityID);
+        DrawLine(p3, p0, color, entityID);
+    }
+
+    void Renderer2D::DrawRect(const glm::mat4& transform, const glm::vec2& size, const glm::vec4& color, const int& entityID)
+    {
+        glm::vec3 verticesPos[4];
+        for (int i = 0; i < 4; i++)
+            verticesPos[i] = transform * s_Data.QuadVertexPosition[i];
+
+        DrawLine(verticesPos[0], verticesPos[1], color, entityID);
+        DrawLine(verticesPos[1], verticesPos[2], color, entityID);
+        DrawLine(verticesPos[2], verticesPos[3], color, entityID);
+        DrawLine(verticesPos[3], verticesPos[0], color, entityID);
     }
 
     void Renderer2D::DrawQuad(const glm::mat4 transform, const glm::vec4 color, const int& entityID)

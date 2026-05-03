@@ -29,6 +29,7 @@ namespace SoLin {
 		//@brief 结束布景
 		static void EndScene();
 
+        static void StartBatch();
         static void Flush();
         static void FlushAndReset();
 
@@ -40,6 +41,13 @@ namespace SoLin {
 
     public:
         //--------------------图元---------------------------
+
+        // @brief 画线条
+        static void DrawLine(const glm::vec3& p0, const glm::vec3& p1, const glm::vec4& color, const int& entityID = -1);
+        // @brief 画矩形框
+        static void DrawRect(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color, const int& entityID = -1);
+        // @brief 画矩形框
+        static void DrawRect(const glm::mat4& transform, const glm::vec2& size, const glm::vec4& color, const int& entityID = -1);
 
         //@brief 画四边形
         //@param transform 变换矩阵

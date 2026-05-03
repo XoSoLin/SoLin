@@ -12,5 +12,7 @@ namespace SoLin {
 
 		virtual void DrawIndexed(const Ref<VertexArray>& vertexArray)override;
         virtual void DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount)override;
+        virtual void DrawLines(const Ref<VertexArray>& vertexArray, uint32_t vertexCount)override;
+        virtual void SetLineWidth(const float& width)override;
 	};
 }

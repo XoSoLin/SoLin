@@ -227,6 +227,9 @@ namespace SoLin {
     {
         Renderer2D::BeginScene(camera);
 
+        Renderer2D::DrawLine(glm::vec3(0.0f), glm::vec3(1.0f), glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
+        Renderer2D::DrawRect(glm::vec3(0.0f), glm::vec2(1.0f), glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
+
         // 粗略写的按层渲染 后修改细节
         // TODO:
         for (int i = 0;i < 4 ;i++) {
